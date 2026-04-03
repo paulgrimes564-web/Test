@@ -1,0 +1,128 @@
+[
+  {
+    "hint": "Label shown in the widget header bar",
+    "label": "Widget Title",
+    "name": "widget_title",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Full display name of the company (e.g. Acme Corporation)",
+    "label": "Company Name",
+    "name": "company_name",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Short tagline or headline shown under the company name",
+    "label": "Tagline",
+    "name": "tagline",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Multi-sentence company description shown in the About tab",
+    "label": "Description",
+    "name": "description",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Full LinkedIn company page URL (e.g. https://www.linkedin.com/company/acme/)",
+    "label": "LinkedIn URL",
+    "name": "linkedin_url",
+    "section": "LinkedIn Settings",
+    "type": "string"
+  },
+  {
+    "hint": "LinkedIn company vanity name — the slug after /company/ in your URL. Used to render the official LinkedIn profile badge.",
+    "label": "Vanity Name (slug)",
+    "name": "vanity_name",
+    "section": "LinkedIn Settings",
+    "type": "string"
+  },
+  {
+    "hint": "Numeric LinkedIn company ID — required for the Follow button embed. Find it in your LinkedIn Admin panel.",
+    "label": "Company ID (numeric)",
+    "name": "company_id",
+    "section": "LinkedIn Settings",
+    "type": "string"
+  },
+  {
+    "hint": "URL to the company logo image (square, min 100×100px)",
+    "label": "Logo URL",
+    "name": "logo_url",
+    "section": "Branding",
+    "type": "string"
+  },
+  {
+    "hint": "URL to a banner/cover image (recommended 1128×191px). Leave blank for the default gradient.",
+    "label": "Banner Image URL",
+    "name": "banner_url",
+    "section": "Branding",
+    "type": "string"
+  },
+  {
+    "hint": "Color scheme: 'light' (default) or 'dark'",
+    "label": "Theme",
+    "name": "theme",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Company website URL shown in the About tab",
+    "label": "Website",
+    "name": "website",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Industry / sector (e.g. Information Technology & Services)",
+    "label": "Industry",
+    "name": "industry",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Employee count range (e.g. 1,001–5,000 employees)",
+    "label": "Company Size",
+    "name": "company_size",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Headquarters city/country shown in About tab",
+    "label": "Headquarters",
+    "name": "headquarters",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Short location string shown in the profile card (e.g. San Francisco, CA)",
+    "label": "Location (short)",
+    "name": "location",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Year the company was founded",
+    "label": "Founded",
+    "name": "founded",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Approximate follower count (numeric). Displayed in the profile card meta row.",
+    "label": "Follower Count",
+    "name": "followers",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "JSON array of featured posts. Each item: {\"text\":\"...\",\"date\":\"...\",\"url\":\"...\"}",
+    "label": "Featured Posts (JSON)",
+    "name": "featured_posts",
+    "section": "Posts",
+    "type": "string"
+  }
+]

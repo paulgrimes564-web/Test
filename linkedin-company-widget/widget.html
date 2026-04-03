@@ -1,0 +1,169 @@
+<div class="linkedin-widget-wrapper" ng-class="{'theme-dark': c.data.theme === 'dark'}">
+
+  <!-- Header Bar -->
+  <div class="lw-header">
+    <div class="lw-header-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" class="lw-li-icon">
+        <path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,1,0,7.59,10.37,2.86,2.86,0,0,0,10.45,7.5ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.77V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58c1.96,0,3,1.26,3,3.52V29h5Z" fill="#fff"/>
+      </svg>
+    </div>
+    <span class="lw-header-title">{{c.data.widget_title || 'LinkedIn'}}</span>
+    <div class="lw-header-actions">
+      <button class="lw-tab-btn" ng-class="{active: c.activeTab === 'profile'}" ng-click="c.setTab('profile')">Profile</button>
+      <button class="lw-tab-btn" ng-class="{active: c.activeTab === 'posts'}" ng-click="c.setTab('posts')">Posts</button>
+      <button class="lw-tab-btn" ng-class="{active: c.activeTab === 'about'}" ng-click="c.setTab('about')">About</button>
+    </div>
+  </div>
+
+  <!-- Tab: Profile (LinkedIn Badge + Follow) -->
+  <div class="lw-tab-content" ng-show="c.activeTab === 'profile'">
+
+    <!-- Banner -->
+    <div class="lw-banner" ng-style="c.bannerStyle()">
+      <div class="lw-banner-overlay"></div>
+    </div>
+
+    <!-- Company Card -->
+    <div class="lw-company-card">
+      <div class="lw-logo-wrap">
+        <img ng-if="c.data.logo_url" ng-src="{{c.data.logo_url}}" alt="{{c.data.company_name}} logo" class="lw-company-logo" />
+        <div ng-if="!c.data.logo_url" class="lw-logo-placeholder">
+          <span>{{c.data.company_name | limitTo:2 | uppercase}}</span>
+        </div>
+      </div>
+
+      <div class="lw-company-info">
+        <h2 class="lw-company-name">{{c.data.company_name}}</h2>
+        <p class="lw-company-tagline">{{c.data.tagline}}</p>
+        <p class="lw-company-meta">
+          <span ng-if="c.data.industry"><i class="fa fa-building-o"></i> {{c.data.industry}}</span>
+          <span ng-if="c.data.location"><i class="fa fa-map-marker"></i> {{c.data.location}}</span>
+          <span ng-if="c.data.followers"><i class="fa fa-users"></i> {{c.data.followers | number}} followers</span>
+        </p>
+      </div>
+
+      <div class="lw-actions">
+        <a class="lw-btn lw-btn-primary" ng-href="{{c.data.linkedin_url}}" target="_blank" rel="noopener noreferrer">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" class="lw-btn-icon"><path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,1,0,7.59,10.37,2.86,2.86,0,0,0,10.45,7.5ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.77V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58c1.96,0,3,1.26,3,3.52V29h5Z" fill="currentColor"/></svg>
+          View on LinkedIn
+        </a>
+        <!-- LinkedIn Official Follow Button -->
+        <div class="lw-follow-embed" ng-if="c.data.company_id">
+          <script type="IN/FollowCompany" data-id="{{c.data.company_id}}" data-counter="bottom"></script>
+        </div>
+      </div>
+    </div>
+
+    <!-- Official LinkedIn Badge (rendered in iframe-like container) -->
+    <div class="lw-badge-section" ng-if="c.data.vanity_name">
+      <div class="lw-badge-label">Official Profile Badge</div>
+      <div class="lw-badge-container">
+        <div class="badge-base LI-profile-badge"
+             data-locale="en_US"
+             data-size="large"
+             data-theme="{{c.data.theme === 'dark' ? 'dark' : 'light'}}"
+             data-type="HORIZONTAL"
+             data-vanity="{{c.data.vanity_name}}"
+             data-version="v1">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tab: Posts (Curated links / feed placeholder) -->
+  <div class="lw-tab-content" ng-show="c.activeTab === 'posts'">
+    <div class="lw-posts-header">
+      <span>Latest from {{c.data.company_name}}</span>
+      <a ng-href="{{c.data.linkedin_url}}/posts/" target="_blank" rel="noopener noreferrer" class="lw-see-all">See all posts <i class="fa fa-external-link"></i></a>
+    </div>
+
+    <!-- Post cards -->
+    <div class="lw-post-card" ng-repeat="post in c.data.featured_posts track by $index">
+      <div class="lw-post-meta">
+        <img ng-if="c.data.logo_url" ng-src="{{c.data.logo_url}}" class="lw-post-avatar" />
+        <div ng-if="!c.data.logo_url" class="lw-post-avatar-placeholder">{{c.data.company_name | limitTo:1}}</div>
+        <div class="lw-post-author">
+          <strong>{{c.data.company_name}}</strong>
+          <span>{{post.date}}</span>
+        </div>
+      </div>
+      <p class="lw-post-text">{{post.text}}</p>
+      <a ng-if="post.url" ng-href="{{post.url}}" target="_blank" rel="noopener noreferrer" class="lw-post-link">
+        <i class="fa fa-linkedin-square"></i> View post
+      </a>
+    </div>
+
+    <!-- Empty state -->
+    <div class="lw-empty-state" ng-if="!c.data.featured_posts || c.data.featured_posts.length === 0">
+      <i class="fa fa-newspaper-o fa-2x"></i>
+      <p>Configure featured posts in widget options, or</p>
+      <a ng-href="{{c.data.linkedin_url}}" target="_blank" rel="noopener noreferrer" class="lw-btn lw-btn-outline">
+        View posts on LinkedIn
+      </a>
+    </div>
+  </div>
+
+  <!-- Tab: About -->
+  <div class="lw-tab-content" ng-show="c.activeTab === 'about'">
+    <div class="lw-about-grid">
+      <div class="lw-about-card" ng-if="c.data.description">
+        <div class="lw-about-card-icon"><i class="fa fa-info-circle"></i></div>
+        <div class="lw-about-card-body">
+          <h4>About</h4>
+          <p>{{c.data.description}}</p>
+        </div>
+      </div>
+      <div class="lw-about-card" ng-if="c.data.website">
+        <div class="lw-about-card-icon"><i class="fa fa-globe"></i></div>
+        <div class="lw-about-card-body">
+          <h4>Website</h4>
+          <a ng-href="{{c.data.website}}" target="_blank" rel="noopener noreferrer">{{c.data.website}}</a>
+        </div>
+      </div>
+      <div class="lw-about-card" ng-if="c.data.industry">
+        <div class="lw-about-card-icon"><i class="fa fa-building"></i></div>
+        <div class="lw-about-card-body">
+          <h4>Industry</h4>
+          <p>{{c.data.industry}}</p>
+        </div>
+      </div>
+      <div class="lw-about-card" ng-if="c.data.company_size">
+        <div class="lw-about-card-icon"><i class="fa fa-users"></i></div>
+        <div class="lw-about-card-body">
+          <h4>Company size</h4>
+          <p>{{c.data.company_size}}</p>
+        </div>
+      </div>
+      <div class="lw-about-card" ng-if="c.data.headquarters">
+        <div class="lw-about-card-icon"><i class="fa fa-map-marker"></i></div>
+        <div class="lw-about-card-body">
+          <h4>Headquarters</h4>
+          <p>{{c.data.headquarters}}</p>
+        </div>
+      </div>
+      <div class="lw-about-card" ng-if="c.data.founded">
+        <div class="lw-about-card-icon"><i class="fa fa-calendar"></i></div>
+        <div class="lw-about-card-body">
+          <h4>Founded</h4>
+          <p>{{c.data.founded}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lw-about-cta">
+      <a ng-href="{{c.data.linkedin_url}}/about/" target="_blank" rel="noopener noreferrer" class="lw-btn lw-btn-outline">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" class="lw-btn-icon"><path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,1,0,7.59,10.37,2.86,2.86,0,0,0,10.45,7.5ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.77V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58c1.96,0,3,1.26,3,3.52V29h5Z" fill="currentColor"/></svg>
+        Full profile on LinkedIn
+      </a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="lw-footer">
+    <span>Powered by</span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" class="lw-footer-icon"><path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,1,0,7.59,10.37,2.86,2.86,0,0,0,10.45,7.5ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.77V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58c1.96,0,3,1.26,3,3.52V29h5Z" fill="currentColor"/></svg>
+    <span>LinkedIn</span>
+  </div>
+
+</div>

@@ -1,0 +1,550 @@
+/* =============================================
+   LinkedIn Company Widget — ServiceNow Portal
+   ============================================= */
+
+/* --- CSS Variables --- */
+.linkedin-widget-wrapper {
+  --li-blue: #0a66c2;
+  --li-blue-dark: #004182;
+  --li-blue-light: #e8f0fe;
+  --li-black: #1b1f23;
+  --li-gray: #86888a;
+  --li-border: #e0e0e0;
+  --li-bg: #ffffff;
+  --li-card-bg: #ffffff;
+  --li-text: #1b1f23;
+  --li-text-muted: #6b7280;
+  --li-radius: 12px;
+  --li-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  --li-transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --li-header-height: 56px;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--li-text);
+  background: var(--li-bg);
+  border-radius: var(--li-radius);
+  box-shadow: var(--li-shadow);
+  overflow: hidden;
+  max-width: 680px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Dark theme */
+.linkedin-widget-wrapper.theme-dark {
+  --li-bg: #1b1f23;
+  --li-card-bg: #23282e;
+  --li-text: #e5e7eb;
+  --li-text-muted: #9ca3af;
+  --li-border: #374151;
+  --li-blue-light: #1e3a5f;
+  --li-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+/* --- Header --- */
+.lw-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--li-blue) 0%, var(--li-blue-dark) 100%);
+  padding: 0 16px;
+  height: var(--li-header-height);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.lw-li-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.lw-header-title {
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lw-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.lw-tab-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.75);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background var(--li-transition), color var(--li-transition);
+}
+
+.lw-tab-btn:hover,
+.lw-tab-btn.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.lw-tab-btn.active {
+  background: rgba(255,255,255,0.25);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.4);
+}
+
+/* --- Tab Content Transition --- */
+.lw-tab-content {
+  animation: lwFadeIn 0.28s ease;
+  padding: 0;
+}
+
+@keyframes lwFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Banner --- */
+.lw-banner {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(135deg, #0a66c2 0%, #0e4d8f 50%, #083c72 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.lw-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%);
+}
+
+.lw-banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to top, var(--li-bg), transparent);
+}
+
+/* --- Company Card --- */
+.lw-company-card {
+  padding: 0 20px 20px;
+  position: relative;
+  margin-top: -48px;
+}
+
+.lw-logo-wrap {
+  margin-bottom: 12px;
+}
+
+.lw-company-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  border: 3px solid var(--li-bg);
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  transition: transform var(--li-transition), box-shadow var(--li-transition);
+}
+
+.lw-company-logo:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 20px rgba(10,102,194,0.3);
+}
+
+.lw-logo-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  border: 3px solid var(--li-bg);
+  background: linear-gradient(135deg, var(--li-blue), var(--li-blue-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.lw-company-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--li-text);
+  line-height: 1.2;
+}
+
+.lw-company-tagline {
+  color: var(--li-text-muted);
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.lw-company-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--li-text-muted);
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+.lw-company-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lw-company-meta .fa {
+  color: var(--li-blue);
+  font-size: 13px;
+}
+
+/* --- Action Buttons --- */
+.lw-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--li-transition);
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.lw-btn-primary {
+  background: var(--li-blue);
+  color: #fff;
+  border-color: var(--li-blue);
+}
+
+.lw-btn-primary:hover {
+  background: var(--li-blue-dark);
+  border-color: var(--li-blue-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10,102,194,0.35);
+  color: #fff;
+  text-decoration: none;
+}
+
+.lw-btn-outline {
+  background: transparent;
+  color: var(--li-blue);
+  border-color: var(--li-blue);
+}
+
+.lw-btn-outline:hover {
+  background: var(--li-blue-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10,102,194,0.15);
+  color: var(--li-blue);
+  text-decoration: none;
+}
+
+.lw-btn-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* --- LinkedIn Official Badge Section --- */
+.lw-badge-section {
+  margin: 0 20px 20px;
+  padding: 16px;
+  background: var(--li-card-bg);
+  border: 1px solid var(--li-border);
+  border-radius: 10px;
+}
+
+.lw-badge-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--li-text-muted);
+  margin-bottom: 12px;
+}
+
+.lw-badge-container {
+  display: flex;
+  justify-content: center;
+}
+
+.lw-follow-embed {
+  display: flex;
+  align-items: center;
+}
+
+/* --- Posts Tab --- */
+.lw-posts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--li-text);
+  border-bottom: 1px solid var(--li-border);
+}
+
+.lw-see-all {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--li-blue);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--li-transition);
+}
+
+.lw-see-all:hover {
+  color: var(--li-blue-dark);
+  text-decoration: underline;
+}
+
+.lw-post-card {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--li-border);
+  transition: background var(--li-transition);
+}
+
+.lw-post-card:hover {
+  background: var(--li-blue-light);
+}
+
+.lw-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.lw-post-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--li-border);
+  flex-shrink: 0;
+}
+
+.lw-post-avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--li-blue), var(--li-blue-dark));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.lw-post-author {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lw-post-author strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--li-text);
+}
+
+.lw-post-author span {
+  font-size: 11px;
+  color: var(--li-text-muted);
+}
+
+.lw-post-text {
+  margin: 0 0 10px;
+  color: var(--li-text);
+  line-height: 1.55;
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lw-post-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--li-blue);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 0;
+  transition: color var(--li-transition);
+}
+
+.lw-post-link:hover {
+  color: var(--li-blue-dark);
+  text-decoration: underline;
+}
+
+/* --- Empty State --- */
+.lw-empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--li-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.lw-empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* --- About Tab --- */
+.lw-about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+@media (max-width: 480px) {
+  .lw-about-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lw-about-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: var(--li-card-bg);
+  border: 1px solid var(--li-border);
+  border-radius: 10px;
+  transition: box-shadow var(--li-transition), transform var(--li-transition);
+}
+
+.lw-about-card:hover {
+  box-shadow: 0 4px 16px rgba(10,102,194,0.12);
+  transform: translateY(-2px);
+}
+
+.lw-about-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--li-blue-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lw-about-card-icon .fa {
+  color: var(--li-blue);
+  font-size: 15px;
+}
+
+.lw-about-card-body h4 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--li-text-muted);
+  margin: 0 0 4px;
+}
+
+.lw-about-card-body p,
+.lw-about-card-body a {
+  font-size: 13px;
+  color: var(--li-text);
+  margin: 0;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.lw-about-card-body a {
+  color: var(--li-blue);
+  text-decoration: none;
+}
+
+.lw-about-card-body a:hover {
+  text-decoration: underline;
+}
+
+.lw-about-cta {
+  padding: 4px 20px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Footer --- */
+.lw-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid var(--li-border);
+  font-size: 11px;
+  color: var(--li-text-muted);
+  background: var(--li-card-bg);
+}
+
+.lw-footer-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--li-blue);
+  fill: var(--li-blue);
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+  .lw-header-actions {
+    display: none;
+  }
+
+  .lw-company-name {
+    font-size: 18px;
+  }
+
+  .lw-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+/* --- ServiceNow SP overrides --- */
+.sp-widget-content .linkedin-widget-wrapper {
+  max-width: 100%;
+}
