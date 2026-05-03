@@ -1,0 +1,1194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2026-05-03 12:00:00">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       Update Set: LinkedIn Company Widget v1.0
+       Import via: System Update Sets > Retrieved Update Sets > Import
+       ═══════════════════════════════════════════════════════════ -->
+
+  <sys_remote_update_set action="INSERT_OR_UPDATE">
+    <description>LinkedIn Company Profile Widget for ServiceNow Service Portal. Includes the sp_widget record and 18 sys_property configuration records.</description>
+    <name>LinkedIn Company Widget v1.0</name>
+    <origin_sys_id/>
+    <parent/>
+    <remote_sys_id>a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_sys_id>
+    <state>loaded</state>
+    <sys_class_name>sys_remote_update_set</sys_class_name>
+    <sys_id>a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</sys_id>
+    <type>Other</type>
+    <update_set_link/>
+  </sys_remote_update_set>
+
+  <!-- ── sp_widget record ── -->
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sp_widget_linkedin-company-widget</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget"><sp_widget action="INSERT_OR_UPDATE"><category>custom</category><description>LinkedIn Company Profile Widget — 3-tab portal card (Profile, Posts, About) using LinkedIn's official badge and follow-button SDKs.</description><name>LinkedIn Company Widget</name><id>linkedin-company-widget</id><template>&lt;div class="linkedin-widget-wrapper" ng-class="{'theme-dark': c.data.theme === 'dark'}"&gt;
+
+  &lt;!-- Header Bar --&gt;
+  &lt;div class="lw-header"&gt;
+    &lt;div class="lw-header-logo"&gt;
+      &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" class="lw-li-icon"&gt;
+        &lt;path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,1,0,7.59,10.37,2.86,2.86,0,0,0,10.45,7.5ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.77V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58c1.96,0,3,1.26,3,3.52V29h5Z" fill="#fff"/&gt;
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;span class="lw-header-title"&gt;{{c.data.widget_title || 'LinkedIn'}}&lt;/span&gt;
+    &lt;div class="lw-header-actions"&gt;
+      &lt;button class="lw-tab-btn" ng-class="{active: c.activeTab === 'profile'}" ng-click="c.setTab('profile')"&gt;Profile&lt;/button&gt;
+      &lt;button class="lw-tab-btn" ng-class="{active: c.activeTab === 'posts'}" ng-click="c.setTab('posts')"&gt;Posts&lt;/button&gt;
+      &lt;button class="lw-tab-btn" ng-class="{active: c.activeTab === 'about'}" ng-click="c.setTab('about')"&gt;About&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Tab: Profile (LinkedIn Badge + Follow) --&gt;
+  &lt;div class="lw-tab-content" ng-show="c.activeTab === 'profile'"&gt;
+
+    &lt;!-- Banner --&gt;
+    &lt;div class="lw-banner" ng-style="c.bannerStyle()"&gt;
+      &lt;div class="lw-banner-overlay"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Company Card --&gt;
+    &lt;div class="lw-company-card"&gt;
+      &lt;div class="lw-logo-wrap"&gt;
+        &lt;img ng-if="c.data.logo_url" ng-src="{{c.data.logo_url}}" alt="{{c.data.company_name}} logo" class="lw-company-logo" /&gt;
+        &lt;div ng-if="!c.data.logo_url" class="lw-logo-placeholder"&gt;
+          &lt;span&gt;{{c.data.company_name | limitTo:2 | uppercase}}&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class="lw-company-info"&gt;
+        &lt;h2 class="lw-company-name"&gt;{{c.data.company_name}}&lt;/h2&gt;
+        &lt;p class="lw-company-tagline"&gt;{{c.data.tagline}}&lt;/p&gt;
+        &lt;p class="lw-company-meta"&gt;
+          &lt;span ng-if="c.data.industry"&gt;&lt;i class="fa fa-building-o"&gt;&lt;/i&gt; {{c.data.industry}}&lt;/span&gt;
+          &lt;span ng-if="c.data.location"&gt;&lt;i class="fa fa-map-marker"&gt;&lt;/i&gt; {{c.data.location}}&lt;/span&gt;
+          &lt;span ng-if="c.data.followers"&gt;&lt;i class="fa fa-users"&gt;&lt;/i&gt; {{c.data.followers | number}} followers&lt;/span&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div class="lw-actions"&gt;
+        &lt;a class="lw-btn lw-btn-primary" ng-href="{{c.data.linkedin_url}}" target="_blank" rel="noopener noreferrer"&gt;
+          &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" class="lw-btn-icon"&gt;&lt;path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,1,0,7.59,10.37,2.86,2.86,0,0,0,10.45,7.5ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.77V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58c1.96,0,3,1.26,3,3.52V29h5Z" fill="currentColor"/&gt;&lt;/svg&gt;
+          View on LinkedIn
+        &lt;/a&gt;
+        &lt;!-- LinkedIn Official Follow Button --&gt;
+        &lt;div class="lw-follow-embed" ng-if="c.data.company_id"&gt;
+          &lt;script type="IN/FollowCompany" data-id="{{c.data.company_id}}" data-counter="bottom"&gt;&lt;/script&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Official LinkedIn Badge (rendered in iframe-like container) --&gt;
+    &lt;div class="lw-badge-section" ng-if="c.data.vanity_name"&gt;
+      &lt;div class="lw-badge-label"&gt;Official Profile Badge&lt;/div&gt;
+      &lt;div class="lw-badge-container"&gt;
+        &lt;div class="badge-base LI-profile-badge"
+             data-locale="en_US"
+             data-size="large"
+             data-theme="{{c.data.theme === 'dark' ? 'dark' : 'light'}}"
+             data-type="HORIZONTAL"
+             data-vanity="{{c.data.vanity_name}}"
+             data-version="v1"&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+  &lt;!-- Tab: Posts (Curated links / feed placeholder) --&gt;
+  &lt;div class="lw-tab-content" ng-show="c.activeTab === 'posts'"&gt;
+    &lt;div class="lw-posts-header"&gt;
+      &lt;span&gt;Latest from {{c.data.company_name}}&lt;/span&gt;
+      &lt;a ng-href="{{c.data.linkedin_url}}/posts/" target="_blank" rel="noopener noreferrer" class="lw-see-all"&gt;See all posts &lt;i class="fa fa-external-link"&gt;&lt;/i&gt;&lt;/a&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Post cards --&gt;
+    &lt;div class="lw-post-card" ng-repeat="post in c.data.featured_posts track by $index"&gt;
+      &lt;div class="lw-post-meta"&gt;
+        &lt;img ng-if="c.data.logo_url" ng-src="{{c.data.logo_url}}" class="lw-post-avatar" /&gt;
+        &lt;div ng-if="!c.data.logo_url" class="lw-post-avatar-placeholder"&gt;{{c.data.company_name | limitTo:1}}&lt;/div&gt;
+        &lt;div class="lw-post-author"&gt;
+          &lt;strong&gt;{{c.data.company_name}}&lt;/strong&gt;
+          &lt;span&gt;{{post.date}}&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p class="lw-post-text"&gt;{{post.text}}&lt;/p&gt;
+      &lt;a ng-if="post.url" ng-href="{{post.url}}" target="_blank" rel="noopener noreferrer" class="lw-post-link"&gt;
+        &lt;i class="fa fa-linkedin-square"&gt;&lt;/i&gt; View post
+      &lt;/a&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Empty state --&gt;
+    &lt;div class="lw-empty-state" ng-if="!c.data.featured_posts || c.data.featured_posts.length === 0"&gt;
+      &lt;i class="fa fa-newspaper-o fa-2x"&gt;&lt;/i&gt;
+      &lt;p&gt;Configure featured posts in widget options, or&lt;/p&gt;
+      &lt;a ng-href="{{c.data.linkedin_url}}" target="_blank" rel="noopener noreferrer" class="lw-btn lw-btn-outline"&gt;
+        View posts on LinkedIn
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Tab: About --&gt;
+  &lt;div class="lw-tab-content" ng-show="c.activeTab === 'about'"&gt;
+    &lt;div class="lw-about-grid"&gt;
+      &lt;div class="lw-about-card" ng-if="c.data.description"&gt;
+        &lt;div class="lw-about-card-icon"&gt;&lt;i class="fa fa-info-circle"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="lw-about-card-body"&gt;
+          &lt;h4&gt;About&lt;/h4&gt;
+          &lt;p&gt;{{c.data.description}}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="lw-about-card" ng-if="c.data.website"&gt;
+        &lt;div class="lw-about-card-icon"&gt;&lt;i class="fa fa-globe"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="lw-about-card-body"&gt;
+          &lt;h4&gt;Website&lt;/h4&gt;
+          &lt;a ng-href="{{c.data.website}}" target="_blank" rel="noopener noreferrer"&gt;{{c.data.website}}&lt;/a&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="lw-about-card" ng-if="c.data.industry"&gt;
+        &lt;div class="lw-about-card-icon"&gt;&lt;i class="fa fa-building"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="lw-about-card-body"&gt;
+          &lt;h4&gt;Industry&lt;/h4&gt;
+          &lt;p&gt;{{c.data.industry}}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="lw-about-card" ng-if="c.data.company_size"&gt;
+        &lt;div class="lw-about-card-icon"&gt;&lt;i class="fa fa-users"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="lw-about-card-body"&gt;
+          &lt;h4&gt;Company size&lt;/h4&gt;
+          &lt;p&gt;{{c.data.company_size}}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="lw-about-card" ng-if="c.data.headquarters"&gt;
+        &lt;div class="lw-about-card-icon"&gt;&lt;i class="fa fa-map-marker"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="lw-about-card-body"&gt;
+          &lt;h4&gt;Headquarters&lt;/h4&gt;
+          &lt;p&gt;{{c.data.headquarters}}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="lw-about-card" ng-if="c.data.founded"&gt;
+        &lt;div class="lw-about-card-icon"&gt;&lt;i class="fa fa-calendar"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="lw-about-card-body"&gt;
+          &lt;h4&gt;Founded&lt;/h4&gt;
+          &lt;p&gt;{{c.data.founded}}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="lw-about-cta"&gt;
+      &lt;a ng-href="{{c.data.linkedin_url}}/about/" target="_blank" rel="noopener noreferrer" class="lw-btn lw-btn-outline"&gt;
+        &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" class="lw-btn-icon"&gt;&lt;path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,1,0,7.59,10.37,2.86,2.86,0,0,0,10.45,7.5ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.77V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58c1.96,0,3,1.26,3,3.52V29h5Z" fill="currentColor"/&gt;&lt;/svg&gt;
+        Full profile on LinkedIn
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Footer --&gt;
+  &lt;div class="lw-footer"&gt;
+    &lt;span&gt;Powered by&lt;/span&gt;
+    &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" class="lw-footer-icon"&gt;&lt;path d="M34,2.5v29A2.5,2.5,0,0,1,31.5,34H2.5A2.5,2.5,0,0,1,0,31.5V2.5A2.5,2.5,0,0,1,2.5,0h29A2.5,2.5,0,0,1,34,2.5ZM10,13H5V29h5Zm.45-5.5A2.88,2.88,0,1,0,7.59,10.37,2.86,2.86,0,0,0,10.45,7.5ZM29,19.28c0-4.81-3.06-6.68-6.1-6.68a5.7,5.7,0,0,0-5.06,2.58H17.77V13H13V29h5V20.49a3.32,3.32,0,0,1,3-3.58c1.96,0,3,1.26,3,3.52V29h5Z" fill="currentColor"/&gt;&lt;/svg&gt;
+    &lt;span&gt;LinkedIn&lt;/span&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;
+</template><css>/* =============================================
+   LinkedIn Company Widget — ServiceNow Portal
+   ============================================= */
+
+/* --- CSS Variables --- */
+.linkedin-widget-wrapper {
+  --li-blue: #0a66c2;
+  --li-blue-dark: #004182;
+  --li-blue-light: #e8f0fe;
+  --li-black: #1b1f23;
+  --li-gray: #86888a;
+  --li-border: #e0e0e0;
+  --li-bg: #ffffff;
+  --li-card-bg: #ffffff;
+  --li-text: #1b1f23;
+  --li-text-muted: #6b7280;
+  --li-radius: 12px;
+  --li-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  --li-transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --li-header-height: 56px;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--li-text);
+  background: var(--li-bg);
+  border-radius: var(--li-radius);
+  box-shadow: var(--li-shadow);
+  overflow: hidden;
+  max-width: 680px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Dark theme */
+.linkedin-widget-wrapper.theme-dark {
+  --li-bg: #1b1f23;
+  --li-card-bg: #23282e;
+  --li-text: #e5e7eb;
+  --li-text-muted: #9ca3af;
+  --li-border: #374151;
+  --li-blue-light: #1e3a5f;
+  --li-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+/* --- Header --- */
+.lw-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--li-blue) 0%, var(--li-blue-dark) 100%);
+  padding: 0 16px;
+  height: var(--li-header-height);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.lw-li-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.lw-header-title {
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lw-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.lw-tab-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.75);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background var(--li-transition), color var(--li-transition);
+}
+
+.lw-tab-btn:hover,
+.lw-tab-btn.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.lw-tab-btn.active {
+  background: rgba(255,255,255,0.25);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.4);
+}
+
+/* --- Tab Content Transition --- */
+.lw-tab-content {
+  animation: lwFadeIn 0.28s ease;
+  padding: 0;
+}
+
+@keyframes lwFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Banner --- */
+.lw-banner {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(135deg, #0a66c2 0%, #0e4d8f 50%, #083c72 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.lw-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%);
+}
+
+.lw-banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to top, var(--li-bg), transparent);
+}
+
+/* --- Company Card --- */
+.lw-company-card {
+  padding: 0 20px 20px;
+  position: relative;
+  margin-top: -48px;
+}
+
+.lw-logo-wrap {
+  margin-bottom: 12px;
+}
+
+.lw-company-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  border: 3px solid var(--li-bg);
+  object-fit: contain;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  transition: transform var(--li-transition), box-shadow var(--li-transition);
+}
+
+.lw-company-logo:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 20px rgba(10,102,194,0.3);
+}
+
+.lw-logo-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  border: 3px solid var(--li-bg);
+  background: linear-gradient(135deg, var(--li-blue), var(--li-blue-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.lw-company-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--li-text);
+  line-height: 1.2;
+}
+
+.lw-company-tagline {
+  color: var(--li-text-muted);
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.lw-company-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--li-text-muted);
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+.lw-company-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lw-company-meta .fa {
+  color: var(--li-blue);
+  font-size: 13px;
+}
+
+/* --- Action Buttons --- */
+.lw-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--li-transition);
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.lw-btn-primary {
+  background: var(--li-blue);
+  color: #fff;
+  border-color: var(--li-blue);
+}
+
+.lw-btn-primary:hover {
+  background: var(--li-blue-dark);
+  border-color: var(--li-blue-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10,102,194,0.35);
+  color: #fff;
+  text-decoration: none;
+}
+
+.lw-btn-outline {
+  background: transparent;
+  color: var(--li-blue);
+  border-color: var(--li-blue);
+}
+
+.lw-btn-outline:hover {
+  background: var(--li-blue-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10,102,194,0.15);
+  color: var(--li-blue);
+  text-decoration: none;
+}
+
+.lw-btn-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* --- LinkedIn Official Badge Section --- */
+.lw-badge-section {
+  margin: 0 20px 20px;
+  padding: 16px;
+  background: var(--li-card-bg);
+  border: 1px solid var(--li-border);
+  border-radius: 10px;
+}
+
+.lw-badge-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--li-text-muted);
+  margin-bottom: 12px;
+}
+
+.lw-badge-container {
+  display: flex;
+  justify-content: center;
+}
+
+.lw-follow-embed {
+  display: flex;
+  align-items: center;
+}
+
+/* --- Posts Tab --- */
+.lw-posts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--li-text);
+  border-bottom: 1px solid var(--li-border);
+}
+
+.lw-see-all {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--li-blue);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--li-transition);
+}
+
+.lw-see-all:hover {
+  color: var(--li-blue-dark);
+  text-decoration: underline;
+}
+
+.lw-post-card {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--li-border);
+  transition: background var(--li-transition);
+}
+
+.lw-post-card:hover {
+  background: var(--li-blue-light);
+}
+
+.lw-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.lw-post-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--li-border);
+  flex-shrink: 0;
+}
+
+.lw-post-avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--li-blue), var(--li-blue-dark));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.lw-post-author {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lw-post-author strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--li-text);
+}
+
+.lw-post-author span {
+  font-size: 11px;
+  color: var(--li-text-muted);
+}
+
+.lw-post-text {
+  margin: 0 0 10px;
+  color: var(--li-text);
+  line-height: 1.55;
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lw-post-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--li-blue);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 0;
+  transition: color var(--li-transition);
+}
+
+.lw-post-link:hover {
+  color: var(--li-blue-dark);
+  text-decoration: underline;
+}
+
+/* --- Empty State --- */
+.lw-empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--li-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.lw-empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* --- About Tab --- */
+.lw-about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+@media (max-width: 480px) {
+  .lw-about-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lw-about-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: var(--li-card-bg);
+  border: 1px solid var(--li-border);
+  border-radius: 10px;
+  transition: box-shadow var(--li-transition), transform var(--li-transition);
+}
+
+.lw-about-card:hover {
+  box-shadow: 0 4px 16px rgba(10,102,194,0.12);
+  transform: translateY(-2px);
+}
+
+.lw-about-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--li-blue-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lw-about-card-icon .fa {
+  color: var(--li-blue);
+  font-size: 15px;
+}
+
+.lw-about-card-body h4 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--li-text-muted);
+  margin: 0 0 4px;
+}
+
+.lw-about-card-body p,
+.lw-about-card-body a {
+  font-size: 13px;
+  color: var(--li-text);
+  margin: 0;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.lw-about-card-body a {
+  color: var(--li-blue);
+  text-decoration: none;
+}
+
+.lw-about-card-body a:hover {
+  text-decoration: underline;
+}
+
+.lw-about-cta {
+  padding: 4px 20px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Footer --- */
+.lw-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid var(--li-border);
+  font-size: 11px;
+  color: var(--li-text-muted);
+  background: var(--li-card-bg);
+}
+
+.lw-footer-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--li-blue);
+  fill: var(--li-blue);
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+  .lw-header-actions {
+    display: none;
+  }
+
+  .lw-company-name {
+    font-size: 18px;
+  }
+
+  .lw-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+/* --- ServiceNow SP overrides --- */
+.sp-widget-content .linkedin-widget-wrapper {
+  max-width: 100%;
+}
+</css><client_script>/**
+ * LinkedIn Company Widget — Client-side Controller
+ * ServiceNow Service Portal (AngularJS)
+ */
+api.controller = function($scope, $timeout) {
+  var c = this;
+
+  // Active tab state — default to 'profile'
+  c.activeTab = 'profile';
+
+  /**
+   * Switch active tab and re-trigger LinkedIn SDK rendering
+   * if switching to the profile tab (badge needs re-initialization).
+   */
+  c.setTab = function(tab) {
+    c.activeTab = tab;
+    if (tab === 'profile') {
+      c.initLinkedInSDK();
+    }
+  };
+
+  /**
+   * Build a dynamic inline style for the banner background.
+   * Falls back to a gradient if no custom banner image is configured.
+   */
+  c.bannerStyle = function() {
+    if (c.data.banner_url) {
+      return {
+        'background-image': 'url(' + c.data.banner_url + ')',
+        'background-size': 'cover',
+        'background-position': 'center'
+      };
+    }
+    // Default animated gradient banner using LinkedIn blue palette
+    return {};
+  };
+
+  /**
+   * Load (or reload) the LinkedIn platform SDK.
+   * Required for:
+   *   - IN/FollowCompany badge
+   *   - LI-profile-badge (company profile card)
+   * Safe to call multiple times — checks for existing instance first.
+   */
+  c.initLinkedInSDK = function() {
+    $timeout(function() {
+      // LinkedIn official badge script
+      if (!document.getElementById('li-badge-script')) {
+        var badgeScript = document.createElement('script');
+        badgeScript.id = 'li-badge-script';
+        badgeScript.src = 'https://platform.linkedin.com/badges/js/profile.js';
+        badgeScript.async = true;
+        badgeScript.defer = true;
+        document.body.appendChild(badgeScript);
+      } else if (window.LI &amp;&amp; window.LI.init) {
+        // Re-render badges if SDK already loaded
+        window.LI.init();
+      }
+
+      // LinkedIn platform.js (follow button)
+      if (!document.getElementById('li-platform-script') &amp;&amp; c.data.company_id) {
+        var platformScript = document.createElement('script');
+        platformScript.id = 'li-platform-script';
+        platformScript.src = 'https://platform.linkedin.com/in.js';
+        platformScript.type = 'text/javascript';
+        platformScript.innerHTML = 'lang: en_US';
+        document.head.appendChild(platformScript);
+      }
+    }, 150);
+  };
+
+  // Initialize LinkedIn SDK on widget load
+  c.initLinkedInSDK();
+};
+</client_script><script>/**
+ * LinkedIn Company Widget — Server-side Script
+ * ServiceNow Service Portal
+ *
+ * Merges widget instance options with system property defaults
+ * and sends a clean data object to the client controller.
+ */
+(function() {
+
+  /* ── Helper: read a sys_property with a fallback value ── */
+  function sysProp(name, fallback) {
+    var val = gs.getProperty(name, '');
+    return val ? val : (fallback || '');
+  }
+
+  /* ── Widget instance options (set in the portal designer) ── */
+  var opts = options || {};
+
+  /* ── Build the data payload ── */
+  data.widget_title   = opts.widget_title   || sysProp('linkedin.widget.title', 'Our LinkedIn');
+  data.company_name   = opts.company_name   || sysProp('linkedin.widget.company_name', '');
+  data.tagline        = opts.tagline        || sysProp('linkedin.widget.tagline', '');
+  data.description    = opts.description    || sysProp('linkedin.widget.description', '');
+  data.linkedin_url   = opts.linkedin_url   || sysProp('linkedin.widget.linkedin_url', 'https://www.linkedin.com/company/');
+  data.vanity_name    = opts.vanity_name    || sysProp('linkedin.widget.vanity_name', '');
+  data.company_id     = opts.company_id     || sysProp('linkedin.widget.company_id', '');
+  data.logo_url       = opts.logo_url       || sysProp('linkedin.widget.logo_url', '');
+  data.banner_url     = opts.banner_url     || sysProp('linkedin.widget.banner_url', '');
+  data.website        = opts.website        || sysProp('linkedin.widget.website', '');
+  data.industry       = opts.industry       || sysProp('linkedin.widget.industry', '');
+  data.company_size   = opts.company_size   || sysProp('linkedin.widget.company_size', '');
+  data.headquarters   = opts.headquarters   || sysProp('linkedin.widget.headquarters', '');
+  data.location       = opts.location       || sysProp('linkedin.widget.location', '');
+  data.founded        = opts.founded        || sysProp('linkedin.widget.founded', '');
+  data.followers      = opts.followers      || sysProp('linkedin.widget.followers', '');
+  data.theme          = opts.theme          || sysProp('linkedin.widget.theme', 'light');
+
+  /*
+   * Featured posts: JSON array stored in the widget option or sys_property.
+   * Format: [{"text":"...", "date":"...", "url":"..."}, ...]
+   *
+   * Example sys_property value (linkedin.widget.featured_posts):
+   * [{"text":"We are hiring!","date":"Mar 2026","url":"https://www.linkedin.com/posts/..."}]
+   */
+  var rawPosts = opts.featured_posts || sysProp('linkedin.widget.featured_posts', '');
+  if (rawPosts) {
+    try {
+      data.featured_posts = JSON.parse(rawPosts);
+    } catch (e) {
+      gs.warn('LinkedIn Widget: could not parse featured_posts JSON — ' + e.message);
+      data.featured_posts = [];
+    }
+  } else {
+    data.featured_posts = [];
+  }
+
+})();
+</script><option_schema>[
+  {
+    "hint": "Label shown in the widget header bar",
+    "label": "Widget Title",
+    "name": "widget_title",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Full display name of the company (e.g. Acme Corporation)",
+    "label": "Company Name",
+    "name": "company_name",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Short tagline or headline shown under the company name",
+    "label": "Tagline",
+    "name": "tagline",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Multi-sentence company description shown in the About tab",
+    "label": "Description",
+    "name": "description",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Full LinkedIn company page URL (e.g. https://www.linkedin.com/company/acme/)",
+    "label": "LinkedIn URL",
+    "name": "linkedin_url",
+    "section": "LinkedIn Settings",
+    "type": "string"
+  },
+  {
+    "hint": "LinkedIn company vanity name — the slug after /company/ in your URL. Used to render the official LinkedIn profile badge.",
+    "label": "Vanity Name (slug)",
+    "name": "vanity_name",
+    "section": "LinkedIn Settings",
+    "type": "string"
+  },
+  {
+    "hint": "Numeric LinkedIn company ID — required for the Follow button embed. Find it in your LinkedIn Admin panel.",
+    "label": "Company ID (numeric)",
+    "name": "company_id",
+    "section": "LinkedIn Settings",
+    "type": "string"
+  },
+  {
+    "hint": "URL to the company logo image (square, min 100×100px)",
+    "label": "Logo URL",
+    "name": "logo_url",
+    "section": "Branding",
+    "type": "string"
+  },
+  {
+    "hint": "URL to a banner/cover image (recommended 1128×191px). Leave blank for the default gradient.",
+    "label": "Banner Image URL",
+    "name": "banner_url",
+    "section": "Branding",
+    "type": "string"
+  },
+  {
+    "hint": "Color scheme: 'light' (default) or 'dark'",
+    "label": "Theme",
+    "name": "theme",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Company website URL shown in the About tab",
+    "label": "Website",
+    "name": "website",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Industry / sector (e.g. Information Technology &amp; Services)",
+    "label": "Industry",
+    "name": "industry",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Employee count range (e.g. 1,001–5,000 employees)",
+    "label": "Company Size",
+    "name": "company_size",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Headquarters city/country shown in About tab",
+    "label": "Headquarters",
+    "name": "headquarters",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Short location string shown in the profile card (e.g. San Francisco, CA)",
+    "label": "Location (short)",
+    "name": "location",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Year the company was founded",
+    "label": "Founded",
+    "name": "founded",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "Approximate follower count (numeric). Displayed in the profile card meta row.",
+    "label": "Follower Count",
+    "name": "followers",
+    "section": "Company Details",
+    "type": "string"
+  },
+  {
+    "hint": "JSON array of featured posts. Each item: {\"text\":\"...\",\"date\":\"...\",\"url\":\"...\"}",
+    "label": "Featured Posts (JSON)",
+    "name": "featured_posts",
+    "section": "Posts",
+    "type": "string"
+  }
+]
+</option_schema><sys_id>c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7</sys_id><sys_scope display_value="Global">global</sys_scope><sys_domain>global</sys_domain></sp_widget></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6</sys_id>
+    <type>sp_widget</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+
+  <!-- ── sys_property configuration records ── -->
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d00e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Widget header label</description><name>linkedin.widget.title</name><type>string</type><value>Our LinkedIn</value><sys_id>d00e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e00f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d01e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Company display name</description><name>linkedin.widget.company_name</name><type>string</type><value></value><sys_id>d01e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e01f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d02e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Company tagline</description><name>linkedin.widget.tagline</name><type>string</type><value></value><sys_id>d02e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e02f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d03e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>About tab description</description><name>linkedin.widget.description</name><type>string</type><value></value><sys_id>d03e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e03f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d04e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Full LinkedIn page URL</description><name>linkedin.widget.linkedin_url</name><type>string</type><value>https://www.linkedin.com/company/</value><sys_id>d04e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e04f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d05e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Slug after /company/ — enables badge</description><name>linkedin.widget.vanity_name</name><type>string</type><value></value><sys_id>d05e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e05f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d06e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Numeric company ID — enables Follow button</description><name>linkedin.widget.company_id</name><type>string</type><value></value><sys_id>d06e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e06f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d07e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Square logo image URL</description><name>linkedin.widget.logo_url</name><type>string</type><value></value><sys_id>d07e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e07f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d08e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Banner/cover image URL</description><name>linkedin.widget.banner_url</name><type>string</type><value></value><sys_id>d08e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e08f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d09e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Company website</description><name>linkedin.widget.website</name><type>string</type><value></value><sys_id>d09e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e09f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d10e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Industry / sector</description><name>linkedin.widget.industry</name><type>string</type><value></value><sys_id>d10e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e10f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d11e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Employee count range</description><name>linkedin.widget.company_size</name><type>string</type><value></value><sys_id>d11e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e11f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d12e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>HQ city/country</description><name>linkedin.widget.headquarters</name><type>string</type><value></value><sys_id>d12e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e12f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d13e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Short location for card</description><name>linkedin.widget.location</name><type>string</type><value></value><sys_id>d13e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e13f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d14e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Year founded</description><name>linkedin.widget.founded</name><type>string</type><value></value><sys_id>d14e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e14f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d15e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Follower count (numeric)</description><name>linkedin.widget.followers</name><type>string</type><value></value><sys_id>d15e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e15f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d16e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>light or dark</description><name>linkedin.widget.theme</name><type>string</type><value>light</value><sys_id>d16e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e16f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_d17e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>JSON array of featured posts</description><name>linkedin.widget.featured_posts</name><type>string</type><value>[]</value><sys_id>d17e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="LinkedIn Company Widget v1.0">a9f3b2c1d4e5f6a7b8c9d0e1f2a3b4c5</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>e17f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+
+</unload>
