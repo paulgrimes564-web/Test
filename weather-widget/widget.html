@@ -1,0 +1,150 @@
+<div class="weather-widget-wrapper" ng-class="{'theme-dark': c.data.theme === 'dark'}">
+
+  <!-- Header Bar -->
+  <div class="ww-header">
+    <div class="ww-header-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="ww-icon">
+        <path fill="#fff" d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/>
+      </svg>
+    </div>
+    <span class="ww-header-title">{{c.data.widget_title || 'Weather'}}</span>
+    <div class="ww-header-actions">
+      <button class="ww-tab-btn" ng-class="{active: c.activeTab === 'current'}" ng-click="c.setTab('current')">Current</button>
+      <button class="ww-tab-btn" ng-class="{active: c.activeTab === 'hourly'}" ng-click="c.setTab('hourly')">Hourly</button>
+      <button class="ww-tab-btn" ng-class="{active: c.activeTab === 'daily'}" ng-click="c.setTab('daily')">Daily</button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="ww-loading" ng-if="c.loading">
+    <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
+    <p>Loading forecast…</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="ww-error" ng-if="!c.loading && c.error">
+    <i class="fa fa-exclamation-triangle fa-2x"></i>
+    <p>{{c.error}}</p>
+    <button class="ww-btn ww-btn-outline" ng-click="c.load()">Retry</button>
+  </div>
+
+  <!-- ─── Tab: Current ─── -->
+  <div class="ww-tab-content" ng-show="c.activeTab === 'current' && !c.loading && !c.error">
+
+    <!-- Banner -->
+    <div class="ww-banner" ng-class="{'ww-banner-night': c.current && !c.current.isDay}">
+      <div class="ww-banner-overlay"></div>
+    </div>
+
+    <!-- Hero Card -->
+    <div class="ww-hero">
+      <div class="ww-hero-icon">
+        <i class="fa {{c.current.weather.icon}}"></i>
+      </div>
+      <div class="ww-hero-temp">
+        <span class="ww-temp-value">{{c.current.temperature | number:0}}</span>
+        <span class="ww-temp-unit">{{c.tempUnit()}}</span>
+      </div>
+      <div class="ww-hero-info">
+        <h2 class="ww-location-name">{{c.location.name}}<span ng-if="c.location.admin1">, {{c.location.admin1}}</span></h2>
+        <p class="ww-location-country">{{c.location.country}}</p>
+        <p class="ww-condition">{{c.current.weather.label}}</p>
+        <p class="ww-feels-like">Feels like {{c.current.apparentTemperature | number:0}}{{c.tempUnit()}}</p>
+      </div>
+    </div>
+
+    <!-- Stat Grid -->
+    <div class="ww-stat-grid">
+      <div class="ww-stat-card">
+        <div class="ww-stat-icon"><i class="fa fa-tint"></i></div>
+        <div class="ww-stat-body">
+          <h4>Humidity</h4>
+          <p>{{c.current.humidity}}%</p>
+        </div>
+      </div>
+      <div class="ww-stat-card">
+        <div class="ww-stat-icon"><i class="fa fa-flag-o"></i></div>
+        <div class="ww-stat-body">
+          <h4>Wind</h4>
+          <p>{{c.current.windSpeed | number:0}} {{c.windUnit()}}</p>
+        </div>
+      </div>
+      <div class="ww-stat-card">
+        <div class="ww-stat-icon"><i class="fa fa-umbrella"></i></div>
+        <div class="ww-stat-body">
+          <h4>Precipitation</h4>
+          <p>{{c.current.precipitation | number:1}} {{c.precipUnit()}}</p>
+        </div>
+      </div>
+      <div class="ww-stat-card">
+        <div class="ww-stat-icon"><i class="fa fa-map-marker"></i></div>
+        <div class="ww-stat-body">
+          <h4>Coordinates</h4>
+          <p>{{c.location.latitude | number:2}}, {{c.location.longitude | number:2}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ww-updated" ng-if="c.lastUpdated">
+      Updated {{c.lastUpdated | date:'shortTime'}}
+    </div>
+  </div>
+
+  <!-- ─── Tab: Hourly ─── -->
+  <div class="ww-tab-content" ng-show="c.activeTab === 'hourly' && !c.loading && !c.error">
+    <div class="ww-hourly-header">
+      <span>Next 24 hours · {{c.location.name}}</span>
+    </div>
+    <div class="ww-hourly-scroll">
+      <div class="ww-hourly-cell" ng-repeat="h in c.hourly track by $index">
+        <div class="ww-hourly-time">{{h.hourLabel}}</div>
+        <div class="ww-hourly-icon"><i class="fa {{h.weather.icon}}"></i></div>
+        <div class="ww-hourly-temp">{{h.temp | number:0}}{{c.tempUnit()}}</div>
+        <div class="ww-precip-bar" ng-if="c.showPrecip()">
+          <div class="ww-precip-fill" ng-style="{height: (h.precipProb || 0) + '%'}"></div>
+        </div>
+        <div class="ww-precip-label" ng-if="c.showPrecip()">{{h.precipProb || 0}}%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Tab: Daily ─── -->
+  <div class="ww-tab-content" ng-show="c.activeTab === 'daily' && !c.loading && !c.error">
+    <div class="ww-daily-header">
+      <span>7-day forecast · {{c.location.name}}</span>
+    </div>
+
+    <div class="ww-sun-row" ng-if="c.daily.length">
+      <div class="ww-sun-item">
+        <i class="fa fa-sun-o"></i>
+        <span>Sunrise</span>
+        <strong>{{c.formatTime(c.daily[0].sunrise)}}</strong>
+      </div>
+      <div class="ww-sun-item">
+        <i class="fa fa-moon-o"></i>
+        <span>Sunset</span>
+        <strong>{{c.formatTime(c.daily[0].sunset)}}</strong>
+      </div>
+    </div>
+
+    <div class="ww-daily-row" ng-repeat="d in c.daily track by $index">
+      <div class="ww-daily-day">{{d.dayLabel}}</div>
+      <div class="ww-daily-icon"><i class="fa {{d.weather.icon}}"></i></div>
+      <div class="ww-daily-cond">{{d.weather.label}}</div>
+      <div class="ww-daily-precip" ng-if="d.precip > 0">
+        <i class="fa fa-tint"></i> {{d.precip | number:1}} {{c.precipUnit()}}
+      </div>
+      <div class="ww-daily-temps">
+        <span class="ww-temp-min">{{d.tempMin | number:0}}°</span>
+        <span class="ww-temp-max">{{d.tempMax | number:0}}°</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="ww-footer">
+    <span>Powered by</span>
+    <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+  </div>
+
+</div>

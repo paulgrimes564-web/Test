@@ -4,16 +4,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-A single ServiceNow Service Portal widget that surfaces a company's LinkedIn presence in a 3-tab card (Profile, Posts, About). There is no Node.js runtime, no package manager, no build system, and no test framework — the widget runs entirely inside ServiceNow.
+A collection of ServiceNow Service Portal widgets, each in its own directory and packaged as an Update Set XML for import into a ServiceNow instance. There is no Node.js runtime, no package manager, no build system, and no test framework — widgets run entirely inside ServiceNow.
+
+Current widgets:
+
+| Directory | Widget | Data source |
+|---|---|---|
+| `linkedin-company-widget/` | LinkedIn Company Widget | LinkedIn embed SDKs (`platform.linkedin.com`) |
+| `weather-widget/` | Weather Widget | Open-Meteo (`api.open-meteo.com`, no auth) |
+
+Each widget directory follows the same 5-file layout (`widget.html`, `widget.css`, `widget-client.js`, `widget-server.js`, `widget-options.json`) plus its own `generate-update-set.py` and `README.md`. To add a new widget, copy an existing directory and rename — do not refactor a shared generator unless the user asks for it.
 
 ## Regenerating the Update Set XML
 
-After editing any source file, regenerate the deployable XML:
+After editing any source file, regenerate the deployable XML for that widget:
 
 ```bash
-cd linkedin-company-widget
+cd <widget-directory>           # e.g. linkedin-company-widget or weather-widget
 python3 generate-update-set.py
-# Output: linkedin-company-widget-update-set.xml
+# Output: <widget-directory>-update-set.xml
 ```
 
 This is the only "build" step. The XML is then imported into ServiceNow via **System Update Sets → Retrieved Update Sets → Import Update Set from XML**.
@@ -32,7 +41,7 @@ The widget follows the standard ServiceNow Service Portal two-script model:
 
 ### Configuration priority
 
-Widget instance options (set per-page in Portal Designer) always win over `sys_properties` (global defaults). The server script merges them: `opts.field || gs.getProperty('linkedin.widget.field', default)`.
+Widget instance options (set per-page in Portal Designer) always win over `sys_properties` (global defaults). The server script merges them: `opts.field || gs.getProperty('<widget>.widget.field', default)`. Each widget owns its own sys_property namespace (`linkedin.widget.*`, `weather.widget.*`).
 
 ### LinkedIn SDK loading
 
@@ -49,7 +58,7 @@ Both scripts are idempotent: they check for an existing element by ID before inj
 - One `sp_widget` record (the widget code)
 - 18 `sys_properties` records (one per config field)
 
-All sys_ids in the script are stable fake GUIDs — they must stay constant so re-imports update the same records rather than creating duplicates.
+All sys_ids in the script are stable fake GUIDs — they must stay constant so re-imports update the same records rather than creating duplicates. When adding a new widget, choose a GUID prefix that does not collide with existing widgets in this repo.
 
 ## Language constraints
 
@@ -59,12 +68,13 @@ All sys_ids in the script are stable fake GUIDs — they must stay constant so r
 
 ## CSP requirements
 
-If the target ServiceNow instance enforces Content Security Policy, these domains must be whitelisted:
+Each widget's `README.md` lists the CSP entries it needs. Notable cross-widget items:
 
-```
-script-src: platform.linkedin.com badges.linkedin.com
-frame-src:  www.linkedin.com platform.linkedin.com
-img-src:    media.licdn.com static.licdn.com *.licdn.com
-style-src:  static.licdn.com
-connect-src: www.linkedin.com
-```
+| Widget | Directive | Domains |
+|---|---|---|
+| LinkedIn | `script-src` | `platform.linkedin.com` `badges.linkedin.com` |
+| LinkedIn | `frame-src` | `www.linkedin.com` `platform.linkedin.com` |
+| LinkedIn | `img-src` | `media.licdn.com` `static.licdn.com` `*.licdn.com` |
+| LinkedIn | `style-src` | `static.licdn.com` |
+| LinkedIn | `connect-src` | `www.linkedin.com` |
+| Weather | `connect-src` | `api.open-meteo.com` `geocoding-api.open-meteo.com` |
