@@ -1,0 +1,580 @@
+/* =============================================
+   Weather Widget — ServiceNow Portal
+   Powered by Open-Meteo
+   ============================================= */
+
+/* --- CSS Variables --- */
+.weather-widget-wrapper {
+  --ww-sky: #4a9eff;
+  --ww-sky-dark: #2b6fb8;
+  --ww-indigo: #3b5998;
+  --ww-sky-light: #e6f1ff;
+  --ww-black: #1b1f23;
+  --ww-gray: #86888a;
+  --ww-border: #e0e0e0;
+  --ww-bg: #ffffff;
+  --ww-card-bg: #ffffff;
+  --ww-text: #1b1f23;
+  --ww-text-muted: #6b7280;
+  --ww-warn: #d97706;
+  --ww-radius: 12px;
+  --ww-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  --ww-transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --ww-header-height: 56px;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--ww-text);
+  background: var(--ww-bg);
+  border-radius: var(--ww-radius);
+  box-shadow: var(--ww-shadow);
+  overflow: hidden;
+  max-width: 680px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Dark theme */
+.weather-widget-wrapper.theme-dark {
+  --ww-bg: #1b1f23;
+  --ww-card-bg: #23282e;
+  --ww-text: #e5e7eb;
+  --ww-text-muted: #9ca3af;
+  --ww-border: #374151;
+  --ww-sky-light: #1e3a5f;
+  --ww-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+/* --- Header --- */
+.ww-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--ww-sky) 0%, var(--ww-indigo) 100%);
+  padding: 0 16px;
+  height: var(--ww-header-height);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.ww-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.ww-header-title {
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ww-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.ww-tab-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.75);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background var(--ww-transition), color var(--ww-transition);
+}
+
+.ww-tab-btn:hover,
+.ww-tab-btn.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.ww-tab-btn.active {
+  background: rgba(255,255,255,0.25);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.4);
+}
+
+/* --- Tab Content Transition --- */
+.ww-tab-content {
+  animation: wwFadeIn 0.28s ease;
+  padding: 0;
+}
+
+@keyframes wwFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Banner --- */
+.ww-banner {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(135deg, #4a9eff 0%, #3b5998 60%, #2c3e6b 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.ww-banner-night {
+  background: linear-gradient(135deg, #1e3a5f 0%, #14213d 60%, #0d1b2a 100%);
+}
+
+.ww-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);
+}
+
+.ww-banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to top, var(--ww-bg), transparent);
+}
+
+/* --- Hero Card (Current tab) --- */
+.ww-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 20px 16px;
+  margin-top: -56px;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.ww-hero-icon {
+  width: 88px;
+  height: 88px;
+  border-radius: 16px;
+  background: var(--ww-card-bg);
+  border: 3px solid var(--ww-bg);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  color: var(--ww-sky);
+  flex-shrink: 0;
+}
+
+.theme-dark .ww-hero-icon {
+  color: #fbbf24;
+}
+
+.ww-hero-temp {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--ww-text);
+  font-weight: 200;
+  line-height: 1;
+}
+
+.ww-temp-value {
+  font-size: 56px;
+  letter-spacing: -2px;
+}
+
+.ww-temp-unit {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ww-text-muted);
+}
+
+.ww-hero-info {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.ww-location-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 2px;
+  color: var(--ww-text);
+  line-height: 1.2;
+}
+
+.ww-location-country {
+  color: var(--ww-text-muted);
+  font-size: 12px;
+  margin: 0 0 6px;
+}
+
+.ww-condition {
+  color: var(--ww-text);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 2px;
+}
+
+.ww-feels-like {
+  color: var(--ww-text-muted);
+  font-size: 12px;
+  margin: 0;
+}
+
+/* --- Stat Grid (Current tab) --- */
+.ww-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 4px 20px 16px;
+}
+
+.ww-stat-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--ww-card-bg);
+  border: 1px solid var(--ww-border);
+  border-radius: 10px;
+  transition: box-shadow var(--ww-transition), transform var(--ww-transition);
+}
+
+.ww-stat-card:hover {
+  box-shadow: 0 4px 16px rgba(74,158,255,0.15);
+  transform: translateY(-2px);
+}
+
+.ww-stat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--ww-sky-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ww-stat-icon .fa {
+  color: var(--ww-sky);
+  font-size: 15px;
+}
+
+.ww-stat-body h4 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ww-text-muted);
+  margin: 0 0 4px;
+}
+
+.ww-stat-body p {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ww-text);
+  margin: 0;
+}
+
+.ww-updated {
+  text-align: center;
+  font-size: 11px;
+  color: var(--ww-text-muted);
+  padding: 0 20px 12px;
+}
+
+/* --- Hourly Tab --- */
+.ww-hourly-header,
+.ww-daily-header {
+  padding: 16px 20px 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ww-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--ww-border);
+}
+
+.ww-hourly-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 4px;
+  padding: 16px 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ww-hourly-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.ww-hourly-scroll::-webkit-scrollbar-thumb {
+  background: var(--ww-border);
+  border-radius: 3px;
+}
+
+.ww-hourly-cell {
+  flex: 0 0 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  border-radius: 8px;
+  scroll-snap-align: start;
+  transition: background var(--ww-transition);
+}
+
+.ww-hourly-cell:hover {
+  background: var(--ww-sky-light);
+}
+
+.ww-hourly-time {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ww-text-muted);
+  text-transform: uppercase;
+}
+
+.ww-hourly-icon .fa {
+  font-size: 18px;
+  color: var(--ww-sky);
+}
+
+.ww-hourly-temp {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ww-text);
+}
+
+.ww-precip-bar {
+  width: 6px;
+  height: 40px;
+  background: var(--ww-border);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.ww-precip-fill {
+  width: 100%;
+  background: linear-gradient(to top, var(--ww-sky), var(--ww-indigo));
+  transition: height var(--ww-transition);
+}
+
+.ww-precip-label {
+  font-size: 10px;
+  color: var(--ww-sky);
+  font-weight: 600;
+}
+
+/* --- Daily Tab --- */
+.ww-sun-row {
+  display: flex;
+  justify-content: space-around;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--ww-border);
+  background: var(--ww-sky-light);
+}
+
+.ww-sun-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ww-text);
+}
+
+.ww-sun-item .fa {
+  color: var(--ww-sky);
+  font-size: 16px;
+}
+
+.ww-sun-item span {
+  color: var(--ww-text-muted);
+  font-size: 12px;
+}
+
+.ww-sun-item strong {
+  font-weight: 700;
+}
+
+.ww-daily-row {
+  display: grid;
+  grid-template-columns: 70px 32px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--ww-border);
+  transition: background var(--ww-transition);
+}
+
+.ww-daily-row:last-child {
+  border-bottom: none;
+}
+
+.ww-daily-row:hover {
+  background: var(--ww-sky-light);
+}
+
+.ww-daily-day {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ww-text);
+}
+
+.ww-daily-icon .fa {
+  font-size: 20px;
+  color: var(--ww-sky);
+}
+
+.ww-daily-cond {
+  font-size: 13px;
+  color: var(--ww-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ww-daily-precip {
+  font-size: 12px;
+  color: var(--ww-sky);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ww-daily-temps {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 70px;
+  justify-content: flex-end;
+}
+
+.ww-temp-min {
+  color: var(--ww-text-muted);
+}
+
+.ww-temp-max {
+  color: var(--ww-text);
+}
+
+/* --- Loading + Error States --- */
+.ww-loading,
+.ww-error {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--ww-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.ww-loading .fa {
+  color: var(--ww-sky);
+}
+
+.ww-error .fa {
+  color: var(--ww-warn);
+}
+
+.ww-error p {
+  margin: 0;
+  font-size: 14px;
+  max-width: 360px;
+}
+
+/* --- Buttons --- */
+.ww-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--ww-transition);
+  border: 2px solid transparent;
+  background: transparent;
+}
+
+.ww-btn-outline {
+  color: var(--ww-sky);
+  border-color: var(--ww-sky);
+}
+
+.ww-btn-outline:hover {
+  background: var(--ww-sky-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74,158,255,0.15);
+}
+
+/* --- Footer --- */
+.ww-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid var(--ww-border);
+  font-size: 11px;
+  color: var(--ww-text-muted);
+  background: var(--ww-card-bg);
+}
+
+.ww-footer a {
+  color: var(--ww-sky);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ww-footer a:hover {
+  text-decoration: underline;
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+  .ww-header-actions {
+    display: none;
+  }
+
+  .ww-temp-value {
+    font-size: 44px;
+  }
+
+  .ww-hero-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 36px;
+  }
+
+  .ww-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ww-daily-row {
+    grid-template-columns: 60px 28px 1fr auto;
+    gap: 8px;
+  }
+
+  .ww-daily-cond {
+    display: none;
+  }
+}
+
+/* --- ServiceNow SP overrides --- */
+.sp-widget-content .weather-widget-wrapper {
+  max-width: 100%;
+}

@@ -1,0 +1,1159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2026-05-23 12:00:00">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       Update Set: Weather Widget v1.0
+       Import via: System Update Sets > Retrieved Update Sets > Import
+       ═══════════════════════════════════════════════════════════ -->
+
+  <sys_remote_update_set action="INSERT_OR_UPDATE">
+    <description>Weather Widget for ServiceNow Service Portal. Includes the sp_widget record and 7 sys_property configuration records. Data source: Open-Meteo (no API key required).</description>
+    <name>Weather Widget v1.0</name>
+    <origin_sys_id/>
+    <parent/>
+    <remote_sys_id>1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_sys_id>
+    <state>loaded</state>
+    <sys_class_name>sys_remote_update_set</sys_class_name>
+    <sys_id>1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</sys_id>
+    <type>Other</type>
+    <update_set_link/>
+  </sys_remote_update_set>
+
+  <!-- ── sp_widget record ── -->
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sp_widget_weather-widget</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget"><sp_widget action="INSERT_OR_UPDATE"><category>custom</category><description>Weather Widget — 3-tab portal card (Current, Hourly, Daily) powered by the Open-Meteo public API.</description><name>Weather Widget</name><id>weather-widget</id><template>&lt;div class="weather-widget-wrapper" ng-class="{'theme-dark': c.data.theme === 'dark'}"&gt;
+
+  &lt;!-- Header Bar --&gt;
+  &lt;div class="ww-header"&gt;
+    &lt;div class="ww-header-logo"&gt;
+      &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="ww-icon"&gt;
+        &lt;path fill="#fff" d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/&gt;
+      &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;span class="ww-header-title"&gt;{{c.data.widget_title || 'Weather'}}&lt;/span&gt;
+    &lt;div class="ww-header-actions"&gt;
+      &lt;button class="ww-tab-btn" ng-class="{active: c.activeTab === 'current'}" ng-click="c.setTab('current')"&gt;Current&lt;/button&gt;
+      &lt;button class="ww-tab-btn" ng-class="{active: c.activeTab === 'hourly'}" ng-click="c.setTab('hourly')"&gt;Hourly&lt;/button&gt;
+      &lt;button class="ww-tab-btn" ng-class="{active: c.activeTab === 'daily'}" ng-click="c.setTab('daily')"&gt;Daily&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Loading State --&gt;
+  &lt;div class="ww-loading" ng-if="c.loading"&gt;
+    &lt;i class="fa fa-circle-o-notch fa-spin fa-2x"&gt;&lt;/i&gt;
+    &lt;p&gt;Loading forecast…&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Error State --&gt;
+  &lt;div class="ww-error" ng-if="!c.loading &amp;&amp; c.error"&gt;
+    &lt;i class="fa fa-exclamation-triangle fa-2x"&gt;&lt;/i&gt;
+    &lt;p&gt;{{c.error}}&lt;/p&gt;
+    &lt;button class="ww-btn ww-btn-outline" ng-click="c.load()"&gt;Retry&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ─── Tab: Current ─── --&gt;
+  &lt;div class="ww-tab-content" ng-show="c.activeTab === 'current' &amp;&amp; !c.loading &amp;&amp; !c.error"&gt;
+
+    &lt;!-- Banner --&gt;
+    &lt;div class="ww-banner" ng-class="{'ww-banner-night': c.current &amp;&amp; !c.current.isDay}"&gt;
+      &lt;div class="ww-banner-overlay"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Hero Card --&gt;
+    &lt;div class="ww-hero"&gt;
+      &lt;div class="ww-hero-icon"&gt;
+        &lt;i class="fa {{c.current.weather.icon}}"&gt;&lt;/i&gt;
+      &lt;/div&gt;
+      &lt;div class="ww-hero-temp"&gt;
+        &lt;span class="ww-temp-value"&gt;{{c.current.temperature | number:0}}&lt;/span&gt;
+        &lt;span class="ww-temp-unit"&gt;{{c.tempUnit()}}&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class="ww-hero-info"&gt;
+        &lt;h2 class="ww-location-name"&gt;{{c.location.name}}&lt;span ng-if="c.location.admin1"&gt;, {{c.location.admin1}}&lt;/span&gt;&lt;/h2&gt;
+        &lt;p class="ww-location-country"&gt;{{c.location.country}}&lt;/p&gt;
+        &lt;p class="ww-condition"&gt;{{c.current.weather.label}}&lt;/p&gt;
+        &lt;p class="ww-feels-like"&gt;Feels like {{c.current.apparentTemperature | number:0}}{{c.tempUnit()}}&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Stat Grid --&gt;
+    &lt;div class="ww-stat-grid"&gt;
+      &lt;div class="ww-stat-card"&gt;
+        &lt;div class="ww-stat-icon"&gt;&lt;i class="fa fa-tint"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="ww-stat-body"&gt;
+          &lt;h4&gt;Humidity&lt;/h4&gt;
+          &lt;p&gt;{{c.current.humidity}}%&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="ww-stat-card"&gt;
+        &lt;div class="ww-stat-icon"&gt;&lt;i class="fa fa-flag-o"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="ww-stat-body"&gt;
+          &lt;h4&gt;Wind&lt;/h4&gt;
+          &lt;p&gt;{{c.current.windSpeed | number:0}} {{c.windUnit()}}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="ww-stat-card"&gt;
+        &lt;div class="ww-stat-icon"&gt;&lt;i class="fa fa-umbrella"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="ww-stat-body"&gt;
+          &lt;h4&gt;Precipitation&lt;/h4&gt;
+          &lt;p&gt;{{c.current.precipitation | number:1}} {{c.precipUnit()}}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="ww-stat-card"&gt;
+        &lt;div class="ww-stat-icon"&gt;&lt;i class="fa fa-map-marker"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="ww-stat-body"&gt;
+          &lt;h4&gt;Coordinates&lt;/h4&gt;
+          &lt;p&gt;{{c.location.latitude | number:2}}, {{c.location.longitude | number:2}}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="ww-updated" ng-if="c.lastUpdated"&gt;
+      Updated {{c.lastUpdated | date:'shortTime'}}
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ─── Tab: Hourly ─── --&gt;
+  &lt;div class="ww-tab-content" ng-show="c.activeTab === 'hourly' &amp;&amp; !c.loading &amp;&amp; !c.error"&gt;
+    &lt;div class="ww-hourly-header"&gt;
+      &lt;span&gt;Next 24 hours · {{c.location.name}}&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="ww-hourly-scroll"&gt;
+      &lt;div class="ww-hourly-cell" ng-repeat="h in c.hourly track by $index"&gt;
+        &lt;div class="ww-hourly-time"&gt;{{h.hourLabel}}&lt;/div&gt;
+        &lt;div class="ww-hourly-icon"&gt;&lt;i class="fa {{h.weather.icon}}"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="ww-hourly-temp"&gt;{{h.temp | number:0}}{{c.tempUnit()}}&lt;/div&gt;
+        &lt;div class="ww-precip-bar" ng-if="c.showPrecip()"&gt;
+          &lt;div class="ww-precip-fill" ng-style="{height: (h.precipProb || 0) + '%'}"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="ww-precip-label" ng-if="c.showPrecip()"&gt;{{h.precipProb || 0}}%&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ─── Tab: Daily ─── --&gt;
+  &lt;div class="ww-tab-content" ng-show="c.activeTab === 'daily' &amp;&amp; !c.loading &amp;&amp; !c.error"&gt;
+    &lt;div class="ww-daily-header"&gt;
+      &lt;span&gt;7-day forecast · {{c.location.name}}&lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;div class="ww-sun-row" ng-if="c.daily.length"&gt;
+      &lt;div class="ww-sun-item"&gt;
+        &lt;i class="fa fa-sun-o"&gt;&lt;/i&gt;
+        &lt;span&gt;Sunrise&lt;/span&gt;
+        &lt;strong&gt;{{c.formatTime(c.daily[0].sunrise)}}&lt;/strong&gt;
+      &lt;/div&gt;
+      &lt;div class="ww-sun-item"&gt;
+        &lt;i class="fa fa-moon-o"&gt;&lt;/i&gt;
+        &lt;span&gt;Sunset&lt;/span&gt;
+        &lt;strong&gt;{{c.formatTime(c.daily[0].sunset)}}&lt;/strong&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="ww-daily-row" ng-repeat="d in c.daily track by $index"&gt;
+      &lt;div class="ww-daily-day"&gt;{{d.dayLabel}}&lt;/div&gt;
+      &lt;div class="ww-daily-icon"&gt;&lt;i class="fa {{d.weather.icon}}"&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;div class="ww-daily-cond"&gt;{{d.weather.label}}&lt;/div&gt;
+      &lt;div class="ww-daily-precip" ng-if="d.precip &gt; 0"&gt;
+        &lt;i class="fa fa-tint"&gt;&lt;/i&gt; {{d.precip | number:1}} {{c.precipUnit()}}
+      &lt;/div&gt;
+      &lt;div class="ww-daily-temps"&gt;
+        &lt;span class="ww-temp-min"&gt;{{d.tempMin | number:0}}°&lt;/span&gt;
+        &lt;span class="ww-temp-max"&gt;{{d.tempMax | number:0}}°&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Footer --&gt;
+  &lt;div class="ww-footer"&gt;
+    &lt;span&gt;Powered by&lt;/span&gt;
+    &lt;a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer"&gt;Open-Meteo&lt;/a&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;
+</template><css>/* =============================================
+   Weather Widget — ServiceNow Portal
+   Powered by Open-Meteo
+   ============================================= */
+
+/* --- CSS Variables --- */
+.weather-widget-wrapper {
+  --ww-sky: #4a9eff;
+  --ww-sky-dark: #2b6fb8;
+  --ww-indigo: #3b5998;
+  --ww-sky-light: #e6f1ff;
+  --ww-black: #1b1f23;
+  --ww-gray: #86888a;
+  --ww-border: #e0e0e0;
+  --ww-bg: #ffffff;
+  --ww-card-bg: #ffffff;
+  --ww-text: #1b1f23;
+  --ww-text-muted: #6b7280;
+  --ww-warn: #d97706;
+  --ww-radius: 12px;
+  --ww-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  --ww-transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --ww-header-height: 56px;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--ww-text);
+  background: var(--ww-bg);
+  border-radius: var(--ww-radius);
+  box-shadow: var(--ww-shadow);
+  overflow: hidden;
+  max-width: 680px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Dark theme */
+.weather-widget-wrapper.theme-dark {
+  --ww-bg: #1b1f23;
+  --ww-card-bg: #23282e;
+  --ww-text: #e5e7eb;
+  --ww-text-muted: #9ca3af;
+  --ww-border: #374151;
+  --ww-sky-light: #1e3a5f;
+  --ww-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+/* --- Header --- */
+.ww-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--ww-sky) 0%, var(--ww-indigo) 100%);
+  padding: 0 16px;
+  height: var(--ww-header-height);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.ww-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.ww-header-title {
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ww-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.ww-tab-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.75);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background var(--ww-transition), color var(--ww-transition);
+}
+
+.ww-tab-btn:hover,
+.ww-tab-btn.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+.ww-tab-btn.active {
+  background: rgba(255,255,255,0.25);
+  box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.4);
+}
+
+/* --- Tab Content Transition --- */
+.ww-tab-content {
+  animation: wwFadeIn 0.28s ease;
+  padding: 0;
+}
+
+@keyframes wwFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Banner --- */
+.ww-banner {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(135deg, #4a9eff 0%, #3b5998 60%, #2c3e6b 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.ww-banner-night {
+  background: linear-gradient(135deg, #1e3a5f 0%, #14213d 60%, #0d1b2a 100%);
+}
+
+.ww-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);
+}
+
+.ww-banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to top, var(--ww-bg), transparent);
+}
+
+/* --- Hero Card (Current tab) --- */
+.ww-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 20px 16px;
+  margin-top: -56px;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.ww-hero-icon {
+  width: 88px;
+  height: 88px;
+  border-radius: 16px;
+  background: var(--ww-card-bg);
+  border: 3px solid var(--ww-bg);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  color: var(--ww-sky);
+  flex-shrink: 0;
+}
+
+.theme-dark .ww-hero-icon {
+  color: #fbbf24;
+}
+
+.ww-hero-temp {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--ww-text);
+  font-weight: 200;
+  line-height: 1;
+}
+
+.ww-temp-value {
+  font-size: 56px;
+  letter-spacing: -2px;
+}
+
+.ww-temp-unit {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ww-text-muted);
+}
+
+.ww-hero-info {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.ww-location-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 2px;
+  color: var(--ww-text);
+  line-height: 1.2;
+}
+
+.ww-location-country {
+  color: var(--ww-text-muted);
+  font-size: 12px;
+  margin: 0 0 6px;
+}
+
+.ww-condition {
+  color: var(--ww-text);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 2px;
+}
+
+.ww-feels-like {
+  color: var(--ww-text-muted);
+  font-size: 12px;
+  margin: 0;
+}
+
+/* --- Stat Grid (Current tab) --- */
+.ww-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 4px 20px 16px;
+}
+
+.ww-stat-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--ww-card-bg);
+  border: 1px solid var(--ww-border);
+  border-radius: 10px;
+  transition: box-shadow var(--ww-transition), transform var(--ww-transition);
+}
+
+.ww-stat-card:hover {
+  box-shadow: 0 4px 16px rgba(74,158,255,0.15);
+  transform: translateY(-2px);
+}
+
+.ww-stat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--ww-sky-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ww-stat-icon .fa {
+  color: var(--ww-sky);
+  font-size: 15px;
+}
+
+.ww-stat-body h4 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ww-text-muted);
+  margin: 0 0 4px;
+}
+
+.ww-stat-body p {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ww-text);
+  margin: 0;
+}
+
+.ww-updated {
+  text-align: center;
+  font-size: 11px;
+  color: var(--ww-text-muted);
+  padding: 0 20px 12px;
+}
+
+/* --- Hourly Tab --- */
+.ww-hourly-header,
+.ww-daily-header {
+  padding: 16px 20px 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ww-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--ww-border);
+}
+
+.ww-hourly-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 4px;
+  padding: 16px 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ww-hourly-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.ww-hourly-scroll::-webkit-scrollbar-thumb {
+  background: var(--ww-border);
+  border-radius: 3px;
+}
+
+.ww-hourly-cell {
+  flex: 0 0 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  border-radius: 8px;
+  scroll-snap-align: start;
+  transition: background var(--ww-transition);
+}
+
+.ww-hourly-cell:hover {
+  background: var(--ww-sky-light);
+}
+
+.ww-hourly-time {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ww-text-muted);
+  text-transform: uppercase;
+}
+
+.ww-hourly-icon .fa {
+  font-size: 18px;
+  color: var(--ww-sky);
+}
+
+.ww-hourly-temp {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ww-text);
+}
+
+.ww-precip-bar {
+  width: 6px;
+  height: 40px;
+  background: var(--ww-border);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.ww-precip-fill {
+  width: 100%;
+  background: linear-gradient(to top, var(--ww-sky), var(--ww-indigo));
+  transition: height var(--ww-transition);
+}
+
+.ww-precip-label {
+  font-size: 10px;
+  color: var(--ww-sky);
+  font-weight: 600;
+}
+
+/* --- Daily Tab --- */
+.ww-sun-row {
+  display: flex;
+  justify-content: space-around;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--ww-border);
+  background: var(--ww-sky-light);
+}
+
+.ww-sun-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ww-text);
+}
+
+.ww-sun-item .fa {
+  color: var(--ww-sky);
+  font-size: 16px;
+}
+
+.ww-sun-item span {
+  color: var(--ww-text-muted);
+  font-size: 12px;
+}
+
+.ww-sun-item strong {
+  font-weight: 700;
+}
+
+.ww-daily-row {
+  display: grid;
+  grid-template-columns: 70px 32px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--ww-border);
+  transition: background var(--ww-transition);
+}
+
+.ww-daily-row:last-child {
+  border-bottom: none;
+}
+
+.ww-daily-row:hover {
+  background: var(--ww-sky-light);
+}
+
+.ww-daily-day {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ww-text);
+}
+
+.ww-daily-icon .fa {
+  font-size: 20px;
+  color: var(--ww-sky);
+}
+
+.ww-daily-cond {
+  font-size: 13px;
+  color: var(--ww-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ww-daily-precip {
+  font-size: 12px;
+  color: var(--ww-sky);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ww-daily-temps {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 70px;
+  justify-content: flex-end;
+}
+
+.ww-temp-min {
+  color: var(--ww-text-muted);
+}
+
+.ww-temp-max {
+  color: var(--ww-text);
+}
+
+/* --- Loading + Error States --- */
+.ww-loading,
+.ww-error {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--ww-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.ww-loading .fa {
+  color: var(--ww-sky);
+}
+
+.ww-error .fa {
+  color: var(--ww-warn);
+}
+
+.ww-error p {
+  margin: 0;
+  font-size: 14px;
+  max-width: 360px;
+}
+
+/* --- Buttons --- */
+.ww-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--ww-transition);
+  border: 2px solid transparent;
+  background: transparent;
+}
+
+.ww-btn-outline {
+  color: var(--ww-sky);
+  border-color: var(--ww-sky);
+}
+
+.ww-btn-outline:hover {
+  background: var(--ww-sky-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74,158,255,0.15);
+}
+
+/* --- Footer --- */
+.ww-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid var(--ww-border);
+  font-size: 11px;
+  color: var(--ww-text-muted);
+  background: var(--ww-card-bg);
+}
+
+.ww-footer a {
+  color: var(--ww-sky);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ww-footer a:hover {
+  text-decoration: underline;
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+  .ww-header-actions {
+    display: none;
+  }
+
+  .ww-temp-value {
+    font-size: 44px;
+  }
+
+  .ww-hero-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 36px;
+  }
+
+  .ww-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ww-daily-row {
+    grid-template-columns: 60px 28px 1fr auto;
+    gap: 8px;
+  }
+
+  .ww-daily-cond {
+    display: none;
+  }
+}
+
+/* --- ServiceNow SP overrides --- */
+.sp-widget-content .weather-widget-wrapper {
+  max-width: 100%;
+}
+</css><client_script>/**
+ * Weather Widget — Client-side Controller
+ * ServiceNow Service Portal (AngularJS)
+ *
+ * Fetches geocoding + forecast from Open-Meteo directly from the browser.
+ * No authentication required. ES5 syntax to stay consistent with widget-server.js.
+ */
+api.controller = function($scope, $http, $interval, $timeout) {
+  var c = this;
+
+  c.activeTab = 'current';
+  c.loading = true;
+  c.error = '';
+  c.location = null;
+  c.current = null;
+  c.hourly = [];
+  c.daily = [];
+  c.lastUpdated = null;
+
+  var GEOCODE_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+  var FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
+
+  // WMO weather code → label + Font Awesome 4.x icon class
+  var WMO_CODES = {
+    0:  { label: 'Clear sky',                       icon: 'fa-sun-o' },
+    1:  { label: 'Mainly clear',                    icon: 'fa-sun-o' },
+    2:  { label: 'Partly cloudy',                   icon: 'fa-cloud' },
+    3:  { label: 'Overcast',                        icon: 'fa-cloud' },
+    45: { label: 'Fog',                             icon: 'fa-align-justify' },
+    48: { label: 'Depositing rime fog',             icon: 'fa-align-justify' },
+    51: { label: 'Light drizzle',                   icon: 'fa-tint' },
+    53: { label: 'Moderate drizzle',                icon: 'fa-tint' },
+    55: { label: 'Dense drizzle',                   icon: 'fa-tint' },
+    56: { label: 'Light freezing drizzle',          icon: 'fa-snowflake-o' },
+    57: { label: 'Dense freezing drizzle',          icon: 'fa-snowflake-o' },
+    61: { label: 'Light rain',                      icon: 'fa-tint' },
+    63: { label: 'Moderate rain',                   icon: 'fa-tint' },
+    65: { label: 'Heavy rain',                      icon: 'fa-umbrella' },
+    66: { label: 'Light freezing rain',             icon: 'fa-snowflake-o' },
+    67: { label: 'Heavy freezing rain',             icon: 'fa-snowflake-o' },
+    71: { label: 'Light snow',                      icon: 'fa-snowflake-o' },
+    73: { label: 'Moderate snow',                   icon: 'fa-snowflake-o' },
+    75: { label: 'Heavy snow',                      icon: 'fa-snowflake-o' },
+    77: { label: 'Snow grains',                     icon: 'fa-snowflake-o' },
+    80: { label: 'Light rain showers',              icon: 'fa-tint' },
+    81: { label: 'Moderate rain showers',           icon: 'fa-tint' },
+    82: { label: 'Violent rain showers',            icon: 'fa-umbrella' },
+    85: { label: 'Light snow showers',              icon: 'fa-snowflake-o' },
+    86: { label: 'Heavy snow showers',              icon: 'fa-snowflake-o' },
+    95: { label: 'Thunderstorm',                    icon: 'fa-bolt' },
+    96: { label: 'Thunderstorm with slight hail',   icon: 'fa-bolt' },
+    99: { label: 'Thunderstorm with heavy hail',    icon: 'fa-bolt' }
+  };
+
+  function describeCode(code) {
+    return WMO_CODES[code] || { label: 'Unknown', icon: 'fa-question-circle-o' };
+  }
+
+  c.setTab = function(tab) {
+    c.activeTab = tab;
+  };
+
+  c.unitsImperial = function() {
+    return c.data.units === 'imperial';
+  };
+
+  c.tempUnit = function() {
+    return c.unitsImperial() ? '°F' : '°C';
+  };
+
+  c.windUnit = function() {
+    return c.unitsImperial() ? 'mph' : 'km/h';
+  };
+
+  c.precipUnit = function() {
+    return c.unitsImperial() ? 'in' : 'mm';
+  };
+
+  c.showPrecip = function() {
+    return String(c.data.show_precipitation).toLowerCase() !== 'false';
+  };
+
+  function geocode(city) {
+    var params = { name: city, count: 1, language: 'en', format: 'json' };
+    if (c.data.country_code) {
+      params.country_code = c.data.country_code;
+    }
+    return $http.get(GEOCODE_URL, { params: params }).then(function(resp) {
+      var results = resp.data &amp;&amp; resp.data.results;
+      if (!results || !results.length) {
+        throw new Error('No results for city "' + city + '"');
+      }
+      return results[0];
+    });
+  }
+
+  function fetchForecast(loc) {
+    var imperial = c.unitsImperial();
+    var params = {
+      latitude: loc.latitude,
+      longitude: loc.longitude,
+      current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m',
+      hourly: 'temperature_2m,precipitation_probability,weather_code',
+      daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset',
+      timezone: 'auto',
+      forecast_days: 7,
+      temperature_unit: imperial ? 'fahrenheit' : 'celsius',
+      wind_speed_unit: imperial ? 'mph' : 'kmh',
+      precipitation_unit: imperial ? 'inch' : 'mm'
+    };
+    return $http.get(FORECAST_URL, { params: params }).then(function(resp) {
+      return resp.data;
+    });
+  }
+
+  function buildHourly(forecast) {
+    var times = forecast.hourly &amp;&amp; forecast.hourly.time;
+    if (!times) return [];
+    // Find the index of the current hour (first slot &gt;= now)
+    var nowMs = Date.now();
+    var startIdx = 0;
+    for (var i = 0; i &lt; times.length; i++) {
+      if (new Date(times[i]).getTime() &gt;= nowMs - 3600000) {
+        startIdx = i;
+        break;
+      }
+    }
+    var out = [];
+    var endIdx = Math.min(startIdx + 24, times.length);
+    for (var j = startIdx; j &lt; endIdx; j++) {
+      var d = new Date(times[j]);
+      out.push({
+        time: d,
+        hourLabel: formatHourLabel(d),
+        temp: forecast.hourly.temperature_2m[j],
+        precipProb: forecast.hourly.precipitation_probability[j],
+        weather: describeCode(forecast.hourly.weather_code[j])
+      });
+    }
+    return out;
+  }
+
+  function buildDaily(forecast) {
+    var times = forecast.daily &amp;&amp; forecast.daily.time;
+    if (!times) return [];
+    var out = [];
+    for (var i = 0; i &lt; times.length; i++) {
+      var d = new Date(times[i] + 'T00:00:00');
+      out.push({
+        date: d,
+        dayLabel: formatDayLabel(d, i),
+        tempMax: forecast.daily.temperature_2m_max[i],
+        tempMin: forecast.daily.temperature_2m_min[i],
+        precip: forecast.daily.precipitation_sum[i],
+        weather: describeCode(forecast.daily.weather_code[i]),
+        sunrise: forecast.daily.sunrise[i],
+        sunset: forecast.daily.sunset[i]
+      });
+    }
+    return out;
+  }
+
+  function formatHourLabel(d) {
+    var h = d.getHours();
+    var suffix = h &gt;= 12 ? 'PM' : 'AM';
+    var hh = h % 12 === 0 ? 12 : h % 12;
+    return hh + ' ' + suffix;
+  }
+
+  function formatDayLabel(d, idx) {
+    if (idx === 0) return 'Today';
+    if (idx === 1) return 'Tomorrow';
+    var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return days[d.getDay()];
+  }
+
+  function formatTime(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var suffix = h &gt;= 12 ? 'PM' : 'AM';
+    var hh = h % 12 === 0 ? 12 : h % 12;
+    var mm = m &lt; 10 ? '0' + m : m;
+    return hh + ':' + mm + ' ' + suffix;
+  }
+
+  c.formatTime = formatTime;
+
+  c.load = function() {
+    c.error = '';
+    if (!c.data.city) {
+      c.loading = false;
+      c.error = 'No city configured. Set the City option or weather.widget.city sys_property.';
+      return;
+    }
+    c.loading = true;
+    geocode(c.data.city)
+      .then(function(loc) {
+        c.location = loc;
+        return fetchForecast(loc);
+      })
+      .then(function(forecast) {
+        var cur = forecast.current || {};
+        c.current = {
+          temperature: cur.temperature_2m,
+          apparentTemperature: cur.apparent_temperature,
+          humidity: cur.relative_humidity_2m,
+          precipitation: cur.precipitation,
+          windSpeed: cur.wind_speed_10m,
+          isDay: cur.is_day === 1,
+          weather: describeCode(cur.weather_code)
+        };
+        c.hourly = buildHourly(forecast);
+        c.daily = buildDaily(forecast);
+        c.lastUpdated = new Date();
+        c.loading = false;
+      })
+      .catch(function(err) {
+        c.loading = false;
+        c.error = (err &amp;&amp; err.message) ? err.message : 'Could not load forecast.';
+      });
+  };
+
+  // Auto-refresh
+  var refreshHandle = null;
+  function startAutoRefresh() {
+    var minutes = parseInt(c.data.refresh_minutes, 10);
+    if (!isNaN(minutes) &amp;&amp; minutes &gt; 0) {
+      refreshHandle = $interval(c.load, minutes * 60 * 1000);
+    }
+  }
+
+  $scope.$on('$destroy', function() {
+    if (refreshHandle) {
+      $interval.cancel(refreshHandle);
+      refreshHandle = null;
+    }
+  });
+
+  // Kick off initial load on next digest so c.data is fully bound
+  $timeout(function() {
+    c.load();
+    startAutoRefresh();
+  }, 0);
+};
+</client_script><script>/**
+ * Weather Widget — Server-side Script
+ * ServiceNow Service Portal
+ *
+ * Pass-through only: merges widget instance options with sys_property
+ * defaults and hands a clean data object to the client controller.
+ * All API calls happen client-side via $http (Open-Meteo, no auth).
+ */
+(function() {
+
+  function sysProp(name, fallback) {
+    var val = gs.getProperty(name, '');
+    return val ? val : (fallback || '');
+  }
+
+  var opts = options || {};
+
+  data.widget_title       = opts.widget_title       || sysProp('weather.widget.title', 'Weather');
+  data.city               = opts.city               || sysProp('weather.widget.city', '');
+  data.country_code       = opts.country_code       || sysProp('weather.widget.country_code', '');
+  data.units              = opts.units              || sysProp('weather.widget.units', 'metric');
+  data.theme              = opts.theme              || sysProp('weather.widget.theme', 'light');
+  data.show_precipitation = opts.show_precipitation || sysProp('weather.widget.show_precipitation', 'true');
+  data.refresh_minutes    = opts.refresh_minutes    || sysProp('weather.widget.refresh_minutes', '30');
+
+})();
+</script><option_schema>[
+  {
+    "hint": "Label shown in the widget header bar",
+    "label": "Widget Title",
+    "name": "widget_title",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "City to forecast (e.g. 'San Francisco', 'London', 'Tokyo'). Geocoded at runtime via Open-Meteo.",
+    "label": "City",
+    "name": "city",
+    "section": "Location",
+    "type": "string"
+  },
+  {
+    "hint": "Optional ISO country code to disambiguate cities with the same name (e.g. 'US', 'GB', 'JP').",
+    "label": "Country Code",
+    "name": "country_code",
+    "section": "Location",
+    "type": "string"
+  },
+  {
+    "hint": "Unit system: 'metric' (°C, km/h, mm) or 'imperial' (°F, mph, in)",
+    "label": "Units",
+    "name": "units",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Color scheme: 'light' (default) or 'dark'",
+    "label": "Theme",
+    "name": "theme",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Show precipitation probability bars on the Hourly tab. 'true' or 'false'.",
+    "label": "Show Precipitation Bars",
+    "name": "show_precipitation",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Auto-refresh interval in minutes. Set to '0' to disable auto-refresh.",
+    "label": "Refresh Interval (minutes)",
+    "name": "refresh_minutes",
+    "section": "Behavior",
+    "type": "string"
+  }
+]
+</option_schema><sys_id>3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f</sys_id><sys_scope display_value="Global">global</sys_scope><sys_domain>global</sys_domain></sp_widget></record_update>]]></payload>
+    <remote_update_set display_value="Weather Widget v1.0">1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e</sys_id>
+    <type>sp_widget</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+
+  <!-- ── sys_property configuration records ── -->
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_a00b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Widget header label</description><name>weather.widget.title</name><type>string</type><value>Weather</value><sys_id>a00b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="Weather Widget v1.0">1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>b00c4d5e6f7a8b9c0d1e2f3a4b5c6d7e</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_a01b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>City to forecast (geocoded at runtime)</description><name>weather.widget.city</name><type>string</type><value></value><sys_id>a01b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="Weather Widget v1.0">1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>b01c4d5e6f7a8b9c0d1e2f3a4b5c6d7e</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_a02b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Optional ISO country code for disambiguation</description><name>weather.widget.country_code</name><type>string</type><value></value><sys_id>a02b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="Weather Widget v1.0">1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>b02c4d5e6f7a8b9c0d1e2f3a4b5c6d7e</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_a03b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>metric or imperial</description><name>weather.widget.units</name><type>string</type><value>metric</value><sys_id>a03b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="Weather Widget v1.0">1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>b03c4d5e6f7a8b9c0d1e2f3a4b5c6d7e</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_a04b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>light or dark</description><name>weather.widget.theme</name><type>string</type><value>light</value><sys_id>a04b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="Weather Widget v1.0">1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>b04c4d5e6f7a8b9c0d1e2f3a4b5c6d7e</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_a05b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Show precipitation bars on Hourly tab</description><name>weather.widget.show_precipitation</name><type>string</type><value>true</value><sys_id>a05b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="Weather Widget v1.0">1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>b05c4d5e6f7a8b9c0d1e2f3a4b5c6d7e</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+  <sys_update_xml action="INSERT_OR_UPDATE">
+    <action>INSERT_OR_UPDATE</action>
+    <name>sys_properties_a06b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</name>
+    <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties"><sys_properties action="INSERT_OR_UPDATE"><description>Auto-refresh interval in minutes (0 to disable)</description><name>weather.widget.refresh_minutes</name><type>string</type><value>30</value><sys_id>a06b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</sys_id><sys_scope display_value="Global">global</sys_scope></sys_properties></record_update>]]></payload>
+    <remote_update_set display_value="Weather Widget v1.0">1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d</remote_update_set>
+    <sys_class_name>sys_update_xml</sys_class_name>
+    <sys_id>b06c4d5e6f7a8b9c0d1e2f3a4b5c6d7e</sys_id>
+    <type>sys_properties</type>
+    <update_domain>global</update_domain>
+  </sys_update_xml>
+
+</unload>

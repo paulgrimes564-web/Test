@@ -1,0 +1,51 @@
+[
+  {
+    "hint": "Label shown in the widget header bar",
+    "label": "Widget Title",
+    "name": "widget_title",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "City to forecast (e.g. 'San Francisco', 'London', 'Tokyo'). Geocoded at runtime via Open-Meteo.",
+    "label": "City",
+    "name": "city",
+    "section": "Location",
+    "type": "string"
+  },
+  {
+    "hint": "Optional ISO country code to disambiguate cities with the same name (e.g. 'US', 'GB', 'JP').",
+    "label": "Country Code",
+    "name": "country_code",
+    "section": "Location",
+    "type": "string"
+  },
+  {
+    "hint": "Unit system: 'metric' (°C, km/h, mm) or 'imperial' (°F, mph, in)",
+    "label": "Units",
+    "name": "units",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Color scheme: 'light' (default) or 'dark'",
+    "label": "Theme",
+    "name": "theme",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Show precipitation probability bars on the Hourly tab. 'true' or 'false'.",
+    "label": "Show Precipitation Bars",
+    "name": "show_precipitation",
+    "section": "Presentation",
+    "type": "string"
+  },
+  {
+    "hint": "Auto-refresh interval in minutes. Set to '0' to disable auto-refresh.",
+    "label": "Refresh Interval (minutes)",
+    "name": "refresh_minutes",
+    "section": "Behavior",
+    "type": "string"
+  }
+]
