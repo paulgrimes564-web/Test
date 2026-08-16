@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Just Married Grand Prix</title>
+<style>
+  :root{
+    --pink:#ff6fa5;
+    --teal:#1fb6b0;
+    --purple:#7b5fd9;
+    --gold:#ffcf4d;
+    --cream:#fff6e8;
+    --ink:#2b1b3d;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;height:100%;overflow:hidden;
+    background: linear-gradient(160deg,#2b1b3d,#4a2a63 40%, #7b3f7a 70%, #b4517a);
+    font-family: 'Courier New', Courier, monospace;
+    color:var(--cream);
+    -webkit-user-select:none;user-select:none;
+    touch-action:none;
+  }
+  #wrap{
+    position:relative;
+    width:100vw;height:100vh;
+    display:flex;align-items:center;justify-content:center;
+  }
+  canvas{
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    background:#7ed957;
+    box-shadow:0 0 0 6px var(--ink), 0 0 0 10px var(--gold), 0 20px 60px rgba(0,0,0,.6);
+    max-width:100vw;max-height:100vh;
+  }
+  #ui{
+    position:absolute; inset:0; pointer-events:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .panel{
+    pointer-events:auto;
+    text-align:center;
+  }
+  h1.title{
+    font-size:clamp(22px,5vw,44px);
+    letter-spacing:2px;
+    color:var(--gold);
+    text-shadow: 3px 3px 0 var(--ink), 0 0 20px rgba(255,111,165,.8);
+    margin:0 0 6px 0;
+    animation: bob 1.6s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .subtitle{
+    font-size:clamp(11px,2vw,15px);
+    color:var(--cream);
+    text-shadow:2px 2px 0 var(--ink);
+    margin-bottom:18px;
+    letter-spacing:1px;
+  }
+  .charRow{ display:flex; gap:22px; justify-content:center; margin-bottom:18px; flex-wrap:wrap;}
+  .charCard{
+    background: rgba(43,27,61,.72);
+    border:4px solid var(--ink);
+    border-radius:10px;
+    padding:10px 14px 14px;
+    cursor:pointer;
+    transition: transform .12s ease, border-color .12s ease;
+    width:150px;
+  }
+  .charCard canvas{ box-shadow:none; background:transparent; image-rendering:pixelated; }
+  .charCard:hover{ transform: translateY(-4px) scale(1.03); }
+  .charCard.selected{ border-color: var(--gold); box-shadow:0 0 0 3px var(--pink); }
+  .charName{ margin-top:6px; font-size:13px; letter-spacing:1px; color:var(--gold); text-shadow:1px 1px 0 var(--ink);}
+  .charDesc{ font-size:9px; color:var(--cream); opacity:.85; margin-top:2px;}
+  button.arcadeBtn{
+    font-family:inherit;
+    background: linear-gradient(180deg, var(--pink), #d13c7a);
+    color:#fff;
+    border:4px solid var(--ink);
+    border-radius:8px;
+    padding:12px 28px;
+    font-size:16px;
+    letter-spacing:2px;
+    cursor:pointer;
+    text-shadow:1px 1px 0 rgba(0,0,0,.4);
+    box-shadow:0 5px 0 #7a1f45, 0 8px 14px rgba(0,0,0,.4);
+    transition: transform .08s ease;
+  }
+  button.arcadeBtn:active{ transform:translateY(4px); box-shadow:0 1px 0 #7a1f45; }
+  button.arcadeBtn:disabled{ filter:grayscale(.6); opacity:.5; cursor:not-allowed; }
+  .hidden{ display:none !important; }
+  #hud{
+    position:absolute; top:10px; left:10px; right:10px;
+    display:flex; justify-content:space-between; pointer-events:none;
+    font-size:14px; text-shadow:2px 2px 0 var(--ink);
+  }
+  #hud .box{ background:rgba(43,27,61,.6); border:3px solid var(--ink); border-radius:6px; padding:6px 10px; }
+  #boostWrap{ width:110px; height:12px; border:2px solid var(--ink); background:rgba(0,0,0,.35); border-radius:4px; overflow:hidden; margin-top:4px;}
+  #boostBar{ height:100%; width:0%; background:#4dc9ff; transition: width .05s linear; }
+  #countdownNum{
+    font-size:120px; color:var(--gold); text-shadow:4px 4px 0 var(--ink), 0 0 30px var(--pink);
+  }
+  .touchpad{ position:absolute; bottom:16px; pointer-events:auto; display:none; }
+  .touchpad.show{ display:block; }
+  #leftPad{ left:16px; }
+  #rightPad{ right:16px; }
+  .tbtn{
+    width:58px;height:58px; border-radius:50%;
+    background:rgba(255,255,255,.18); border:3px solid var(--cream);
+    color:var(--cream); font-size:22px; display:flex; align-items:center; justify-content:center;
+    position:absolute;
+  }
+  #btnUp{ top:-64px; left:0; } #btnDown{ bottom:-64px; left:0; }
+  #btnLeft{ top:0; left:-64px; } #btnRight{ top:0; left:64px; }
+  #leftPad{ position:absolute; bottom:100px; left:80px; width:58px; height:58px;}
+  #rightPad{ position:absolute; bottom:120px; right:40px; }
+  #btnBoost{ width:74px;height:74px; background:rgba(255,111,165,.35); }
+  small.hint{ display:block; margin-top:10px; font-size:10px; opacity:.8; }
+  #resultBox{ font-size:13px; margin:10px 0 18px; }
+  #resultBox div{ margin:2px 0; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="game" width="960" height="600"></canvas>
+  <div id="ui">
+    <!-- SELECT SCREEN -->
+    <div class="panel" id="selectPanel">
+      <h1 class="title">💍 JUST MARRIED GRAND PRIX 💍</h1>
+      <div class="subtitle">Pick your racer — 3 laps around the reception!</div>
+      <div class="charRow" id="charRow"></div>
+      <button class="arcadeBtn" id="startBtn" disabled>START RACE ▶</button>
+      <small class="hint">Arrow Keys / WASD to steer &middot; hold SPACE while turning to drift-boost &middot; touch controls on mobile</small>
+    </div>
+    <!-- COUNTDOWN -->
+    <div class="panel hidden" id="countdownPanel">
+      <div id="countdownNum">3</div>
+    </div>
+    <!-- FINISH -->
+    <div class="panel hidden" id="finishPanel">
+      <h1 class="title" id="finishTitle">🎉 YOU WIN! 🎉</h1>
+      <div class="subtitle">Thanks for racing at our wedding!</div>
+      <div id="resultBox"></div>
+      <button class="arcadeBtn" id="againBtn">RACE AGAIN ▶</button>
+    </div>
+  </div>
+  <div id="hud" class="hidden">
+    <div class="box">LAP <span id="lapNum">1</span>/3</div>
+    <div class="box" id="posBox">1ST</div>
+    <div class="box">
+      TIME <span id="timeNum">00:00.0</span>
+      <div id="boostWrap"><div id="boostBar"></div></div>
+    </div>
+  </div>
+  <!-- touch controls -->
+  <div class="touchpad" id="padLeft">
+    <div class="tbtn" id="btnUp" style="position:absolute; bottom:70px; left:6px;">▲</div>
+    <div class="tbtn" id="btnDown" style="position:absolute; bottom:0px; left:6px;">▼</div>
+    <div class="tbtn" id="btnLeft" style="position:absolute; bottom:35px; left:-58px;">◀</div>
+    <div class="tbtn" id="btnRight" style="position:absolute; bottom:35px; left:70px;">▶</div>
+  </div>
+  <div class="touchpad" id="padRight">
+    <div class="tbtn" id="btnBoost" style="position:absolute; bottom:20px; right:10px;">💨</div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================= CANVAS SETUP ============================= */
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+const W = canvas.width, H = canvas.height;
+
+/* ============================= PIXEL SPRITE HELPERS ============================= */
+// draws blocky "pixel" rectangles in local unit-space (assumes ctx already scaled)
+function pr(x,y,w,h,color){
+  ctx.fillStyle = color;
+  ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+}
+
+/* ---- Palettes for characters ---- */
+const PALETTES = {
+  groom: {
+    kart:'#1fb6b0', kartDark:'#0f7f7a', trim:'#ffffff',
+    skin:'#f0b892', hair:'#3b2415', outfit:'#1fb6b0', outfitDark:'#158883',
+    accessory:'#12222b', shirt:'#ffffff', label:'Groom', desc:'Teal suit, tux boutonnière'
+  },
+  bride: {
+    kart:'#fff6e8', kartDark:'#e8d4c0', trim:'#ff6fa5',
+    skin:'#f3c39f', hair:'#3a2415', outfit:'#ffffff', outfitDark:'#f0e2d0',
+    accessory:'#ff6fa5', shirt:'#ffffff', label:'Bride', desc:'White gown, bouquet in hand'
+  },
+  groomsman: {
+    kart:'#2c3e6b', kartDark:'#1b2647', trim:'#7ed957',
+    skin:'#e8a97a', hair:'#5a3a1a', outfit:'#2c3e6b', outfitDark:'#1b2647',
+    accessory:'#7ed957', shirt:'#e8f0e0', label:'Groomsman', desc:'Navy blazer, striped tee'
+  },
+  bridesmaid: {
+    kart:'#7b5fd9', kartDark:'#4f3aa1', trim:'#ffcf4d',
+    skin:'#f0c8a0', hair:'#241005', outfit:'#7b5fd9', outfitDark:'#4f3aa1',
+    accessory:'#ffcf4d', shirt:'#e9def7', label:'Bridesmaid', desc:'Lavender dress, sun visor'
+  }
+};
+
+// Draw a top-down kart sprite. ctx must already be translated+rotated to kart position/heading, and scaled by U.
+function drawKartSprite(p, boostTier, isBride, isGroom){
+  // wheels
+  pr(-8,-9,3,6,'#141018'); pr(5,-9,3,6,'#141018');
+  pr(-8,5,3,6,'#141018'); pr(5,5,3,6,'#141018');
+  // body base
+  pr(-6,-10,12,20,p.kart);
+  pr(-6,-10,12,3,p.kartDark); // hood shade
+  pr(-6,7,12,3,p.kartDark);   // rear shade
+  // trim stripe
+  pr(-6,-2,12,2,p.trim);
+  // heart emblem on hood
+  pr(-2,-9,1,1,p.trim); pr(0,-9,1,1,p.trim);
+  pr(-2,-8,3,1,p.trim);
+  pr(-1,-7,1,1,p.trim);
+  // windshield
+  pr(-4,-6,8,3,'#1a1a2a');
+  // driver head
+  pr(-3,-4,6,5,p.skin);
+  // hair
+  if(isBride){
+    pr(-4,-6,8,3,p.hair); // veil-ish top
+    pr(-4,-3,1,4,p.hair); pr(3,-3,1,4,p.hair); // flowing side hair
+  } else if(isGroom){
+    pr(-3,-6,6,2,p.hair);
+  } else {
+    pr(-3,-6,6,2,p.hair);
+    pr(-4,-4,1,3,p.hair); pr(3,-4,1,3,p.hair);
+  }
+  // accessory
+  if(isBride){
+    pr(-1,-7,2,1,'#ffffff'); // tiny veil peak
+    pr(-2,3,4,3,'#ff6fa5'); pr(-1,2,2,1,'#ffffff'); // bouquet
+  } else if(isGroom){
+    pr(-1,-2,2,2,p.accessory); // bowtie dot
+  } else {
+    pr(-3,-3,7,1,'#222'); // sunglasses row
+  }
+  // exhaust / rear bumper
+  pr(-5,9,10,1,p.outfitDark);
+  // boost flame
+  if(boostTier>0){
+    const flameColors = ['#4dc9ff','#ffb84d','#ff6fd8'];
+    const c = flameColors[Math.min(boostTier,3)-1];
+    pr(-3,10,2,3+Math.random()*2,c);
+    pr(1,10,2,3+Math.random()*2,c);
+  }
+}
+
+// small pixel bust portrait for select screen
+function drawPortrait(g, p, isBride, isGroom){
+  g.imageSmoothingEnabled = false;
+  const U = 6;
+  g.save();
+  g.translate(40,10);
+  g.scale(U,U);
+  // shoulders/outfit
+  pr(-6,6,12,6,p.outfit);
+  pr(-6,6,12,1.5,p.outfitDark);
+  if(isGroom){ pr(-1.2,6,2.4,2,'#12222b'); pr(-0.6,6,1.2,3,'#fff'); } // tie
+  if(isBride){ pr(-6,6,12,2,'#ffffff'); } // neckline trim
+  // neck
+  pr(-2,4.5,4,2,p.skin);
+  // head
+  pr(-4,-2,8,7,p.skin);
+  // hair
+  if(isBride){
+    pr(-5,-3,10,3,p.hair);
+    pr(-5,-3,1.5,7,p.hair); pr(3.5,-3,1.5,7,p.hair);
+    pr(-1,-4,2,1.4,'#fff'); // tiara sparkle
+  } else if(isGroom){
+    pr(-4,-3,8,2.4,p.hair);
+  } else {
+    pr(-4.5,-3,9,2.4,p.hair);
+    pr(-5,-2,1.5,5,p.hair); pr(3.5,-2,1.5,5,p.hair);
+  }
+  // eyes
+  pr(-2.2,1,1.2,1.2,'#2b1b3d'); pr(1,1,1.2,1.2,'#2b1b3d');
+  // smile
+  pr(-1.3,3.2,2.6,0.8,'#a35b3f');
+  g.restore();
+}
+
+/* rebuild character select canvases */
+function buildSelectCards(){
+  const row = document.getElementById('charRow');
+  const order = ['groom','bride'];
+  order.forEach(key=>{
+    const p = PALETTES[key];
+    const card = document.createElement('div');
+    card.className = 'charCard';
+    card.dataset.key = key;
+    const c = document.createElement('canvas');
+    c.width = 120; c.height = 100;
+    const g = c.getContext('2d');
+    drawPortrait(g, p, key==='bride', key==='groom');
+    card.appendChild(c);
+    const nm = document.createElement('div'); nm.className='charName'; nm.textContent = p.label;
+    const ds = document.createElement('div'); ds.className='charDesc'; ds.textContent = p.desc;
+    card.appendChild(nm); card.appendChild(ds);
+    card.addEventListener('click', ()=> selectCharacter(key));
+    row.appendChild(card);
+  });
+}
+
+let chosenKey = null;
+function selectCharacter(key){
+  chosenKey = key;
+  document.querySelectorAll('.charCard').forEach(el=>{
+    el.classList.toggle('selected', el.dataset.key === key);
+  });
+  document.getElementById('startBtn').disabled = false;
+}
+
+/* ============================= TRACK ============================= */
+const TRACK = { cx: W/2, cy: H/2, aOut: 430, bOut: 250, aIn: 220, bIn: 105 };
+const MID_A = (TRACK.aOut+TRACK.aIn)/2, MID_B = (TRACK.bOut+TRACK.bIn)/2;
+const START_ANGLE = -Math.PI/2; // top of the oval
+
+function centerlinePoint(t){
+  const ang = t*Math.PI*2;
+  return { x: TRACK.cx + Math.cos(ang)*MID_A, y: TRACK.cy + Math.sin(ang)*MID_B, ang };
+}
+const WAYPOINT_COUNT = 72;
+const WAYPOINTS = [];
+for(let i=0;i<WAYPOINT_COUNT;i++) WAYPOINTS.push(centerlinePoint(i/WAYPOINT_COUNT));
+
+function onTrack(x,y){
+  const dx = x-TRACK.cx, dy = y-TRACK.cy;
+  const outer = (dx/TRACK.aOut)**2 + (dy/TRACK.bOut)**2;
+  const inner = (dx/TRACK.aIn)**2 + (dy/TRACK.bIn)**2;
+  return outer <= 1.02 && inner >= 0.98;
+}
+
+// decorative fixed props (flowers/hearts) around track edges
+const PROPS = [];
+for(let i=0;i<40;i++){
+  const t = i/40;
+  const ang = t*Math.PI*2;
+  const jitter = 18;
+  const outerEdge = { x: TRACK.cx+Math.cos(ang)*(TRACK.aOut+26), y: TRACK.cy+Math.sin(ang)*(TRACK.bOut+26) };
+  const innerEdge = { x: TRACK.cx+Math.cos(ang)*(TRACK.aIn-26), y: TRACK.cy+Math.sin(ang)*(TRACK.bIn-26) };
+  PROPS.push({x:outerEdge.x+(Math.random()-.5)*jitter, y:outerEdge.y+(Math.random()-.5)*jitter, kind:i%3, seed:Math.random()});
+  PROPS.push({x:innerEdge.x+(Math.random()-.5)*jitter, y:innerEdge.y+(Math.random()-.5)*jitter, kind:(i+1)%3, seed:Math.random()});
+}
+
+// item boxes (gift boxes) scattered on track that grant a speed boost
+const ITEM_T = [0.12,0.28,0.42,0.58,0.72,0.88];
+let items = ITEM_T.map(t=>{
+  const cp = centerlinePoint(t);
+  return {x:cp.x, y:cp.y, active:true, respawnAt:0};
+});
+
+/* ============================= CONFETTI ============================= */
+const CONFETTI_COLORS = ['#ff6fa5','#ffcf4d','#7b5fd9','#1fb6b0','#ffffff','#ff9f4d'];
+let confetti = [];
+function spawnConfetti(n){
+  for(let i=0;i<n;i++){
+    confetti.push({
+      x: Math.random()*W, y: -20-Math.random()*200,
+      vy: 40+Math.random()*60, vx: (Math.random()-.5)*30,
+      size: 3+Math.random()*4, color: CONFETTI_COLORS[(Math.random()*CONFETTI_COLORS.length)|0],
+      rot: Math.random()*Math.PI, vr:(Math.random()-.5)*4
+    });
+  }
+}
+spawnConfetti(60);
+function updateConfetti(dt){
+  confetti.forEach(c=>{
+    c.y += c.vy*dt; c.x += c.vx*dt; c.rot += c.vr*dt;
+    if(c.y>H+20){ c.y=-20; c.x=Math.random()*W; }
+  });
+}
+function drawConfetti(){
+  confetti.forEach(c=>{
+    ctx.save();
+    ctx.translate(c.x,c.y); ctx.rotate(c.rot);
+    ctx.fillStyle = c.color;
+    ctx.fillRect(-c.size/2,-c.size/2,c.size,c.size);
+    ctx.restore();
+  });
+}
+
+/* ============================= KART ENTITY ============================= */
+function makeKart(paletteKey, isPlayer, startIndex, totalStarters){
+  const p = PALETTES[paletteKey];
+  const baseAng = START_ANGLE;
+  const spread = 0.028;
+  const t0 = (baseAng/(Math.PI*2)) - startIndex*spread - 0.01;
+  const startPos = centerlinePoint(((t0%1)+1)%1);
+  const ahead = centerlinePoint((((t0+0.01)%1)+1)%1);
+  const heading0 = Math.atan2(ahead.y-startPos.y, ahead.x-startPos.x);
+  return {
+    key: paletteKey, p, isPlayer,
+    x: startPos.x, y: startPos.y, heading: heading0,
+    speed:0, steer:0,
+    wpIndex: Math.floor((((t0%1)+1)%1)*WAYPOINT_COUNT),
+    totalAngle: 0, prevAngle: null, lap:0,
+    drifting:false, driftTime:0, boost:0, boostTimer:0, boostTier:0,
+    finished:false, finishTime:null, aiSpeed: 150+Math.random()*24,
+    rank:1
+  };
+}
+
+const MAX_SPEED = 260;      // px/sec on-track top speed
+const ACCEL = 220;
+const BRAKE = 320;
+const FRICTION = 90;
+const OFFTRACK_MULT = 0.42;
+const TURN_RATE = 2.6;      // rad/sec at full speed
+
+function angleAround(x,y){
+  const dx=(x-TRACK.cx)/MID_A, dy=(y-TRACK.cy)/MID_B;
+  return Math.atan2(dy,dx);
+}
+
+function updateKartProgress(k){
+  const ang = angleAround(k.x,k.y);
+  if(k.prevAngle===null) k.prevAngle = ang;
+  let d = ang - k.prevAngle;
+  while(d>Math.PI) d-=Math.PI*2;
+  while(d<-Math.PI) d+=Math.PI*2;
+  k.totalAngle += d;
+  k.prevAngle = ang;
+  k.lap = Math.max(0, Math.floor(k.totalAngle/(Math.PI*2)));
+}
+
+function applyBoost(k, tier){
+  // tier 1..3
+  const strength = [0, 90, 150, 230][tier];
+  const duration = [0, 0.35, 0.55, 0.85][tier];
+  k.boost = strength;
+  k.boostTimer = duration;
+  k.boostTier = tier;
+}
+
+function stepKart(k, dt, input){
+  const onT = onTrack(k.x, k.y);
+  const speedMult = onT ? 1 : OFFTRACK_MULT;
+
+  if(input.accel) k.speed += ACCEL*dt;
+  else if(input.brake) k.speed -= BRAKE*dt;
+  else k.speed -= FRICTION*dt*Math.sign(k.speed||1);
+
+  const capMax = MAX_SPEED*speedMult;
+  const capMin = -MAX_SPEED*0.5*speedMult;
+  k.speed = Math.max(capMin, Math.min(capMax, k.speed));
+  if(Math.abs(k.speed) < 4 && !input.accel && !input.brake) k.speed = 0;
+
+  const turnFactor = Math.max(0.25, Math.min(1, Math.abs(k.speed)/120));
+  let turning = 0;
+  if(input.left) turning -= 1;
+  if(input.right) turning += 1;
+  k.heading += turning*TURN_RATE*turnFactor*dt*(k.speed<0?-1:1);
+
+  // drift boost charge
+  if(input.drift && turning!==0 && Math.abs(k.speed) > 60){
+    k.drifting = true;
+    k.driftTime += dt;
+  } else {
+    if(k.drifting){
+      let tier = 0;
+      if(k.driftTime>0.9) tier=3; else if(k.driftTime>0.5) tier=2; else if(k.driftTime>0.22) tier=1;
+      if(tier>0) applyBoost(k, tier);
+    }
+    k.drifting = false;
+    k.driftTime = 0;
+  }
+
+  // apply boost velocity
+  let effSpeed = k.speed;
+  if(k.boostTimer>0){
+    k.boostTimer -= dt;
+    effSpeed += k.boost;
+    if(k.boostTimer<=0){ k.boost=0; k.boostTier=0; }
+  }
+
+  k.x += Math.cos(k.heading)*effSpeed*dt;
+  k.y += Math.sin(k.heading)*effSpeed*dt;
+
+  updateKartProgress(k);
+
+  // item pickups
+  items.forEach(it=>{
+    if(it.active){
+      const dx=it.x-k.x, dy=it.y-k.y;
+      if(dx*dx+dy*dy < 26*26){
+        it.active=false; it.respawnAt = raceTime+4;
+        applyBoost(k, 2);
+      }
+    }
+  });
+}
+
+function stepAI(k, dt){
+  const target = WAYPOINTS[k.wpIndex];
+  const dx = target.x-k.x, dy=target.y-k.y;
+  const dist = Math.hypot(dx,dy);
+  if(dist < 34) k.wpIndex = (k.wpIndex+1)%WAYPOINT_COUNT;
+  const desired = Math.atan2(dy,dx);
+  let diff = desired - k.heading;
+  while(diff>Math.PI) diff-=Math.PI*2;
+  while(diff<-Math.PI) diff+=Math.PI*2;
+  const input = {
+    accel:true, brake:false,
+    left: diff < -0.05, right: diff > 0.05,
+    drift: Math.abs(diff) > 0.35
+  };
+  // AI uses simplified speed model
+  const onT = onTrack(k.x,k.y);
+  const speedMult = onT?1:OFFTRACK_MULT;
+  const targetSpeed = k.aiSpeed*speedMult;
+  k.speed += (targetSpeed - k.speed) * Math.min(1, dt*2.2);
+  const turnFactor = Math.max(0.3, Math.min(1, Math.abs(k.speed)/120));
+  k.heading += Math.max(-1,Math.min(1,diff*2.2)) * TURN_RATE*turnFactor*dt;
+
+  let effSpeed = k.speed;
+  if(input.drift && Math.random()<0.02) applyBoost(k,1);
+  if(k.boostTimer>0){ k.boostTimer-=dt; effSpeed += k.boost; if(k.boostTimer<=0){k.boost=0;k.boostTier=0;} }
+
+  k.x += Math.cos(k.heading)*effSpeed*dt;
+  k.y += Math.sin(k.heading)*effSpeed*dt;
+  updateKartProgress(k);
+
+  items.forEach(it=>{
+    if(it.active){
+      const ddx=it.x-k.x, ddy=it.y-k.y;
+      if(ddx*ddx+ddy*ddy < 26*26){ it.active=false; it.respawnAt=raceTime+4; applyBoost(k,1); }
+    }
+  });
+}
+
+/* ============================= GAME STATE ============================= */
+let state = 'select'; // select | countdown | race | finish
+let karts = [];
+let player = null;
+let raceTime = 0;
+let countdownVal = 3;
+let countdownTimer = 0;
+const FINISH_LAPS = 3;
+const TARGET_ANGLE = FINISH_LAPS*Math.PI*2;
+
+const input = { accel:false, brake:false, left:false, right:false, drift:false };
+
+function setupRace(){
+  const aiPool = ['groomsman','bridesmaid', chosenKey==='groom'?'bride':'groom'];
+  karts = [];
+  player = makeKart(chosenKey, true, 0, 4);
+  karts.push(player);
+  aiPool.forEach((k,i)=> karts.push(makeKart(k, false, i+1, 4)));
+  raceTime = 0;
+  items.forEach(it=>{ it.active=true; it.respawnAt=0; });
+}
+
+function startCountdown(){
+  setupRace();
+  state = 'countdown';
+  countdownVal = 3;
+  countdownTimer = 0;
+  document.getElementById('selectPanel').classList.add('hidden');
+  document.getElementById('finishPanel').classList.add('hidden');
+  document.getElementById('countdownPanel').classList.remove('hidden');
+  document.getElementById('hud').classList.add('hidden');
+}
+
+function beginRace(){
+  document.getElementById('countdownPanel').classList.add('hidden');
+  document.getElementById('hud').classList.remove('hidden');
+  state = 'race';
+}
+
+function endRace(){
+  state = 'finish';
+  document.getElementById('hud').classList.add('hidden');
+  const sorted = [...karts].sort((a,b)=>b.totalAngle-a.totalAngle);
+  const playerRank = sorted.indexOf(player)+1;
+  const suffix = playerRank===1?'ST':playerRank===2?'ND':playerRank===3?'RD':'TH';
+  document.getElementById('finishTitle').textContent = playerRank===1 ? '🎉 YOU WIN! 🎉' : `🏁 YOU FINISHED ${playerRank}${suffix} 🏁`;
+  const box = document.getElementById('resultBox');
+  box.innerHTML = sorted.map((k,i)=>{
+    const medal = ['🥇','🥈','🥉','🎗️'][i]||'';
+    return `<div>${medal} ${i+1}${['ST','ND','RD','TH'][Math.min(i,3)]} — ${k.p.label}${k.isPlayer?' (you)':''}</div>`;
+  }).join('');
+  document.getElementById('finishPanel').classList.remove('hidden');
+  spawnConfetti(120);
+}
+
+/* ============================= INPUT ============================= */
+window.addEventListener('keydown', e=>{
+  if(['ArrowUp','w','W'].includes(e.key)) input.accel = true;
+  if(['ArrowDown','s','S'].includes(e.key)) input.brake = true;
+  if(['ArrowLeft','a','A'].includes(e.key)) input.left = true;
+  if(['ArrowRight','d','D'].includes(e.key)) input.right = true;
+  if([' ','Shift'].includes(e.key)) input.drift = true;
+  if(e.key===' ') e.preventDefault();
+});
+window.addEventListener('keyup', e=>{
+  if(['ArrowUp','w','W'].includes(e.key)) input.accel = false;
+  if(['ArrowDown','s','S'].includes(e.key)) input.brake = false;
+  if(['ArrowLeft','a','A'].includes(e.key)) input.left = false;
+  if(['ArrowRight','d','D'].includes(e.key)) input.right = false;
+  if([' ','Shift'].includes(e.key)) input.drift = false;
+});
+
+function bindHold(id, prop){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const on = (e)=>{ input[prop]=true; e.preventDefault(); };
+  const off = (e)=>{ input[prop]=false; e.preventDefault(); };
+  el.addEventListener('touchstart', on, {passive:false});
+  el.addEventListener('touchend', off, {passive:false});
+  el.addEventListener('touchcancel', off, {passive:false});
+  el.addEventListener('mousedown', on);
+  el.addEventListener('mouseup', off);
+  el.addEventListener('mouseleave', off);
+}
+bindHold('btnUp','accel'); bindHold('btnDown','brake');
+bindHold('btnLeft','left'); bindHold('btnRight','right');
+bindHold('btnBoost','drift');
+
+if('ontouchstart' in window){
+  document.getElementById('padLeft').classList.add('show');
+  document.getElementById('padRight').classList.add('show');
+}
+
+document.getElementById('startBtn').addEventListener('click', ()=>{ if(chosenKey) startCountdown(); });
+document.getElementById('againBtn').addEventListener('click', ()=>{
+  document.getElementById('finishPanel').classList.add('hidden');
+  document.getElementById('selectPanel').classList.remove('hidden');
+});
+
+buildSelectCards();
+
+/* ============================= DRAWING ============================= */
+function drawTrack(){
+  // grass base
+  ctx.fillStyle = '#7ed957';
+  ctx.fillRect(0,0,W,H);
+  // grass texture dots
+  ctx.fillStyle = 'rgba(255,255,255,0.06)';
+  for(let i=0;i<0;i++){}
+
+  // outer track fill
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(TRACK.cx,TRACK.cy,TRACK.aOut,TRACK.bOut,0,0,Math.PI*2);
+  ctx.fillStyle = '#3a3450';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(TRACK.cx,TRACK.cy,TRACK.aIn,TRACK.bIn,0,0,Math.PI*2);
+  ctx.fillStyle = '#7ed957';
+  ctx.fill();
+  ctx.restore();
+
+  // checkered edge lines (pixel dashes) on outer & inner boundary
+  drawDashedEllipse(TRACK.aOut,TRACK.bOut);
+  drawDashedEllipse(TRACK.aIn,TRACK.bIn);
+
+  // infield decoration: heart
+  ctx.save();
+  ctx.translate(TRACK.cx,TRACK.cy);
+  ctx.scale(6,6);
+  ctx.fillStyle = '#ff9fc4';
+  pr(-6,-4,4,3,'#ff9fc4'); pr(2,-4,4,3,'#ff9fc4');
+  pr(-7,-1,14,3,'#ff9fc4');
+  pr(-5,2,10,3,'#ff9fc4');
+  pr(-3,5,6,2,'#ff9fc4');
+  pr(-1,7,2,1,'#ff9fc4');
+  ctx.restore();
+
+  // start/finish banner (radial at top)
+  const a0 = START_ANGLE;
+  const inP = {x:TRACK.cx+Math.cos(a0)*TRACK.aIn, y:TRACK.cy+Math.sin(a0)*TRACK.bIn};
+  const outP = {x:TRACK.cx+Math.cos(a0)*TRACK.aOut, y:TRACK.cy+Math.sin(a0)*TRACK.bOut};
+  ctx.save();
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 6;
+  ctx.setLineDash([10,10]);
+  ctx.beginPath(); ctx.moveTo(inP.x,inP.y); ctx.lineTo(outP.x,outP.y); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+  ctx.save();
+  ctx.translate((inP.x+outP.x)/2, outP.y-46);
+  ctx.font = 'bold 16px Courier New';
+  ctx.fillStyle = '#2b1b3d';
+  ctx.textAlign='center';
+  ctx.fillText('JUST MARRIED', 2, 2);
+  ctx.fillStyle = '#ffcf4d';
+  ctx.fillText('JUST MARRIED', 0, 0);
+  ctx.restore();
+
+  // props: flowers/hearts along edges
+  PROPS.forEach(pp=>{
+    ctx.save();
+    ctx.translate(pp.x, pp.y);
+    ctx.scale(3,3);
+    if(pp.kind===0){ // flower
+      pr(-1,-2,2,2,'#ff6fa5'); pr(-2,-1,2,2,'#ffcf4d'); pr(0,-1,2,2,'#ffffff'); pr(-1,0,2,2,'#7b5fd9');
+    } else if(pp.kind===1){ // small heart
+      pr(-1.5,-1,1,1,'#ff6fa5'); pr(0.5,-1,1,1,'#ff6fa5'); pr(-1.5,0,3,1,'#ff6fa5'); pr(-1,1,2,1,'#ff6fa5');
+    } else { // little bush
+      pr(-2,-1,4,3,'#3f9c3a');
+    }
+    ctx.restore();
+  });
+
+  // item boxes
+  items.forEach(it=>{
+    if(!it.active) return;
+    ctx.save();
+    ctx.translate(it.x, it.y+Math.sin(raceTime*4+it.x)*3);
+    ctx.scale(4,4);
+    pr(-3,-3,6,6,'#ffcf4d');
+    pr(-3,-3,6,1.4,'#fff5cf');
+    pr(-1,-3,1.4,6,'#ff6fa5');
+    ctx.restore();
+  });
+}
+
+function drawDashedEllipse(a,b){
+  ctx.save();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 4;
+  ctx.setLineDash([14,10]);
+  ctx.beginPath();
+  ctx.ellipse(TRACK.cx,TRACK.cy,a,b,0,0,Math.PI*2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function drawKarts(){
+  const sorted = [...karts].sort((x,y)=>x.y-y.y);
+  sorted.forEach(k=>{
+    ctx.save();
+    ctx.translate(k.x, k.y);
+    ctx.rotate(k.heading + Math.PI/2 + Math.PI/2);
+    ctx.scale(3,3);
+    drawKartSprite(k.p, k.boostTier, k.key==='bride', k.key==='groom');
+    ctx.restore();
+  });
+}
+
+/* ============================= MAIN LOOP ============================= */
+let lastT = performance.now();
+function frame(now){
+  const dt = Math.min(0.033, (now-lastT)/1000);
+  lastT = now;
+
+  if(state==='select' || state==='finish'){
+    updateConfetti(dt);
+  }
+
+  if(state==='countdown'){
+    countdownTimer += dt;
+    if(countdownTimer >= 1){
+      countdownTimer = 0;
+      countdownVal -= 1;
+      if(countdownVal <= 0){
+        document.getElementById('countdownNum').textContent = 'GO!';
+        setTimeout(beginRace, 350);
+        countdownVal = -1;
+      } else {
+        document.getElementById('countdownNum').textContent = countdownVal;
+      }
+    }
+  }
+
+  if(state==='race'){
+    raceTime += dt;
+    stepKart(player, dt, input);
+    karts.forEach(k=>{ if(!k.isPlayer) stepAI(k, dt); });
+    items.forEach(it=>{ if(!it.active && raceTime>it.respawnAt) it.active=true; });
+    updateConfetti(dt*0.4);
+
+    // ranking
+    const sorted = [...karts].sort((a,b)=>b.totalAngle-a.totalAngle);
+    sorted.forEach((k,i)=> k.rank = i+1);
+
+    document.getElementById('lapNum').textContent = Math.min(FINISH_LAPS, player.lap+1);
+    const rankSuffix = {1:'ST',2:'ND',3:'RD',4:'TH'}[player.rank]||'TH';
+    document.getElementById('posBox').textContent = player.rank + rankSuffix;
+    const mm = Math.floor(raceTime/60).toString().padStart(2,'0');
+    const ss = (raceTime%60).toFixed(1).padStart(4,'0');
+    document.getElementById('timeNum').textContent = `${mm}:${ss}`;
+    const boostPct = player.drifting ? Math.min(100, player.driftTime/0.9*100) : (player.boostTimer>0?100:0);
+    const bar = document.getElementById('boostBar');
+    bar.style.width = boostPct+'%';
+    bar.style.background = player.driftTime>0.9?'#ff6fd8':player.driftTime>0.5?'#ffb84d':'#4dc9ff';
+
+    if(player.totalAngle >= TARGET_ANGLE && !player.finished){
+      player.finished = true;
+      endRace();
+    }
+  }
+
+  // ---- render ----
+  ctx.clearRect(0,0,W,H);
+  drawTrack();
+  if(state==='race' || state==='countdown') drawKarts();
+  if(state==='select' || state==='finish' || state==='countdown') drawConfetti();
+
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+})();
+</script>
+</body>
+</html>
