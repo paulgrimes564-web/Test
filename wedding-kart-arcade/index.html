@@ -27,7 +27,7 @@
     overscroll-behavior:none;
   }
   #wrap{ position:fixed; inset:0; }
-  canvas{ position:fixed; inset:0; display:block; touch-action:none; }
+  #game{ position:fixed; inset:0; display:block; touch-action:none; }
   #ui{
     position:fixed; inset:0; pointer-events:none;
     display:flex; align-items:center; justify-content:center;
@@ -35,44 +35,54 @@
   }
   .panel{
     pointer-events:auto; text-align:center;
-    background: rgba(255,248,236,.96);
+    background: rgba(255,248,236,.97);
     border:4px solid var(--ink);
     border-radius:16px;
-    padding: clamp(14px,3vw,26px) clamp(14px,4vw,30px);
-    max-width:94vw; max-height:92vh; overflow-y:auto;
+    padding: clamp(12px,2.6vw,22px) clamp(12px,3.6vw,26px);
+    max-width:94vw; max-height:94vh; overflow-y:auto;
     box-shadow:0 10px 0 var(--sky-deep), 0 14px 30px rgba(0,0,0,.35);
   }
   h1.title{
-    font-size:clamp(20px,5.2vw,38px);
+    font-size:clamp(18px,4.6vw,32px);
     letter-spacing:1px;
     color:var(--red);
     -webkit-text-stroke: 2px var(--ink);
     text-wrap:balance;
-    margin:0 0 4px 0;
+    margin:0 0 2px 0;
     line-height:1.15;
   }
   .subtitle{
-    font-size:clamp(11px,2.4vw,14px);
+    font-size:clamp(10px,2.2vw,13px);
     color:var(--ink);
     opacity:.75;
-    margin-bottom:16px;
+    margin-bottom:10px;
     letter-spacing:.5px;
   }
-  .charRow{ display:flex; gap:14px; justify-content:center; margin-bottom:16px; flex-wrap:wrap;}
-  .charCard{
-    background: var(--sky);
-    border:4px solid var(--ink);
-    border-radius:12px;
-    padding:8px 10px 12px;
-    cursor:pointer;
-    width:clamp(120px,32vw,150px);
-    transition: transform .12s ease, box-shadow .12s ease;
+
+  /* ---- Avatar builder ---- */
+  #builder{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+  #previewCol{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+  #previewCanvas{ image-rendering:pixelated; background:linear-gradient(var(--sky),var(--grass) 72%); border:4px solid var(--ink); border-radius:10px; }
+  #optionsCol{ text-align:left; width:min(260px,80vw); }
+  .presetRow{ display:flex; gap:8px; margin-bottom:10px; justify-content:center; }
+  .presetBtn{
+    font-family:inherit; font-size:10px; font-weight:bold; letter-spacing:.5px;
+    background:var(--sky); border:3px solid var(--ink); border-radius:8px; padding:6px 10px; cursor:pointer;
   }
-  .charCard canvas{ image-rendering:pixelated; display:block; margin:0 auto; }
-  .charCard:hover{ transform: translateY(-3px); }
-  .charCard.selected{ background:var(--yellow); box-shadow:0 0 0 3px var(--red) inset; }
-  .charName{ margin-top:4px; font-size:13px; font-weight:bold; letter-spacing:.5px; color:var(--ink);}
-  .charDesc{ font-size:9px; color:var(--ink); opacity:.7; margin-top:2px;}
+  .presetBtn:active{ transform:translateY(2px); }
+  .fieldLabel{ font-size:10px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; opacity:.7; margin:8px 0 4px; }
+  .outfitTabs{ display:flex; gap:6px; }
+  .outfitTab{
+    flex:1; font-family:inherit; font-size:10px; font-weight:bold;
+    background:var(--sky); border:3px solid var(--ink); border-radius:7px; padding:6px 4px; cursor:pointer;
+  }
+  .outfitTab.active{ background:var(--yellow); box-shadow:0 0 0 2px var(--red) inset; }
+  .swatchRow{ display:flex; gap:6px; flex-wrap:wrap; }
+  .swatch{
+    width:26px; height:26px; border-radius:50%; border:3px solid var(--ink); cursor:pointer; padding:0;
+  }
+  .swatch.active{ box-shadow:0 0 0 3px var(--red); transform:scale(1.08); }
+
   button.arcadeBtn{
     font-family:inherit;
     background: var(--red);
@@ -85,19 +95,17 @@
     letter-spacing:1.5px;
     cursor:pointer;
     box-shadow:0 5px 0 var(--red-deep);
-    transition: transform .08s ease;
+    margin-top:12px;
   }
   button.arcadeBtn:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--red-deep); }
-  button.arcadeBtn:disabled{ filter:grayscale(.6); opacity:.5; cursor:not-allowed; }
   .hidden{ display:none !important; }
-  small.hint{ display:block; margin-top:10px; font-size:10px; opacity:.7; line-height:1.5; }
+  small.hint{ display:block; margin-top:10px; font-size:9px; opacity:.7; line-height:1.5; }
 
   #countdownNum{
     font-size:clamp(70px,20vw,130px); color:var(--yellow);
     -webkit-text-stroke:4px var(--ink);
   }
 
-  /* ---- HUD ---- */
   #hud{
     position:fixed; top:calc(env(safe-area-inset-top,0px) + 10px); left:calc(env(safe-area-inset-left,0px) + 10px);
     display:flex; flex-direction:column; gap:5px; pointer-events:none; z-index:5;
@@ -129,7 +137,6 @@
   .resRow canvas{ image-rendering:pixelated; border-radius:50%; border:2px solid var(--ink); background:var(--sky); }
   .resMedal{ width:20px; text-align:center; }
 
-  /* ---- Touch controls ---- */
   .ctrlBtn{
     position:fixed; z-index:6; pointer-events:auto;
     width:clamp(56px,15vw,74px); height:clamp(56px,15vw,74px);
@@ -149,6 +156,7 @@
     background:rgba(255,204,0,.9);
     width:clamp(66px,18vw,86px); height:clamp(66px,18vw,86px);
   }
+  #minimapCanvas{ position:fixed; z-index:4; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -165,12 +173,32 @@
   <div id="leaderboard"></div>
 
   <div id="ui">
-    <!-- SELECT SCREEN -->
+    <!-- AVATAR BUILDER / SELECT SCREEN -->
     <div class="panel" id="selectPanel">
       <h1 class="title">JUST MARRIED<br>GRAND PRIX</h1>
-      <div class="subtitle">Pick your racer — 3 laps around the reception!</div>
-      <div class="charRow" id="charRow"></div>
-      <button class="arcadeBtn" id="startBtn" disabled>START RACE ▶</button>
+      <div class="subtitle">Build your racer — 3 laps around the reception!</div>
+      <div id="builder">
+        <div id="previewCol">
+          <canvas id="previewCanvas" width="150" height="190"></canvas>
+          <div class="presetRow">
+            <button class="presetBtn" id="presetGroom">👔 GROOM START</button>
+            <button class="presetBtn" id="presetBride">👰 BRIDE START</button>
+          </div>
+        </div>
+        <div id="optionsCol">
+          <div class="fieldLabel">Outfit</div>
+          <div class="outfitTabs" id="outfitTabs"></div>
+          <div class="fieldLabel">Skin Tone</div>
+          <div class="swatchRow" id="skinRow"></div>
+          <div class="fieldLabel">Hair Color</div>
+          <div class="swatchRow" id="hairRow"></div>
+          <div class="fieldLabel">Outfit Color</div>
+          <div class="swatchRow" id="primaryRow"></div>
+          <div class="fieldLabel">Accent Color</div>
+          <div class="swatchRow" id="accentRow"></div>
+        </div>
+      </div>
+      <button class="arcadeBtn" id="startBtn">START RACE ▶</button>
       <small class="hint">Tap ◀ ▶ to steer, hold 💨 while turning to boost<br>(or use arrow keys / WASD + space on desktop)</small>
     </div>
     <!-- COUNTDOWN -->
@@ -222,10 +250,16 @@ function updateControlVisibility(){
   });
 }
 
-/* ============================= PIXEL DRAW HELPERS ============================= */
+/* ============================= HELPERS ============================= */
 function pr(g,x,y,w,h,color){
   g.fillStyle = color;
   g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+}
+function quad(g,x1,y1,w1,x2,y2,w2,color){
+  g.fillStyle = color;
+  g.beginPath();
+  g.moveTo(x1-w1,y1); g.lineTo(x1+w1,y1); g.lineTo(x2+w2,y2); g.lineTo(x2-w2,y2);
+  g.closePath(); g.fill();
 }
 function roundRectPath(g,x,y,w,h,r){
   g.beginPath();
@@ -236,141 +270,220 @@ function roundRectPath(g,x,y,w,h,r){
   g.arcTo(x,y,x+w,y,r);
   g.closePath();
 }
-
-/* ============================= PALETTES ============================= */
-const PALETTES = {
-  groom: {
-    kart:'#1fb6b0', kartDark:'#128b86', trim:'#ffffff',
-    skin:'#f0b892', hair:'#7a5230', outfit:'#1fb6b0', outfitDark:'#128b86',
-    accessory:'#1b1b1f', label:'Groom', desc:'Teal suit'
-  },
-  bride: {
-    kart:'#fff8ec', kartDark:'#e3d6bf', trim:'#e6394a',
-    skin:'#f3c39f', hair:'#3a2415', outfit:'#ffffff', outfitDark:'#e3d6bf',
-    accessory:'#e6394a', label:'Bride', desc:'White gown'
-  },
-  groomsman: {
-    kart:'#3ec14f', kartDark:'#2c9a3c', trim:'#ffffff',
-    skin:'#e8a97a', hair:'#5a3a1a', outfit:'#2f6b3a', outfitDark:'#204a28',
-    accessory:'#ffffff', label:'Groomsman', desc:'Green blazer'
-  },
-  bridesmaid: {
-    kart:'#ffcc00', kartDark:'#e0b400', trim:'#e6394a',
-    skin:'#f0c8a0', hair:'#241005', outfit:'#ffcc00', outfitDark:'#e0b400',
-    accessory:'#e6394a', label:'Bridesmaid', desc:'Gold dress'
-  }
-};
-
-/* top-down kart sprite: g must already be translated+rotated+scaled by unit */
-function drawKartSprite(g, p, boostTier, isBride, isGroom){
-  pr(g,-8,-9,3,6,'#141018'); pr(g,5,-9,3,6,'#141018');
-  pr(g,-8,5,3,6,'#141018'); pr(g,5,5,3,6,'#141018');
-  pr(g,-6,-10,12,20,p.kart);
-  pr(g,-6,-10,12,3,p.kartDark);
-  pr(g,-6,7,12,3,p.kartDark);
-  pr(g,-6,-2,12,2,p.trim);
-  pr(g,-1,-9,2,2,'#e6394a'); // small heart nod on the hood
-  pr(g,-4,-6,8,3,'#1a1a2a');
-  pr(g,-3,-4,6,5,p.skin);
-  if(isBride){
-    pr(g,-4,-6,8,3,p.hair);
-    pr(g,-4,-3,1,4,p.hair); pr(g,3,-3,1,4,p.hair);
-    pr(g,-2,3,4,3,'#e6394a'); pr(g,-1,2,2,1,'#ffffff');
-  } else if(isGroom){
-    pr(g,-3,-6,6,2,p.hair);
-    pr(g,-1,-2,2,2,p.accessory);
-  } else {
-    pr(g,-3,-6,6,2,p.hair);
-    pr(g,-4,-4,1,3,p.hair); pr(g,3,-4,1,3,p.hair);
-    pr(g,-3,-3,7,1,'#222');
-  }
-  pr(g,-5,9,10,1,p.outfitDark);
-  if(boostTier>0){
-    const flameColors = ['#5cb2ff','#ffcc00','#e6394a'];
-    const c = flameColors[Math.min(boostTier,3)-1];
-    pr(g,-3,10,2,3+Math.random()*2,c);
-    pr(g,1,10,2,3+Math.random()*2,c);
-  }
+function shade(hex, pct){
+  const num = parseInt(hex.slice(1),16);
+  let r=(num>>16)+Math.round(255*pct), g2=((num>>8)&0xff)+Math.round(255*pct), b=(num&0xff)+Math.round(255*pct);
+  r=Math.max(0,Math.min(255,r)); g2=Math.max(0,Math.min(255,g2)); b=Math.max(0,Math.min(255,b));
+  return '#'+((1<<24)+(r<<16)+(g2<<8)+b).toString(16).slice(1);
 }
 
-/* bust portrait, g already a fresh 2D context; cw/ch = canvas size, unit = pixel scale */
-function drawPortrait(g, p, isBride, isGroom, cw, ch, unit){
+/* ============================= AVATAR PALETTE SYSTEM ============================= */
+const SKIN_TONES = ['#ffe0bd','#f0b892','#c68642','#8d5524','#5c3a21'];
+const HAIR_COLORS = ['#1b1210','#3a2415','#6b4a2a','#d9b36c','#8a4b2f'];
+const PRIMARY_COLORS = ['#1fb6b0','#e6394a','#3ec14f','#ffcc00','#2c3e6b','#fff8ec'];
+const ACCENT_COLORS = ['#ffffff','#e6394a','#ffcc00','#1fb6b0'];
+const OUTFITS = [
+  {key:'suit', label:'Suit'},
+  {key:'gown', label:'Gown'},
+  {key:'casual', label:'Casual'}
+];
+
+const PRESETS = {
+  groom:     { outfitType:'suit',  skin:'#f0b892', hair:'#7a5230', primary:'#1fb6b0', accent:'#ffffff', label:'Groom' },
+  bride:     { outfitType:'gown',  skin:'#f3c39f', hair:'#3a2415', primary:'#fff8ec', accent:'#e6394a', label:'Bride' },
+  groomsman: { outfitType:'suit',  skin:'#e8a97a', hair:'#5a3a1a', primary:'#3ec14f', accent:'#ffffff', label:'Groomsman' },
+  bridesmaid:{ outfitType:'gown',  skin:'#f0c8a0', hair:'#241005', primary:'#ffcc00', accent:'#e6394a', label:'Bridesmaid' }
+};
+
+function buildPalette(cfg){
+  return {
+    outfitType: cfg.outfitType,
+    skin: cfg.skin, hair: cfg.hair,
+    outfit: cfg.primary, outfitDark: shade(cfg.primary,-0.24),
+    kart: cfg.primary, kartDark: shade(cfg.primary,-0.24),
+    trim: cfg.accent, accessory: cfg.accent,
+    label: cfg.label || 'Racer'
+  };
+}
+
+/* ============================= SPRITE DRAWING ============================= */
+/* full body, standing, front-facing — used in the avatar builder preview */
+function drawFullBodyFront(g, p, cw, ch, unit){
   g.imageSmoothingEnabled = false;
   g.save();
-  g.translate(cw/2, ch*0.3);
+  g.translate(cw/2, ch*0.48);
+  g.scale(unit, unit);
+  const isGown = p.outfitType==='gown';
+  const isCasual = p.outfitType==='casual';
+
+  // legs / skirt
+  if(isGown){
+    pr(g,-7,1,14,10,p.outfit);
+    pr(g,-7,9.5,14,1.6,p.accessory);
+    pr(g,-2,10.6,2,2,'#1b1b1f'); pr(g,0,10.6,2,2,'#1b1b1f');
+  } else {
+    pr(g,-4,4,3,9,shade(p.outfit,-0.35)); pr(g,1,4,3,9,shade(p.outfit,-0.35));
+    pr(g,-4,11.5,3,2,'#1b1b1f'); pr(g,1,11.5,3,2,'#1b1b1f');
+  }
+
+  // arms
+  const sleeve = isGown ? p.skin : p.outfit;
+  pr(g,-7,-5,2,7,sleeve); pr(g,-7,1,2,2,p.skin);
+  pr(g,5,-5,2,7,sleeve); pr(g,5,1,2,2,p.skin);
+
+  // torso
+  if(isGown){
+    pr(g,-4,-6,8,7,p.outfit);
+    pr(g,-4,0,8,1.4,p.accessory);
+  } else {
+    pr(g,-5,-6,10,9,p.outfit);
+    pr(g,-5,-6,2,4,p.outfitDark); pr(g,3,-6,2,4,p.outfitDark);
+    pr(g,-1,-6,2,9,'#ffffff');
+    pr(g,-0.8,-6,1.6,2.4,p.accessory);
+    if(isCasual){ pr(g,-5,-3,10,1.4,p.accessory); }
+  }
+
+  // head + hair
+  pr(g,-3,-13,6,6,p.skin);
+  if(isGown){
+    pr(g,-4,-14,8,3,p.hair);
+    pr(g,-4,-11,1.4,8,p.hair); pr(g,2.6,-11,1.4,8,p.hair);
+    pr(g,-1,-15,2,1.4,'#ffffff');
+  } else {
+    pr(g,-3,-14,6,2.4,p.hair);
+    if(isCasual){ pr(g,-3.4,-11.4,6.8,1.2,'#222'); }
+  }
+  pr(g,-2,-10,1,1,'#1b1b1f'); pr(g,1,-10,1,1,'#1b1b1f');
+  pr(g,-1.2,-8.4,2.4,0.8,'#a35b3f');
+
+  g.restore();
+}
+
+/* small bust icon — used in leaderboard + results rows */
+function drawPortraitBust(g, p, cw, ch, unit){
+  g.imageSmoothingEnabled = false;
+  g.save();
+  g.translate(cw/2, ch*0.32);
   g.scale(unit,unit);
+  const isGown = p.outfitType==='gown';
   pr(g,-6,6,12,6,p.outfit);
   pr(g,-6,6,12,1.5,p.outfitDark);
-  if(isGroom){ pr(g,-1.2,6,2.4,2,'#1b1b1f'); pr(g,-0.6,6,1.2,3,'#fff'); }
-  if(isBride){ pr(g,-6,6,12,2,'#ffffff'); }
+  if(!isGown){ pr(g,-1.2,6,2.4,2,'#1b1b1f'); pr(g,-0.6,6,1.2,3,'#fff'); }
+  else { pr(g,-6,6,12,2,'#ffffff'); }
   pr(g,-2,4.5,4,2,p.skin);
   pr(g,-4,-2,8,7,p.skin);
-  if(isBride){
+  if(isGown){
     pr(g,-5,-3,10,3,p.hair);
     pr(g,-5,-3,1.5,7,p.hair); pr(g,3.5,-3,1.5,7,p.hair);
     pr(g,-1,-4,2,1.4,'#fff');
-  } else if(isGroom){
-    pr(g,-4,-3,8,2.4,p.hair);
   } else {
-    pr(g,-4.5,-3,9,2.4,p.hair);
-    pr(g,-5,-2,1.5,5,p.hair); pr(g,3.5,-2,1.5,5,p.hair);
+    pr(g,-4,-3,8,2.4,p.hair);
   }
   pr(g,-2.2,1,1.2,1.2,'#1b1b1f'); pr(g,1,1,1.2,1.2,'#1b1b1f');
   pr(g,-1.3,3.2,2.6,0.8,'#a35b3f');
   g.restore();
 }
-
-/* pre-rendered small avatars, reused for HUD leaderboard + results */
-const avatarCache = {};
-function buildAvatarCache(){
-  Object.keys(PALETTES).forEach(key=>{
-    const off = document.createElement('canvas');
-    off.width = 64; off.height = 64;
-    const g = off.getContext('2d');
-    drawPortrait(g, PALETTES[key], key==='bride', key==='groom', 64, 64, 4.4);
-    avatarCache[key] = off;
-  });
-}
-function makeAvatarEl(key, size){
-  const c = document.createElement('canvas');
-  c.width = size; c.height = size;
+function bustCanvas(p, size){
+  const c = document.createElement('canvas'); c.width=size; c.height=size;
   const g = c.getContext('2d');
-  g.imageSmoothingEnabled = false;
-  g.drawImage(avatarCache[key], 0, 0, size, size);
+  drawPortraitBust(g, p, size, size, size/16);
   return c;
 }
 
-function buildSelectCards(){
-  const row = document.getElementById('charRow');
-  ['groom','bride'].forEach(key=>{
-    const p = PALETTES[key];
-    const card = document.createElement('div');
-    card.className = 'charCard';
-    card.dataset.key = key;
-    const c = document.createElement('canvas');
-    c.width = 130; c.height = 120;
-    const g = c.getContext('2d');
-    drawPortrait(g, p, key==='bride', key==='groom', 130, 120, 7.5);
-    card.appendChild(c);
-    const nm = document.createElement('div'); nm.className='charName'; nm.textContent = p.label;
-    const ds = document.createElement('div'); ds.className='charDesc'; ds.textContent = p.desc;
-    card.appendChild(nm); card.appendChild(ds);
-    card.addEventListener('click', ()=> selectCharacter(key));
-    row.appendChild(card);
-  });
-}
-let chosenKey = null;
-function selectCharacter(key){
-  chosenKey = key;
-  document.querySelectorAll('.charCard').forEach(el=>{
-    el.classList.toggle('selected', el.dataset.key === key);
-  });
-  document.getElementById('startBtn').disabled = false;
+/* kart + driver, viewed from behind, local unit space (~-16..16 x, -18..12 y) */
+function drawFullKartBack(g, p, boostTier){
+  const isGown = p.outfitType==='gown';
+  // wheels
+  pr(g,-13,1,4,9,'#141018'); pr(g,9,1,4,9,'#141018');
+  // body
+  pr(g,-9,-2,18,10,p.kart);
+  pr(g,-9,-2,18,2,p.kartDark);
+  pr(g,-1,-1,2,2,'#e6394a');
+  // spoiler
+  pr(g,-7,-5,14,2,p.trim);
+  // exhaust
+  pr(g,-2,7,1.6,3,'#8a8a90'); pr(g,0.4,7,1.6,3,'#8a8a90');
+  // torso/back
+  if(isGown){
+    pr(g,-6,-10,12,7,p.outfit);
+    pr(g,-4,-15,8,6,p.hair);
+  } else {
+    pr(g,-5,-10,10,7,p.outfit);
+    pr(g,-5,-10,10,1.6,p.outfitDark);
+    pr(g,-3,-15,6,6,p.hair);
+  }
+  // head
+  pr(g,-3,-16,6,6,p.skin);
+  if(!isGown){ pr(g,-3,-17,6,3,p.hair); }
+  // boost flame
+  if(boostTier>0){
+    const flameColors = ['#5cb2ff','#ffcc00','#e6394a'];
+    const c = flameColors[Math.min(boostTier,3)-1];
+    pr(g,-4,10,3,4+Math.random()*3,c);
+    pr(g,1,10,3,4+Math.random()*3,c);
+  }
 }
 
-/* ============================= TRACK (world space) ============================= */
+/* ============================= AVATAR BUILDER UI ============================= */
+let customConfig = Object.assign({}, PRESETS.groom);
+
+function renderBuilderPreview(){
+  const c = document.getElementById('previewCanvas');
+  const g = c.getContext('2d');
+  g.clearRect(0,0,c.width,c.height);
+  drawFullBodyFront(g, buildPalette(customConfig), c.width, c.height, c.height/30);
+}
+function refreshBuilderUI(){
+  document.querySelectorAll('.outfitTab').forEach(el=>{
+    el.classList.toggle('active', el.dataset.key===customConfig.outfitType);
+  });
+  document.querySelectorAll('#skinRow .swatch').forEach(el=>{
+    el.classList.toggle('active', el.dataset.color===customConfig.skin);
+  });
+  document.querySelectorAll('#hairRow .swatch').forEach(el=>{
+    el.classList.toggle('active', el.dataset.color===customConfig.hair);
+  });
+  document.querySelectorAll('#primaryRow .swatch').forEach(el=>{
+    el.classList.toggle('active', el.dataset.color===customConfig.primary);
+  });
+  document.querySelectorAll('#accentRow .swatch').forEach(el=>{
+    el.classList.toggle('active', el.dataset.color===customConfig.accent);
+  });
+  renderBuilderPreview();
+}
+function buildSwatchRow(id, colors, field){
+  const row = document.getElementById(id);
+  row.innerHTML='';
+  colors.forEach(c=>{
+    const b = document.createElement('button');
+    b.className='swatch'; b.style.background=c; b.dataset.color=c;
+    b.addEventListener('click', ()=>{ customConfig[field]=c; refreshBuilderUI(); });
+    row.appendChild(b);
+  });
+}
+function buildOutfitTabs(){
+  const row = document.getElementById('outfitTabs');
+  row.innerHTML='';
+  OUTFITS.forEach(o=>{
+    const b = document.createElement('button');
+    b.className='outfitTab'; b.textContent=o.label; b.dataset.key=o.key;
+    b.addEventListener('click', ()=>{ customConfig.outfitType=o.key; refreshBuilderUI(); });
+    row.appendChild(b);
+  });
+}
+buildOutfitTabs();
+buildSwatchRow('skinRow', SKIN_TONES, 'skin');
+buildSwatchRow('hairRow', HAIR_COLORS, 'hair');
+buildSwatchRow('primaryRow', PRIMARY_COLORS, 'primary');
+buildSwatchRow('accentRow', ACCENT_COLORS, 'accent');
+document.getElementById('presetGroom').addEventListener('click', ()=>{ customConfig=Object.assign({},PRESETS.groom); refreshBuilderUI(); });
+document.getElementById('presetBride').addEventListener('click', ()=>{ customConfig=Object.assign({},PRESETS.bride); refreshBuilderUI(); });
+refreshBuilderUI();
+
+/* ============================= TRACK (world space, used for physics/AI/laps) ============================= */
 const TRACK = { cx: 480, cy: 300, aOut: 430, bOut: 250, aIn: 220, bIn: 105 };
 const MID_A = (TRACK.aOut+TRACK.aIn)/2, MID_B = (TRACK.bOut+TRACK.bIn)/2;
+const BAND_HALF = ((TRACK.aOut-TRACK.aIn)/2)/MID_A;
 const START_ANGLE = -Math.PI/2;
 
 function centerlinePoint(t){
@@ -387,22 +500,38 @@ function onTrack(x,y){
   const inner = (dx/TRACK.aIn)**2 + (dy/TRACK.bIn)**2;
   return outer <= 1.02 && inner >= 0.98;
 }
-
-const BUSHES = [];
-for(let i=0;i<20;i++){
-  const t = i/20, ang = t*Math.PI*2;
-  const r = TRACK.aOut+42;
-  const rb = TRACK.bOut+42;
-  BUSHES.push({
-    x: TRACK.cx+Math.cos(ang)*r + (Math.random()-.5)*24,
-    y: TRACK.cy+Math.sin(ang)*rb + (Math.random()-.5)*24
-  });
+function lateralOffset(x,y){
+  const dx=x-TRACK.cx, dy=y-TRACK.cy;
+  const midNorm = Math.sqrt((dx/MID_A)**2 + (dy/MID_B)**2);
+  return Math.max(-1.5, Math.min(1.5, (midNorm-1)/BAND_HALF));
 }
+
+/* ============================= PSEUDO-3D ROAD MODEL ============================= */
+const SEG_COUNT = 300;
+const SEGMENT_LEN = 12;      // meters per segment
+const ROAD_HALF_W = 6;       // meters
+const CAM_HEIGHT = 1.3;      // meters
+const CAM_DEPTH = 1/Math.tan((100/2)*Math.PI/180);
+const DRAW_DIST = 90;        // segments rendered ahead
+
+const ROAD = [];
+(function buildRoad(){
+  for(let i=0;i<SEG_COUNT;i++){
+    const p0=centerlinePoint(i/SEG_COUNT), p1=centerlinePoint((i+1)/SEG_COUNT), p2=centerlinePoint((i+2)/SEG_COUNT);
+    const h0=Math.atan2(p1.y-p0.y,p1.x-p0.x);
+    const h1=Math.atan2(p2.y-p1.y,p2.x-p1.x);
+    let dh=h1-h0; while(dh>Math.PI)dh-=Math.PI*2; while(dh<-Math.PI)dh+=Math.PI*2;
+    ROAD.push({ curve: dh, alt: Math.floor(i/3)%2===0, dash: Math.floor(i/6)%2===0 });
+  }
+})();
+
+const TREES = [];
+for(let i=0;i<SEG_COUNT;i+=7){ TREES.push({segIdx:i, side:(i/7)%2===0?1:-1}); }
 
 const ITEM_T = [0.12,0.28,0.42,0.58,0.72,0.88];
 let items = ITEM_T.map(t=>{
   const cp = centerlinePoint(t);
-  return {x:cp.x, y:cp.y, active:true, respawnAt:0};
+  return {x:cp.x, y:cp.y, active:true, respawnAt:0, segIdx: Math.round(t*SEG_COUNT)};
 });
 
 /* ============================= CONFETTI (menu / finish only) ============================= */
@@ -436,15 +565,14 @@ function drawConfetti(g){
 }
 
 /* ============================= KART ENTITY ============================= */
-function makeKart(paletteKey, isPlayer, startIndex){
-  const p = PALETTES[paletteKey];
+function makeKart(palette, isPlayer, startIndex){
   const spread = 0.028;
   const t0 = (START_ANGLE/(Math.PI*2)) - startIndex*spread - 0.01;
   const startPos = centerlinePoint(((t0%1)+1)%1);
   const ahead = centerlinePoint((((t0+0.01)%1)+1)%1);
   const heading0 = Math.atan2(ahead.y-startPos.y, ahead.x-startPos.x);
   return {
-    key: paletteKey, p, isPlayer,
+    p: palette, isPlayer,
     x: startPos.x, y: startPos.y, heading: heading0,
     speed:0,
     wpIndex: Math.floor((((t0%1)+1)%1)*WAYPOINT_COUNT),
@@ -458,7 +586,6 @@ function makeKart(paletteKey, isPlayer, startIndex){
 const MAX_SPEED = 260;
 const ACCEL = 240;
 const BRAKE = 320;
-const FRICTION = 90;
 const OFFTRACK_MULT = 0.42;
 const TURN_RATE = 2.6;
 
@@ -486,7 +613,7 @@ function stepKart(k, dt, input){
   const onT = onTrack(k.x, k.y);
   const speedMult = onT ? 1 : OFFTRACK_MULT;
 
-  k.speed += ACCEL*dt; // auto-throttle (mobile-first: always moving forward)
+  k.speed += ACCEL*dt;
   if(input.brake) k.speed -= BRAKE*dt;
 
   const capMax = MAX_SPEED*speedMult;
@@ -562,23 +689,6 @@ function stepAI(k, dt){
   });
 }
 
-/* ============================= CAMERA ============================= */
-const cam = { x: TRACK.cx, y: TRACK.cy, zoom: 1 };
-function updateCamera(dt){
-  let tx, ty, tz;
-  if(state==='race' || state==='countdown'){
-    tx = player.x; ty = player.y;
-    tz = Math.max(1.3, Math.min(2.6, Math.min(viewport.w,viewport.h)/230));
-  } else {
-    tx = TRACK.cx; ty = TRACK.cy;
-    tz = Math.max(0.45, Math.min(1.1, Math.min(viewport.w/(TRACK.aOut*2+120), viewport.h/(TRACK.bOut*2+120))));
-  }
-  const k = Math.min(1, dt*3.2);
-  cam.x += (tx-cam.x)*k;
-  cam.y += (ty-cam.y)*k;
-  cam.zoom += (tz-cam.zoom)*k;
-}
-
 /* ============================= GAME STATE ============================= */
 let state = 'select';
 let karts = [];
@@ -592,11 +702,12 @@ const TARGET_ANGLE = FINISH_LAPS*Math.PI*2;
 const input = { left:false, right:false, brake:false, drift:false };
 
 function setupRace(){
-  const others = Object.keys(PALETTES).filter(k=>k!==chosenKey);
+  const playerPalette = buildPalette(Object.assign({}, customConfig, {label:'You'}));
+  const aiConfigs = [PRESETS.groomsman, PRESETS.bridesmaid, customConfig.outfitType==='gown' ? PRESETS.groom : PRESETS.bride];
   karts = [];
-  player = makeKart(chosenKey, true, 0);
+  player = makeKart(playerPalette, true, 0);
   karts.push(player);
-  others.forEach((k,i)=> karts.push(makeKart(k, false, i+1)));
+  aiConfigs.forEach((cfg,i)=> karts.push(makeKart(buildPalette(cfg), false, i+1)));
   raceTime = 0;
   items.forEach(it=>{ it.active=true; it.respawnAt=0; });
 
@@ -606,7 +717,7 @@ function setupRace(){
     const row = document.createElement('div');
     row.className = 'lbRow' + (k.isPlayer ? ' me' : '');
     const rank = document.createElement('div'); rank.className='lbRank'; rank.textContent='1';
-    const av = makeAvatarEl(k.key, 28);
+    const av = bustCanvas(k.p, 28);
     const name = document.createElement('div'); name.className='lbName'; name.textContent = k.p.label;
     row.appendChild(rank); row.appendChild(av); row.appendChild(name);
     lb.appendChild(row);
@@ -642,7 +753,7 @@ function endRace(){
   sorted.forEach((k,i)=>{
     const row = document.createElement('div'); row.className='resRow';
     const medal = document.createElement('div'); medal.className='resMedal'; medal.textContent = medals[i]||'';
-    const av = makeAvatarEl(k.key, 30);
+    const av = bustCanvas(k.p, 30);
     const label = document.createElement('div'); label.textContent = `${i+1}${['ST','ND','RD','TH'][Math.min(i,3)]} — ${k.p.label}${k.isPlayer?' (you)':''}`;
     row.appendChild(medal); row.appendChild(av); row.appendChild(label);
     box.appendChild(row);
@@ -676,157 +787,154 @@ function bindHold(id, prop){
 }
 bindHold('steerLeft','left'); bindHold('steerRight','right'); bindHold('boostBtn','drift');
 
-document.getElementById('startBtn').addEventListener('click', ()=>{ if(chosenKey) startCountdown(); });
+document.getElementById('startBtn').addEventListener('click', startCountdown);
 document.getElementById('againBtn').addEventListener('click', ()=>{
   document.getElementById('finishPanel').classList.add('hidden');
   document.getElementById('selectPanel').classList.remove('hidden');
 });
 
-buildAvatarCache();
-buildSelectCards();
 resize();
 
-/* ============================= TRACK DRAWING (world space) ============================= */
-function drawMowStripes(g, aBase, bBase, ringW, count, outward){
-  for(let i=count;i>=0;i--){
-    const a = outward ? aBase + i*ringW : aBase - i*ringW;
-    const b = outward ? bBase + i*ringW*(bBase/aBase) : bBase - i*ringW*(bBase/aBase);
-    if(a<=0 || b<=0) continue;
-    g.beginPath();
-    g.ellipse(TRACK.cx, TRACK.cy, a, b, 0, 0, Math.PI*2);
-    g.fillStyle = i%2===0 ? '#3ec14f' : '#36ab45';
-    g.fill();
-  }
+/* ============================= PSEUDO-3D RENDERING ============================= */
+function projectPoint(lat, z, camX, w, h){
+  const zc = Math.max(z, 1.5);
+  const scale = CAM_DEPTH/zc;
+  const ref = h/2; // tie both axes to the same reference so wide/short viewports don't distort the road
+  return {
+    x: w/2 + scale*(lat-camX)*ref,
+    y: h/2 + scale*CAM_HEIGHT*ref,
+    w: scale*ROAD_HALF_W*ref,
+    scale
+  };
 }
-function drawCurb(g, a, b){
-  const segments = 72;
-  for(let i=0;i<segments;i++){
-    const t = i/segments;
-    const ang = t*Math.PI*2;
-    const x = TRACK.cx+Math.cos(ang)*a, y = TRACK.cy+Math.sin(ang)*b;
-    const ang2 = ((i+1)/segments)*Math.PI*2;
-    const x2 = TRACK.cx+Math.cos(ang2)*a, y2 = TRACK.cy+Math.sin(ang2)*b;
-    const tangent = Math.atan2(y2-y, x2-x);
-    g.save();
-    g.translate(x,y);
-    g.rotate(tangent);
-    g.fillStyle = i%2===0 ? '#e6394a' : '#ffffff';
-    g.fillRect(-1, -7, 10, 14);
-    g.restore();
-  }
-}
-function drawStartLine(g){
-  const inP = {x:TRACK.cx+Math.cos(START_ANGLE)*TRACK.aIn, y:TRACK.cy+Math.sin(START_ANGLE)*TRACK.bIn};
-  const outP = {x:TRACK.cx+Math.cos(START_ANGLE)*TRACK.aOut, y:TRACK.cy+Math.sin(START_ANGLE)*TRACK.bOut};
-  const rows = 9;
-  const dx = (outP.x-inP.x)/rows, dy = (outP.y-inP.y)/rows;
-  const tangent = Math.atan2(dy,dx)+Math.PI/2;
-  const tx = Math.cos(tangent), ty = Math.sin(tangent);
-  for(let r=0;r<rows;r++){
-    for(let c=-1;c<=1;c+=2){
-      g.save();
-      const px = inP.x+dx*r+dx*0.5 + tx*c*8;
-      const py = inP.y+dy*r+dy*0.5 + ty*c*8;
-      g.translate(px,py);
-      g.rotate(Math.atan2(dy,dx));
-      g.fillStyle = (r+ (c>0?1:0))%2===0 ? '#1b1b1f' : '#ffffff';
-      g.fillRect(-8,-Math.hypot(dx,dy)/2,16,Math.hypot(dx,dy));
-      g.restore();
-    }
-  }
-  g.save();
-  g.translate((inP.x+outP.x)/2, outP.y - (outP.y>TRACK.cy? 46 : -46));
-  g.font = 'bold 22px Courier New';
-  g.textAlign = 'center';
-  g.fillStyle = '#1b1b1f';
-  g.fillText('JUST MARRIED', 2, 2);
-  g.fillStyle = '#ffcc00';
-  g.fillText('JUST MARRIED', 0, 0);
-  g.restore();
-}
-function drawBushes(g){
-  BUSHES.forEach(b=>{
-    g.save();
-    g.translate(b.x,b.y);
-    g.scale(4,4);
-    pr(g,-3,-1,6,3,'#2c9a3c');
-    pr(g,-2,-2,4,2,'#36ab45');
-    g.restore();
+
+function renderChaseCam(g){
+  const w = viewport.w, h = viewport.h;
+  const horizonY = h*0.46;
+  g.fillStyle = '#5cb2ff'; g.fillRect(0,0,w,horizonY);
+  const grassGrad = g.createLinearGradient(0,horizonY,0,h);
+  grassGrad.addColorStop(0,'#3ec14f'); grassGrad.addColorStop(1,'#2c9a3c');
+  g.fillStyle = grassGrad; g.fillRect(0,horizonY,w,h-horizonY);
+
+  const zTotal = (player.totalAngle/(Math.PI*2)) * SEG_COUNT * SEGMENT_LEN;
+  const zSegF = zTotal/SEGMENT_LEN;
+  const baseIdx = Math.floor(zSegF) % SEG_COUNT;
+  const frac = zSegF - Math.floor(zSegF);
+  const camX = lateralOffset(player.x,player.y) * ROAD_HALF_W * 0.85;
+
+  // bucket dynamic sprites (AI karts + item boxes) by forward segment offset
+  const buckets = {};
+  function addBucket(rel, entry){ if(!buckets[rel]) buckets[rel]=[]; buckets[rel].push(entry); }
+  karts.forEach(k=>{
+    if(k.isPlayer) return;
+    const kZSeg = (k.totalAngle/(Math.PI*2))*SEG_COUNT;
+    let rel = Math.round(kZSeg) - Math.floor(zSegF);
+    while(rel < -SEG_COUNT/2) rel += SEG_COUNT;
+    while(rel > SEG_COUNT/2) rel -= SEG_COUNT;
+    if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'kart', obj:k});
   });
-}
-function drawItemBoxes(g){
   items.forEach(it=>{
     if(!it.active) return;
-    g.save();
-    g.translate(it.x, it.y+Math.sin(raceTime*4+it.x)*3);
-    g.scale(4,4);
-    pr(g,-3,-3,6,6,'#ffcc00');
-    pr(g,-3,-3,6,1.2,'#fff3b0');
-    pr(g,-1.6,-2.4,0.8,1.6,'#1b1b1f');
-    pr(g,-1.6,-0.6,0.8,0.8,'#1b1b1f');
-    pr(g,-2.2,-3,0.8,0.8,'#1b1b1f');
-    g.restore();
+    let rel = it.segIdx - baseIdx;
+    while(rel < 0) rel += SEG_COUNT;
+    if(rel<DRAW_DIST) addBucket(rel, {type:'item', obj:it});
   });
-}
-function drawTrack(g){
-  drawMowStripes(g, TRACK.aOut, TRACK.bOut, 22, 3, true);
-  drawMowStripes(g, TRACK.aIn, TRACK.bIn, 26, 4, false);
+  TREES.forEach(t=>{
+    let rel = t.segIdx - baseIdx;
+    while(rel < 0) rel += SEG_COUNT;
+    if(rel<DRAW_DIST) addBucket(rel, {type:'tree', obj:t});
+  });
 
-  g.beginPath();
-  g.ellipse(TRACK.cx,TRACK.cy,TRACK.aOut,TRACK.bOut,0,0,Math.PI*2);
-  g.fillStyle = '#57575f';
-  g.fill();
-  g.beginPath();
-  g.ellipse(TRACK.cx,TRACK.cy,TRACK.aIn,TRACK.bIn,0,0,Math.PI*2);
-  g.fillStyle = '#3ec14f';
-  g.fill();
+  let x = 0, dx = 0;
+  const posts = [];
+  for(let n=0;n<=DRAW_DIST;n++){
+    const idx = (baseIdx+n)%SEG_COUNT;
+    x += dx*SEGMENT_LEN;
+    dx += ROAD[idx].curve;
+    const z = (n+1-frac)*SEGMENT_LEN;
+    const pt = projectPoint(x, z, camX, w, h);
+    posts.push(Object.assign(pt, {idx, roadX:x, z}));
+  }
 
-  g.save();
-  g.strokeStyle = '#ffffff';
-  g.lineWidth = 4;
-  g.setLineDash([16,14]);
-  g.beginPath();
-  g.ellipse(TRACK.cx,TRACK.cy,MID_A,MID_B,0,0,Math.PI*2);
-  g.stroke();
-  g.setLineDash([]);
-  g.restore();
+  for(let n=DRAW_DIST; n>=1; n--){
+    const p1 = posts[n-1], p2 = posts[n];
+    if(p2.y < horizonY-2) continue;
+    const seg = ROAD[p1.idx];
+    const roadCol = seg.alt ? '#57575f' : '#4d4d54';
+    const rumbleCol = seg.alt ? '#e6394a' : '#ffffff';
+    quad(g, p1.x,p1.y,p1.w*1.18, p2.x,p2.y,p2.w*1.18, rumbleCol);
+    quad(g, p1.x,p1.y,p1.w, p2.x,p2.y,p2.w, roadCol);
+    if(seg.dash){ quad(g, p1.x,p1.y,p1.w*0.045, p2.x,p2.y,p2.w*0.045, '#ffffff'); }
 
-  drawCurb(g, TRACK.aOut, TRACK.bOut);
-  drawCurb(g, TRACK.aIn, TRACK.bIn);
-  drawStartLine(g);
-  drawBushes(g);
-  drawItemBoxes(g);
-}
-
-function drawKarts(g){
-  const sorted = [...karts].sort((x,y)=>x.y-y.y);
-  sorted.forEach(k=>{
-    g.save();
-    g.translate(k.x, k.y);
-    g.rotate(k.heading + Math.PI);
-    g.scale(3.4,3.4);
-    drawKartSprite(g, k.p, k.boostTier, k.key==='bride', k.key==='groom');
-    g.restore();
-    if(k.isPlayer){
-      g.save();
-      g.translate(k.x, k.y-40);
-      g.font='bold 14px Courier New';
-      g.textAlign='center';
-      g.fillStyle='#1b1b1f';
-      g.fillText('▼',1,1);
-      g.fillStyle='#ffcc00';
-      g.fillText('▼',0,0);
-      g.restore();
+    const bucket = buckets[n];
+    if(bucket){
+      bucket.forEach(entry=>{
+        if(entry.type==='kart'){
+          const k = entry.obj;
+          const lat = p1.roadX + lateralOffset(k.x,k.y)*ROAD_HALF_W*0.85;
+          const sp = projectPoint(lat, p1.z, camX, w, h);
+          drawBillboardKart(g, sp, k.p, k.boostTier);
+        } else if(entry.type==='item'){
+          const sp = projectPoint(p1.roadX, p1.z, camX, w, h);
+          drawBillboardItem(g, sp);
+        } else if(entry.type==='tree'){
+          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*1.7;
+          const sp = projectPoint(lat, p1.z, camX, w, h);
+          drawBillboardTree(g, sp);
+        }
+      });
     }
-  });
+  }
+
+  drawForegroundKart(g, w, h);
+}
+
+function drawBillboardKart(g, sp, p, boostTier){
+  const size = Math.max(3, sp.scale*220);
+  g.save();
+  g.translate(sp.x, sp.y - size*0.42);
+  g.scale(size/22, size/22);
+  drawFullKartBack(g, p, boostTier);
+  g.restore();
+}
+function drawBillboardItem(g, sp){
+  const size = Math.max(3, sp.scale*140);
+  g.save();
+  g.translate(sp.x, sp.y - size*0.3);
+  g.scale(size/8, size/8);
+  pr(g,-3,-3,6,6,'#ffcc00');
+  pr(g,-3,-3,6,1.2,'#fff3b0');
+  pr(g,-1.6,-2.4,0.8,1.6,'#1b1b1f');
+  pr(g,-1.6,-0.6,0.8,0.8,'#1b1b1f');
+  pr(g,-2.2,-3,0.8,0.8,'#1b1b1f');
+  g.restore();
+}
+function drawBillboardTree(g, sp){
+  const size = Math.max(3, sp.scale*260);
+  g.save();
+  g.translate(sp.x, sp.y - size*0.45);
+  g.scale(size/16, size/16);
+  pr(g,-1,2,2,4,'#7a5230');
+  pr(g,-4,-6,8,8,'#2c9a3c');
+  pr(g,-3,-9,6,5,'#36ab45');
+  g.restore();
+}
+function drawForegroundKart(g, w, h){
+  const lean = (input.left?-1:0) + (input.right?1:0);
+  const unit = h*0.018;
+  g.save();
+  g.translate(w/2 + lean*unit*1.4, h - 8*unit);
+  g.scale(unit, unit);
+  drawFullKartBack(g, player.p, player.boostTier);
+  g.restore();
 }
 
 function drawMinimap(g){
   if(state!=='race' && state!=='countdown') return;
-  const mmW=84, mmH=56;
-  const pad = 12;
-  const originX = viewport.w - mmW - pad - 10;
-  const originY = viewport.h - mmH - pad - 10;
+  const mmW=78, mmH=52;
+  const pad = 10;
+  const originX = viewport.w - mmW - pad - 8;
+  const originY = viewport.h - mmH - pad - 8;
   g.save();
   roundRectPath(g, originX-8, originY-8, mmW+16, mmH+16, 10);
   g.fillStyle = 'rgba(27,27,31,0.55)';
@@ -895,20 +1003,16 @@ function frame(now){
     }
   }
 
-  updateCamera(dt);
-
   ctx.clearRect(0,0,viewport.w,viewport.h);
-  ctx.fillStyle = '#3ec14f';
-  ctx.fillRect(0,0,viewport.w,viewport.h);
-  ctx.save();
-  ctx.translate(viewport.w/2 - cam.x*cam.zoom, viewport.h/2 - cam.y*cam.zoom);
-  ctx.scale(cam.zoom, cam.zoom);
-  drawTrack(ctx);
-  if(state==='race' || state==='countdown') drawKarts(ctx);
-  ctx.restore();
-
-  drawMinimap(ctx);
-  if(state==='select' || state==='finish') drawConfetti(ctx);
+  if(state==='race' || state==='countdown'){
+    renderChaseCam(ctx);
+    drawMinimap(ctx);
+  } else {
+    const horizonY = viewport.h*0.46;
+    ctx.fillStyle = '#5cb2ff'; ctx.fillRect(0,0,viewport.w,horizonY);
+    ctx.fillStyle = '#3ec14f'; ctx.fillRect(0,horizonY,viewport.w,viewport.h-horizonY);
+    drawConfetti(ctx);
+  }
 
   requestAnimationFrame(frame);
 }
