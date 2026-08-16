@@ -290,9 +290,11 @@ function clamp(v,lo,hi){ return v<lo?lo:(v>hi?hi:v); }
 const PRIMARY_COLORS = ['#1fb6b0','#d4506b','#3ec14f','#e8b830','#2c3e6b','#fff8ec','#9b59b6'];
 const ACCENT_COLORS = ['#ffffff','#d4506b','#e8b830','#1fb6b0','#9b59b6'];
 
+// Outfits are fixed per person -- only the car's own colour and trim are
+// customisable, so picking a car colour never repaints Paul or Mairead.
 const PRESETS = {
-  groom: { outfitType:'suit', skin:'#f0b892', hair:'#7a5230', primary:'#1fb6b0', accent:'#ffffff', label:'Paul' },
-  bride: { outfitType:'gown', skin:'#f3c39f', hair:'#3a2415', primary:'#fff8ec', accent:'#d4506b', label:'Mairead' }
+  groom: { outfitType:'suit', skin:'#f0b892', hair:'#7a5230', outfitColor:'#1fb6b0', outfitAccent:'#ffffff', label:'Paul' },
+  bride: { outfitType:'gown', skin:'#f3c39f', hair:'#3a2415', outfitColor:'#fff8ec', outfitAccent:'#d4506b', label:'Mairead' }
 };
 
 function buildPalette(cfg){
@@ -302,9 +304,9 @@ function buildPalette(cfg){
     outfitType: cfg.outfitType,
     skin: cfg.skin, skinHi, skinLo,
     hair: cfg.hair, hairHi: shade(cfg.hair, 0.18), hairLo: shade(cfg.hair, -0.2),
-    outfit: cfg.primary, outfitDark: shade(cfg.primary,-0.24), outfitLight: shade(cfg.primary, 0.15),
-    kart: cfg.primary, kartDark: shade(cfg.primary,-0.28), kartLight: shade(cfg.primary, 0.18),
-    trim: cfg.accent, accessory: cfg.accent,
+    outfit: cfg.outfitColor, outfitDark: shade(cfg.outfitColor,-0.24), outfitLight: shade(cfg.outfitColor, 0.15),
+    kart: cfg.carColor, kartDark: shade(cfg.carColor,-0.28), kartLight: shade(cfg.carColor, 0.18),
+    trim: cfg.carAccent, accessory: cfg.outfitAccent,
     label: cfg.label || 'Guest'
   };
 }
@@ -347,12 +349,14 @@ function drawFace(g, p, cx, cy, isGown){
   pr(g,cx+2.4,cy+8,1.6,1.1,'#f0a898');
   pr(g,cx-0.5,cy+8.4,1,1.3,p.skinLo);
 
-  // A clear upward-curving smile with dimples at the corners.
-  pr(g,cx-1.8,cy+10.4,3.6,0.8,'#a84f46');
-  pr(g,cx-2.4,cy+9.8,0.8,0.8,'#a84f46');
-  pr(g,cx+1.6,cy+9.8,0.8,0.8,'#a84f46');
-  pr(g,cx-2.9,cy+10,0.8,0.8,'#d69a86');
-  pr(g,cx+2.1,cy+10,0.8,0.8,'#d69a86');
+  // Bright red lips curving into a clear smile, with dimples at the corners.
+  pr(g,cx-2.2,cy+9.9,4.4,0.7,'#c41f1f');
+  pr(g,cx-2,cy+10.5,4,1.1,'#e8342a');
+  pr(g,cx-2.6,cy+10.1,0.8,0.8,'#e8342a');
+  pr(g,cx+1.8,cy+10.1,0.8,0.8,'#e8342a');
+  pr(g,cx-0.6,cy+10.6,1.2,0.4,'#ff8a7a');
+  pr(g,cx-3.2,cy+10.3,0.8,0.8,'#d69a86');
+  pr(g,cx+2.4,cy+10.3,0.8,0.8,'#d69a86');
 
   if(isGown){
     pr(g,cx-6,cy-1,12,4,p.hair);
@@ -408,47 +412,56 @@ function drawCoupleCar(g, pA, pB, boostTier, frameTime){
   const sway = Math.sin(frameTime*3)*1.1;
 
   // Dangling cans + "Just Married" ribbon trailing off the back bumper.
-  pr(g,-9,10,1,5+sway*0.2,'#c9c9c9');
-  pr(g,-9.5,15+sway*0.2,2,2.2,'#d8d8d8');
-  pr(g,6,10,1,6+sway*0.3,'#c9c9c9');
-  pr(g,5.5,16+sway*0.3,2,2.2,'#d8d8d8');
-  pr(g,-13,10.5,26,3.4,'#fff8ec');
-  pr(g,-13,11.4,26,0.8,pA.trim);
-  pr(g,-11,11.6,2,1,'#c8302a'); pr(g,-6,11.6,2,1,'#c8302a'); pr(g,1,11.6,2,1,'#c8302a'); pr(g,6,11.6,2,1,'#c8302a');
+  pr(g,-11,10,1,5+sway*0.2,'#c9c9c9');
+  pr(g,-11.5,15+sway*0.2,2,2.2,'#d8d8d8');
+  pr(g,8,10,1,6+sway*0.3,'#c9c9c9');
+  pr(g,7.5,16+sway*0.3,2,2.2,'#d8d8d8');
+  pr(g,-16,10.5,32,3.4,'#fff8ec');
+  pr(g,-16,11.4,32,0.8,pA.trim);
+  pr(g,-13,11.6,2,1,'#c8302a'); pr(g,-7,11.6,2,1,'#c8302a'); pr(g,1,11.6,2,1,'#c8302a'); pr(g,7,11.6,2,1,'#c8302a');
 
-  pr(g,-7,9,2.5,3.6,'#6e6e74');
+  // Headrests behind each rider.
+  pr(g,-11.2,-2,4.4,4,shade(pA.kart,-0.14));
+  pr(g,6.8,-2,4.4,4,shade(pA.kart,-0.14));
+
+  pr(g,-9,9,2.5,3.6,'#6e6e74');
   pr(g,-1,9,2.5,3.6,'#6e6e74');
-  pr(g,4.5,9,2.5,3.6,'#6e6e74');
+  pr(g,7,9,2.5,3.6,'#6e6e74');
 
-  pr(g,-19,1,5,10.5,'#1a1018');
-  pr(g,-18.5,2,4,8.5,'#2a2028');
-  pr(g,14,1,5,10.5,'#1a1018');
-  pr(g,14.5,2,4,8.5,'#2a2028');
+  // Wheels with a hubcap highlight.
+  pr(g,-23,1,5.5,11,'#1a1018');
+  pr(g,-22.3,2.2,4.1,8.6,'#2a2028');
+  pr(g,-21,4.6,1.7,1.7,'#7a7a80');
+  pr(g,17.5,1,5.5,11,'#1a1018');
+  pr(g,18.2,2.2,4.1,8.6,'#2a2028');
+  pr(g,19.6,4.6,1.7,1.7,'#7a7a80');
 
-  // Low, wide convertible body -- reads as a car, not a buggy -- roomy enough for two.
-  pr(g,-15,-2,30,10.5,pA.kart);
-  pr(g,-15,-2,30,2.2,pA.kartLight);
-  pr(g,-15,6.5,30,2,pA.kartDark);
-  pr(g,-16,0,2,7,pA.kartDark);
-  pr(g,14,0,2,7,pA.kartDark);
-  pr(g,-14,7,3,1.6,'#e2572c'); pr(g,11,7,3,1.6,'#e2572c');
+  // Low, wide convertible body -- reads as a car, roomy enough for two.
+  pr(g,-18,-2,36,10.5,pA.kart);
+  pr(g,-18,-2,36,2.2,pA.kartLight);
+  pr(g,-18,6.5,36,2,pA.kartDark);
+  pr(g,-19,0,2,7,pA.kartDark);
+  pr(g,17,0,2,7,pA.kartDark);
+  pr(g,-0.3,-1,0.6,8,shade(pA.kart,-0.22));
+  pr(g,-17,7,3.4,1.8,'#e2572c'); pr(g,13.6,7,3.4,1.8,'#e2572c');
   pr(g,-3,5,6,2.6,'#f4f0e6');
-  pr(g,-13,-5,26,2.4,pA.trim);
-  pr(g,-13,-5,26,0.8,shade(pA.trim,0.25));
-  pr(g,-14,-5,1.5,4.4,pA.trim);
-  pr(g,12.5,-5,1.5,4.4,pA.trim);
+  pr(g,-1,5.6,2,1.4,pA.trim);
+  pr(g,-16,-5,32,2.4,pA.trim);
+  pr(g,-16,-5,32,0.8,shade(pA.trim,0.25));
+  pr(g,-17,-5,1.5,4.4,pA.trim);
+  pr(g,15.5,-5,1.5,4.4,pA.trim);
 
-  drawRiderTorso(g, pA, -8.5);
-  drawRiderTorso(g, pB, 8.5);
+  drawRiderTorso(g, pA, -10.5);
+  drawRiderTorso(g, pB, 10.5);
 
   if(boostTier>0){
     const cols = [['#d4506b','#f0889e'],['#e8b830','#f5d56a'],['#d4506b','#ffffff']];
     const [c1,c2] = cols[Math.min(boostTier,3)-1];
     const len = 4 + boostTier*3 + Math.random()*3;
-    pr(g,-9,13.5,4,len,c1);
-    pr(g,-8,14.5,2,len-2,c2);
-    pr(g,5,13.5,4,len,c1);
-    pr(g,6,14.5,2,len-2,c2);
+    pr(g,-11,13.5,4,len,c1);
+    pr(g,-10,14.5,2,len-2,c2);
+    pr(g,7,13.5,4,len,c1);
+    pr(g,8,14.5,2,len-2,c2);
   }
 }
 
@@ -471,14 +484,34 @@ function drawPixelHeart(g, cx, cy, size, color, hiColor){
   }
 }
 
-function drawPixelRing(g, cx, cy, size){
-  const s = size/8;
-  pr(g, cx-3*s, cy-1*s, s, 4*s, '#e8b830');
-  pr(g, cx+2*s, cy-1*s, s, 4*s, '#e8b830');
-  pr(g, cx-2*s, cy+2*s, 4*s, s, '#e8b830');
-  pr(g, cx-3*s, cy-1*s, s, s, '#f5d56a');
-  pr(g, cx-1*s, cy-4.5*s, 2*s, 2*s, '#8fd4ff');
-  pr(g, cx-0.5*s, cy-4*s, 1*s, 1*s, '#ffffff');
+function drawPixelRingBand(g, cx, cy, s, color, hiColor){
+  pr(g, cx-2.5*s, cy-3*s, 5*s, 1.2*s, color);
+  pr(g, cx-2.5*s, cy+1.8*s, 5*s, 1.2*s, color);
+  pr(g, cx-2.5*s, cy-3*s, 1.2*s, 5*s, color);
+  pr(g, cx+1.3*s, cy-3*s, 1.2*s, 5*s, color);
+  if(hiColor) pr(g, cx-2.5*s, cy-3*s, 1.2*s, 1.2*s, hiColor);
+}
+
+// Two interlocking wedding bands.
+function drawWeddingRings(g, cx, cy, size){
+  const s = size/11;
+  drawPixelRingBand(g, cx-1.7*s, cy+0.3*s, s, '#e8b830', '#f5d56a');
+  drawPixelRingBand(g, cx+1.7*s, cy+0.3*s, s, '#f0c860', '#fff0c0');
+}
+
+// A detailed engagement ring: a pronged setting holding a faceted gem.
+function drawEngagementRing(g, cx, cy, size){
+  const s = size/11;
+  pr(g, cx-2.5*s, cy+0.5*s, 5*s, 1.3*s, '#e8b830');
+  pr(g, cx-2.5*s, cy+0.5*s, 1.3*s, 3*s, '#e8b830');
+  pr(g, cx+1.2*s, cy+0.5*s, 1.3*s, 3*s, '#e8b830');
+  pr(g, cx-2.5*s, cy+0.5*s, 1.3*s, 1.3*s, '#f5d56a');
+  pr(g, cx-1.8*s, cy-2.2*s, 0.8*s, 1.2*s, '#c9a86a');
+  pr(g, cx+1*s, cy-2.2*s, 0.8*s, 1.2*s, '#c9a86a');
+  pr(g, cx-1.5*s, cy-3.6*s, 3*s, 1.4*s, '#8fd4ff');
+  pr(g, cx-1*s, cy-2.4*s, 2*s, 1.2*s, '#a8e0ff');
+  pr(g, cx-0.5*s, cy-4.4*s, 1*s, 1*s, '#ffffff');
+  pr(g, cx-1.1*s, cy-3.2*s, 0.6*s, 0.6*s, '#ffffff');
 }
 
 function drawWeddingBell(g, cx, cy, size, frameTime){
@@ -496,13 +529,14 @@ function drawWeddingBell(g, cx, cy, size, frameTime){
 
 /* ============================= BUILDER UI ============================= */
 // Paul and Mairead always ride together -- there's no need to choose between
-// them, so the only thing a guest customises is the car itself.
+// them, so the only thing a guest customises is the car's own colour and trim.
 let customConfig = { primary: PRIMARY_COLORS[0], accent: ACCENT_COLORS[0] };
 
 function couplePalettes(){
+  const car = { carColor: customConfig.primary, carAccent: customConfig.accent };
   return {
-    paul: buildPalette(Object.assign({}, PRESETS.groom, {primary:customConfig.primary, accent:customConfig.accent, label:PRESETS.groom.label})),
-    mairead: buildPalette(Object.assign({}, PRESETS.bride, {primary:customConfig.primary, accent:customConfig.accent, label:PRESETS.bride.label}))
+    paul: buildPalette(Object.assign({}, PRESETS.groom, car)),
+    mairead: buildPalette(Object.assign({}, PRESETS.bride, car))
   };
 }
 
@@ -553,23 +587,23 @@ const MAX_LATERAL = ROAD_HALF_W*2.4;
 
 const LEGS = [
   {len:650, curve:0},
-  {len:400, curve:0.014},
+  {len:400, curve:0.008},
   {len:260, curve:0},
-  {len:420, curve:-0.018},
+  {len:420, curve:-0.011},
   {len:260, curve:0},
-  {len:440, curve:0.022, jump:true},
+  {len:440, curve:0.013, jump:true},
   {len:220, curve:0},
-  {len:320, curve:-0.020},
+  {len:320, curve:-0.012},
   {len:220, curve:0},
-  {len:560, curve:0.010},
+  {len:560, curve:0.006},
   {len:320, curve:0},
-  {len:300, curve:-0.024, jump:true},
+  {len:300, curve:-0.014, jump:true},
   {len:220, curve:0},
-  {len:440, curve:0.018},
+  {len:440, curve:0.011},
   {len:260, curve:0},
-  {len:420, curve:-0.016},
+  {len:420, curve:-0.010},
   {len:260, curve:0},
-  {len:300, curve:0.026, jump:true},
+  {len:300, curve:0.016, jump:true},
   {len:220, curve:0},
   {len:700, curve:0}
 ];
@@ -612,7 +646,8 @@ const PICKUP_COUNT = Math.max(16, Math.round(FINISH_S/300));
 let items = Array.from({length:PICKUP_COUNT}, (_,i)=>{
   const t = (i+1)/(PICKUP_COUNT+1);
   const idx = Math.round(t*(PATH_LEN-1));
-  return { idx, side: (i%2===0)?0.5:-0.5, active:true, respawnAt:0, kind: (i%4===3)?'ring':'heart' };
+  const kind = (i%4===3) ? ((Math.floor(i/4)%2===0) ? 'weddingRings' : 'engagementRing') : 'heart';
+  return { idx, side: (i%2===0)?0.5:-0.5, active:true, respawnAt:0, kind };
 });
 
 const BOOST_PADS = [0.27,0.58,0.83].map(t=>({ idx: Math.round(t*(PATH_LEN-1)) }));
@@ -658,8 +693,8 @@ function makeCar(name){
 }
 let player = null;
 
-const MAX_SPEED = 130, ACCEL = 130, COAST_DECEL = 70, BRAKE_DECEL = 220;
-const STEER_SPEED = 34;
+const MAX_SPEED = 95, ACCEL = 100, COAST_DECEL = 55, BRAKE_DECEL = 170;
+const STEER_SPEED = 46;
 const CENTER_PULL = 0.9;
 
 function stepCar(k, dt, inp){
@@ -676,7 +711,7 @@ function stepCar(k, dt, inp){
     effSpeed += k.boost;
     if(k.boostTimer<=0){ k.boost=0; k.boostTier=0; }
   }
-  effSpeed = Math.min(effSpeed, MAX_SPEED + 165);
+  effSpeed = Math.min(effSpeed, MAX_SPEED + 130);
 
   // A gentle, constant pull toward the road centre plus the player's own
   // steering means casual players stay on the road almost by default,
@@ -699,15 +734,15 @@ function stepCar(k, dt, inp){
 
   items.forEach(it=>{
     if(it.active && Math.abs(it.idx-segIdx)<=1){
-      const itemLat = it.side*ROAD_HALF_W*1.1;
-      if(Math.abs(k.lateral-itemLat) < 4.6){
+      const itemLat = it.side*ROAD_HALF_W*0.6;
+      if(Math.abs(k.lateral-itemLat) < 6){
         it.active=false; it.respawnAt=raceTime+9;
-        if(it.kind==='ring'){
+        if(it.kind!=='heart'){
           k.love += 3;
-          k.boost = 140; k.boostTimer = 0.65; k.boostTier = 3;
+          k.boost = 110; k.boostTimer = 0.65; k.boostTier = 3;
         } else {
           k.love += 1;
-          k.boost = 100; k.boostTimer = 0.55; k.boostTier = 2;
+          k.boost = 75; k.boostTimer = 0.55; k.boostTier = 2;
         }
       }
     }
@@ -717,7 +752,7 @@ function stepCar(k, dt, inp){
     const ready = !pad.usedAt || (raceTime-pad.usedAt>2.5);
     if(near && ready){
       pad.usedAt = raceTime;
-      k.boost = 165; k.boostTimer = 0.7; k.boostTier = 3;
+      k.boost = 125; k.boostTimer = 0.7; k.boostTier = 3;
     }
   });
 
@@ -853,23 +888,36 @@ for(let i=0;i<16;i++){
 }
 
 function drawVenue(g, cx, cy, size){
+  // A small classical museum: wide steps, a colonnade and a shallow pediment
+  // instead of the steepled chapel this used to be.
   g.save();
   g.translate(cx,cy);
   g.scale(size/20, size/20);
-  pr(g,-10,-2,20,12,'#fff8ec');
-  pr(g,-10,-2,20,2,'#f0e6d0');
-  pr(g,-11,10,22,2,'#e8dcc0');
-  g.beginPath(); g.moveTo(-12,-2); g.lineTo(0,-16); g.lineTo(12,-2); g.closePath();
-  g.fillStyle = '#d4506b'; g.fill();
-  pr(g,-1.4,-15,2.8,4,'#d4506b');
-  pr(g,-0.6,-18,1.2,3.4,'#e8b830');
-  pr(g,-2.6,3,5.2,7,'#a83d55');
-  pr(g,-1.2,5.5,1,1,'#fff8ec');
-  pr(g,-7,1,3,4,'#8fd4ff'); pr(g,4,1,3,4,'#8fd4ff');
-  pr(g,13,4,0.8,7,'#6b4a2a');
-  pr(g,10.6,-1,6.4,4.6,'#fff8ec');
-  pr(g,10.6,-1,6.4,1,'#d4506b');
-  pr(g,11.6,0.6,1.2,1.2,'#c9a86a'); pr(g,13.4,0.6,1.2,1.2,'#c9a86a'); pr(g,15.2,0.6,1.2,1.2,'#c9a86a');
+
+  pr(g,-16,9,32,2,'#d8cdb0');
+  pr(g,-14,7,28,2,'#e6dcc0');
+
+  pr(g,-13,-6,26,13,'#f0ead8');
+  pr(g,-13,5,26,2,'#dcd0b0');
+
+  g.beginPath(); g.moveTo(-15,-6); g.lineTo(0,-13.5); g.lineTo(15,-6); g.closePath();
+  g.fillStyle = '#e8dcc0'; g.fill();
+  pr(g,-15,-6.8,30,1,'#c9bb98');
+  pr(g,-3.5,-10.5,7,2.4,'#d8cdb0');
+
+  for(let i=0;i<5;i++){
+    const px = -10 + i*5;
+    pr(g,px-1,-6,2,10,'#fff8ec');
+    pr(g,px-1.4,-6,2.8,1,'#d8cdb0');
+    pr(g,px-1.4,3.6,2.8,1,'#d8cdb0');
+  }
+  pr(g,-3.4,0.4,6.8,5.6,'#3a2f22');
+  pr(g,-2.4,1.4,4.8,4.6,'#241c14');
+
+  pr(g,17,4,0.8,7,'#6b4a2a');
+  pr(g,14.6,-1,6.4,4.6,'#fff8ec');
+  pr(g,14.6,-1,6.4,1,'#d4506b');
+  pr(g,15.6,0.6,1.2,1.2,'#c9a86a'); pr(g,17.4,0.6,1.2,1.2,'#c9a86a'); pr(g,19.2,0.6,1.2,1.2,'#c9a86a');
   g.restore();
 }
 
@@ -967,17 +1015,18 @@ function renderChaseCam(g){
     if(bucket){
       bucket.forEach(entry=>{
         if(entry.type==='heart'){
-          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*1.1;
+          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*0.6;
           const sp = projectPoint(lat, p1.z, camX, w, h);
-          const size = Math.max(11, sp.scale*480);
+          const size = Math.max(13, sp.scale*560);
           const bob = Math.sin(gameTime*3)*size*0.08;
-          drawPixelHeart(g, sp.x, sp.y - size*0.35 + bob, size, '#d4506b', '#f0889e');
-        } else if(entry.type==='ring'){
-          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*1.1;
+          drawPixelHeart(g, sp.x, sp.y - size*0.35 + bob, size, '#e8342a', '#ff7a6b');
+        } else if(entry.type==='weddingRings' || entry.type==='engagementRing'){
+          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*0.6;
           const sp = projectPoint(lat, p1.z, camX, w, h);
-          const size = Math.max(11, sp.scale*440);
+          const size = Math.max(13, sp.scale*520);
           const bob = Math.sin(gameTime*3)*size*0.08;
-          drawPixelRing(g, sp.x, sp.y - size*0.35 + bob, size);
+          if(entry.type==='weddingRings') drawWeddingRings(g, sp.x, sp.y - size*0.35 + bob, size);
+          else drawEngagementRing(g, sp.x, sp.y - size*0.35 + bob, size);
         } else if(entry.type==='bell'){
           const lat = p1.roadX + entry.obj.side*entry.obj.lat;
           const sp = projectPoint(lat, p1.z, camX, w, h);
@@ -1007,7 +1056,7 @@ function renderChaseCam(g){
           g.restore();
         } else if(entry.type==='venue'){
           const sp = projectPoint(p1.roadX, p1.z, camX, w, h);
-          const size = Math.max(6, sp.scale*900);
+          const size = Math.max(6, sp.scale*15000);
           drawVenue(g, sp.x, sp.y - size*0.55, size);
         }
       });
@@ -1030,7 +1079,7 @@ function renderChaseCam(g){
 
   // player car, in front of the road but behind the HUD
   const lean = clamp(player.lateral*0.06, -1, 1);
-  const unit = Math.min(h*0.0095, w*0.017);
+  const unit = Math.min(h*0.0095, w*0.0135);
   const hop = player.hopT>0 ? Math.sin((0.55-player.hopT)/0.55*Math.PI)*unit*4 : 0;
   g.save();
   g.translate(w/2 + lean*unit*3, h*0.82 - hop);
