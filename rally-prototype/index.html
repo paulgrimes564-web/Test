@@ -174,11 +174,14 @@
         <div class="statBox"><div class="k">Weight</div><div class="v">●●●○○</div></div>
       </div>
       <div class="toggleRow">
+        <button class="toggleBtn on" id="toggleAssist">Auto-Steer Assist: On</button>
         <button class="toggleBtn on" id="toggleTrans" data-mode="auto">Transmission: Auto</button>
         <button class="toggleBtn on" id="toggleVoice">Co-driver Voice: On</button>
       </div>
       <button class="mainBtn" id="startBtn">Start Stage</button>
       <small class="hint">
+        <b>With Auto-Steer Assist on</b> — the car holds its line through corners for you. Just work the throttle
+        and brake, and nudge steering to adjust the line or set up a drift.<br><br>
         <b>Keyboard</b> — W accelerate · S brake · A/D steer · Space handbrake · R reset<br>
         Manual shift (when Transmission: Manual) — E up · Q down · T toggle auto/manual<br>
         <b>Controller</b> — RT accel · LT brake · Stick steer · A handbrake · B down / X up · Y reset<br><br>
@@ -429,6 +432,7 @@ let activeCallout = null, calloutExpire = 0;
 const pnEl = document.getElementById('paceNote'), pnArrow = document.getElementById('pnArrow'),
       pnCode = document.getElementById('pnCode'), pnExtra = document.getElementById('pnExtra');
 let voiceEnabled = true;
+let autoSteerAssist = true;
 function speakCall(text, extra){
   if(!voiceEnabled || !('speechSynthesis' in window)) return;
   const spoken = text.replace('►','right').replace('◄','left').replace('→','then')
@@ -497,6 +501,12 @@ function stepCar(dt, inp){
   const segIdx = segIdxAt(car.s);
   const seg = ROAD[segIdx];
   const halfW = seg.halfW;
+
+  if(autoSteerAssist && !car.airborne){
+    const autoSteer = clamp(-car.psi*1.3 - car.n*0.011, -1, 1);
+    const autoWeight = inp.handbrake ? 0.15 : 0.85;
+    inp = Object.assign({}, inp, { steer: clamp(autoSteer*autoWeight + inp.steer*0.6, -1, 1) });
+  }
   const absN = Math.abs(car.n);
   const rumble = absN > halfW*0.82 && absN <= halfW;
   const offroad = absN > halfW;
@@ -776,6 +786,12 @@ document.getElementById('toggleVoice').addEventListener('click', ()=>{
   const b = document.getElementById('toggleVoice');
   b.textContent = 'Co-driver Voice: '+(voiceEnabled?'On':'Off');
   b.classList.toggle('on', voiceEnabled);
+});
+document.getElementById('toggleAssist').addEventListener('click', ()=>{
+  autoSteerAssist = !autoSteerAssist;
+  const b = document.getElementById('toggleAssist');
+  b.textContent = 'Auto-Steer Assist: '+(autoSteerAssist?'On':'Off');
+  b.classList.toggle('on', autoSteerAssist);
 });
 
 const cpMarksEl = document.getElementById('cpMarks');
