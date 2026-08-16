@@ -62,6 +62,20 @@
     line-height:1.4;
   }
 
+  .fieldLabel{
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size:11px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase;
+    opacity:.6; margin:8px 0 4px;
+  }
+  #nameField{
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size:15px; font-weight:600; color:var(--ink);
+    background:var(--white); border:2px solid var(--ink); border-radius:8px;
+    padding:9px 12px; width:min(240px,78vw); text-align:center;
+    margin-bottom:4px;
+  }
+  #nameField::placeholder{ color:#9a938a; font-weight:500; }
+
   #builder{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
   #previewCol{ display:flex; flex-direction:column; align-items:center; gap:6px; }
   #previewCanvas{ image-rendering:pixelated; background:linear-gradient(var(--sky),var(--grass) 72%); border:3px solid var(--ink); border-radius:10px; }
@@ -75,11 +89,6 @@
     color:var(--ink);
   }
   .presetBtn:active{ transform:translateY(2px); }
-  .fieldLabel{
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size:11px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase;
-    opacity:.6; margin:8px 0 4px;
-  }
   .outfitTabs{ display:flex; gap:6px; }
   .outfitTab{
     flex:1;
@@ -137,33 +146,28 @@
     font-variant-numeric: tabular-nums;
   }
   .hudLabel{ font-size:10px; font-weight:500; opacity:.55; letter-spacing:0.5px; }
-  #boostWrap{ width:90px; height:8px; border:2px solid var(--ink); background:rgba(0,0,0,.08); border-radius:4px; overflow:hidden; margin-top:4px;}
-  #boostBar{ height:100%; width:0%; background:var(--rose); transition:background .15s; }
 
-  #leaderboard{
-    position:fixed; top:calc(env(safe-area-inset-top,0px) + 12px); right:calc(env(safe-area-inset-right,0px) + 12px);
-    display:flex; flex-direction:column; gap:4px; z-index:5;
+  #progressWrap{
+    position:fixed; left:calc(env(safe-area-inset-left,0px) + 12px); bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
+    width:min(220px,40vw); z-index:5; pointer-events:none;
   }
-  .lbRow{
-    font-family: system-ui, -apple-system, sans-serif;
-    display:flex; align-items:center; gap:5px; order:4;
-    background:rgba(255,248,236,.9); border:2px solid var(--ink); border-radius:8px;
-    padding:3px 8px 3px 3px;
-  }
-  .lbRow.me{ background:rgba(212,80,107,.15); border-color:var(--rose); }
-  .lbRow canvas{ image-rendering:pixelated; border-radius:50%; border:2px solid var(--ink); background:var(--sky); }
-  .lbRank{ font-size:11px; font-weight:700; width:18px; text-align:center; color:var(--ink); }
-  .lbName{ font-size:10px; font-weight:600; color:var(--ink); max-width:60px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #progressTrack{ height:8px; background:rgba(255,255,255,.35); border-radius:4px; overflow:hidden; border:2px solid var(--ink); }
+  #progressFill{ height:100%; width:0%; background:linear-gradient(90deg,var(--gold),var(--rose)); }
+  #progressLabel{ font-family:system-ui,-apple-system,sans-serif; font-size:10px; font-weight:700; color:var(--white); text-shadow:0 1px 2px rgba(0,0,0,.5); margin-top:3px; letter-spacing:0.4px; }
 
   #resultBox{
     font-family: system-ui, -apple-system, sans-serif;
-    font-size:13px; margin:10px 0 16px;
-    display:flex; flex-direction:column; gap:6px;
+    font-size:13px; margin:10px 0 4px;
+    display:flex; flex-direction:column; gap:5px;
+    text-align:left; max-height:38vh; overflow-y:auto;
   }
-  .resRow{ display:flex; align-items:center; gap:10px; justify-content:center; }
-  .resRow canvas{ image-rendering:pixelated; border-radius:50%; border:2px solid var(--ink); background:var(--sky); }
-  .resRank{ font-weight:700; width:28px; text-align:right; font-size:13px; color:var(--ink); }
-  .resName{ text-align:left; color:var(--ink); }
+  .resRow{ display:flex; align-items:center; gap:8px; }
+  .resRow canvas{ image-rendering:pixelated; border-radius:50%; border:2px solid var(--ink); background:var(--sky); flex-shrink:0; }
+  .resRank{ font-weight:700; width:22px; text-align:right; font-size:13px; color:var(--ink); flex-shrink:0; }
+  .resName{ flex:1; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .resTime{ font-family:'Consolas','Menlo','Courier New',monospace; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .resRow.me{ background:rgba(212,80,107,.15); border-radius:8px; padding:3px 6px; margin:0 -6px; }
+  #resultHeading{ font-family:system-ui,-apple-system,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; opacity:.55; margin:6px 0 2px; }
 
   .ctrlBtn{
     position:fixed; z-index:6; pointer-events:auto;
@@ -172,7 +176,7 @@
     background:rgba(255,248,236,.88); border:3px solid var(--ink);
     color:var(--ink);
     font-family: system-ui, -apple-system, sans-serif;
-    font-size:clamp(14px,3.5vw,17px); font-weight:700;
+    font-size:clamp(13px,3.2vw,16px); font-weight:700;
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 3px 0 rgba(0,0,0,.2);
     display:none;
@@ -181,12 +185,14 @@
   .ctrlBtn:active{ transform:translateY(3px); box-shadow:none; }
   #steerLeft{ left:calc(env(safe-area-inset-left,0px) + 14px); bottom:calc(env(safe-area-inset-bottom,0px) + 20px); }
   #steerRight{ left:calc(env(safe-area-inset-left,0px) + 14px + clamp(68px,18vw,88px)); bottom:calc(env(safe-area-inset-bottom,0px) + 20px); }
-  #boostBtn{
-    right:calc(env(safe-area-inset-right,0px) + 16px); bottom:calc(env(safe-area-inset-bottom,0px) + 22px);
-    background:rgba(212,80,107,.85);
-    border-color:var(--rose-deep);
+  #brakeBtn{
+    right:calc(env(safe-area-inset-right,0px) + 16px); bottom:calc(env(safe-area-inset-bottom,0px) + 20px);
+  }
+  #gasBtn{
+    right:calc(env(safe-area-inset-right,0px) + 16px + clamp(68px,18vw,88px)); bottom:calc(env(safe-area-inset-bottom,0px) + 20px);
+    background:rgba(62,193,79,.75);
+    border-color:#1f7a2e;
     color:var(--white);
-    width:clamp(68px,18vw,88px); height:clamp(68px,18vw,88px);
   }
 </style>
 </head>
@@ -195,18 +201,20 @@
   <canvas id="game"></canvas>
 
   <div id="hud" class="hidden">
-    <div class="hudBox"><span class="hudLabel">Lap </span><span id="lapNum">1</span>/3</div>
-    <div class="hudBox">
-      <span id="timeNum">00:00.0</span>
-      <div id="boostWrap"><div id="boostBar"></div></div>
-    </div>
+    <div class="hudBox"><span class="hudLabel">Time </span><span id="timeNum">00:00.0</span></div>
+    <div class="hudBox"><span class="hudLabel">Love </span><span id="loveNum">0</span></div>
   </div>
-  <div id="leaderboard"></div>
+  <div id="progressWrap" class="hidden">
+    <div id="progressTrack"><div id="progressFill"></div></div>
+    <div id="progressLabel">To the venue</div>
+  </div>
 
   <div id="ui">
     <div class="panel" id="selectPanel">
       <h1 class="title">Mairead &amp; Paul's<br>Wedding Dash</h1>
-      <div class="subtitle">Help them get to the wedding on time!</div>
+      <div class="subtitle">Get ready to drive to the venue on time!</div>
+      <div class="fieldLabel">Guest Name</div>
+      <input id="nameField" type="text" placeholder="Enter your name" maxlength="18" autocomplete="off">
       <div id="builder">
         <div id="previewCol">
           <canvas id="previewCanvas" width="150" height="190"></canvas>
@@ -222,14 +230,14 @@
           <div class="swatchRow" id="skinRow"></div>
           <div class="fieldLabel">Hair Colour</div>
           <div class="swatchRow" id="hairRow"></div>
-          <div class="fieldLabel">Outfit Colour</div>
+          <div class="fieldLabel">Car Colour</div>
           <div class="swatchRow" id="primaryRow"></div>
           <div class="fieldLabel">Accent Colour</div>
           <div class="swatchRow" id="accentRow"></div>
         </div>
       </div>
-      <button class="mainBtn" id="startBtn">Start Race</button>
-      <small class="hint">Tap Left / Right to steer, hold Boost while turning to drift<br>On desktop: arrow keys or WASD, space to boost</small>
+      <button class="mainBtn" id="startBtn">Start Drive</button>
+      <small class="hint">Gas to go, Brake to slow, Left/Right to steer — the car helps hold the road for you.<br>Collect hearts for a speed boost and race the clock to the venue!</small>
     </div>
     <div class="panel hidden" id="countdownPanel" style="background:transparent;border:none;box-shadow:none;">
       <div id="countdownNum">3</div>
@@ -237,6 +245,7 @@
     <div class="panel hidden" id="finishPanel">
       <h1 class="title" id="finishTitle" style="font-size:clamp(20px,5vw,32px);">They made it!</h1>
       <div class="subtitle" id="finishSubtitle">Thanks for racing at our wedding!</div>
+      <div id="resultHeading">Venue Leaderboard</div>
       <div id="resultBox"></div>
       <button class="mainBtn" id="againBtn">Race Again</button>
     </div>
@@ -244,7 +253,8 @@
 
   <div class="ctrlBtn" id="steerLeft">Left</div>
   <div class="ctrlBtn" id="steerRight">Right</div>
-  <div class="ctrlBtn" id="boostBtn">Boost</div>
+  <div class="ctrlBtn" id="gasBtn">Gas</div>
+  <div class="ctrlBtn" id="brakeBtn">Brake</div>
 </div>
 
 <script>
@@ -272,7 +282,7 @@ window.addEventListener('orientationchange', ()=>setTimeout(resize,60));
 
 function updateControlVisibility(){
   const show = ('ontouchstart' in window) || viewport.w < 900;
-  ['steerLeft','steerRight','boostBtn'].forEach(id=>{
+  ['steerLeft','steerRight','gasBtn','brakeBtn'].forEach(id=>{
     document.getElementById(id).classList.toggle('show', show);
   });
 }
@@ -302,6 +312,7 @@ function shade(hex, pct){
   r=Math.max(0,Math.min(255,r)); g2=Math.max(0,Math.min(255,g2)); b=Math.max(0,Math.min(255,b));
   return '#'+((1<<24)+(r<<16)+(g2<<8)+b).toString(16).slice(1);
 }
+function clamp(v,lo,hi){ return v<lo?lo:(v>hi?hi:v); }
 
 /* ============================= PALETTE ============================= */
 const SKIN_TONES = ['#ffe0bd','#f0b892','#c68642','#8d5524','#5c3a21'];
@@ -315,10 +326,8 @@ const OUTFITS = [
 ];
 
 const PRESETS = {
-  groom:     { outfitType:'suit',  skin:'#f0b892', hair:'#7a5230', primary:'#1fb6b0', accent:'#ffffff', label:'Paul' },
-  bride:     { outfitType:'gown',  skin:'#f3c39f', hair:'#3a2415', primary:'#fff8ec', accent:'#d4506b', label:'Mairead' },
-  groomsman: { outfitType:'suit',  skin:'#e8a97a', hair:'#5a3a1a', primary:'#2c3e6b', accent:'#ffffff', label:'Best Man' },
-  bridesmaid:{ outfitType:'gown',  skin:'#f0c8a0', hair:'#241005', primary:'#9b59b6', accent:'#e8b830', label:'Bridesmaid' }
+  groom: { outfitType:'suit', skin:'#f0b892', hair:'#7a5230', primary:'#1fb6b0', accent:'#ffffff', label:'Paul' },
+  bride: { outfitType:'gown', skin:'#f3c39f', hair:'#3a2415', primary:'#fff8ec', accent:'#d4506b', label:'Mairead' }
 };
 
 function buildPalette(cfg){
@@ -331,11 +340,44 @@ function buildPalette(cfg){
     outfit: cfg.primary, outfitDark: shade(cfg.primary,-0.24), outfitLight: shade(cfg.primary, 0.15),
     kart: cfg.primary, kartDark: shade(cfg.primary,-0.28), kartLight: shade(cfg.primary, 0.18),
     trim: cfg.accent, accessory: cfg.accent,
-    label: cfg.label || 'Racer'
+    label: cfg.label || 'Guest'
   };
 }
 
 /* ============================= SPRITES ============================= */
+
+function drawFace(g, p, cx, cy, isGown){
+  // Head, hair and a warm smile -- shared by the builder preview and the in-car view.
+  pr(g,cx-5,cy,10,10,p.skin);
+  pr(g,cx-4.5,cy+0.5,9,1,p.skinHi);
+  pr(g,cx-3.5,cy+4.5,2,1,'#e8a898');
+  pr(g,cx+1.5,cy+4.5,2,1,'#e8a898');
+  pr(g,cx-3.5,cy+5.5,2.5,2.5,'#ffffff');
+  pr(g,cx+1,cy+5.5,2.5,2.5,'#ffffff');
+  pr(g,cx-2.5,cy+6,1.5,2,'#2a1f0e');
+  pr(g,cx+2,cy+6,1.5,2,'#2a1f0e');
+  pr(g,cx-2,cy+6.5,1,1,'#1b1b1f');
+  pr(g,cx+2.5,cy+6.5,1,1,'#1b1b1f');
+  pr(g,cx-2,cy+6,0.6,0.6,'#ffffff');
+  pr(g,cx+2.5,cy+6,0.6,0.6,'#ffffff');
+  pr(g,cx-0.5,cy+8,1,1.5,p.skinLo);
+  pr(g,cx-2,cy+10,1.4,0.9,'#c0645a');
+  pr(g,cx+0.6,cy+10,1.4,0.9,'#c0645a');
+  pr(g,cx-2,cy+9.6,4,0.7,'#a84f46');
+  if(isGown){
+    pr(g,cx-6,cy-1,12,4,p.hair);
+    pr(g,cx-6,cy-1,12,1.5,p.hairHi);
+    pr(g,cx-6,cy+2,1.5,9,p.hair);
+    pr(g,cx+4.5,cy+2,1.5,9,p.hair);
+    pr(g,cx-1,cy-2,2,2,'#ffffff');
+    pr(g,cx+0.5,cy-2.4,1,1,p.accessory);
+  } else {
+    pr(g,cx-5.5,cy-1,11,4,p.hair);
+    pr(g,cx-5.5,cy-1,11,1.5,p.hairHi);
+    pr(g,cx-5.5,cy+2,1.5,3,p.hair);
+    pr(g,cx+4,cy+2,1.5,3,p.hair);
+  }
+}
 
 function drawFullBodyFront(g, p, cw, ch, unit){
   g.imageSmoothingEnabled = false;
@@ -376,7 +418,8 @@ function drawFullBodyFront(g, p, cw, ch, unit){
     pr(g,3,-7,3,5,p.outfitDark);
     if(!isCasual){
       pr(g,-1.5,-7,3,12,'#ffffff');
-      pr(g,-1,-7,2,3.5,p.accessory);
+      pr(g,-1.6,-5.4,3.2,2.6,'#141416');
+      pr(g,-0.5,-4.5,1,1,p.accessory);
       pr(g,-0.5,-3,1,1,'#cccccc');
       pr(g,-0.5,0,1,1,'#cccccc');
       pr(g,-0.5,3,1,1,'#cccccc');
@@ -386,37 +429,7 @@ function drawFullBodyFront(g, p, cw, ch, unit){
   }
 
   pr(g,-2,-8.5,4,2.5,p.skin);
-  pr(g,-5,-18,10,10,p.skin);
-  pr(g,-4.5,-17.5,9,1,p.skinHi);
-
-  pr(g,-3.5,-13,2.5,2.5,'#ffffff');
-  pr(g,1,-13,2.5,2.5,'#ffffff');
-  pr(g,-2.5,-12.5,1.5,2,'#2a1f0e');
-  pr(g,2,-12.5,1.5,2,'#2a1f0e');
-  pr(g,-2,-12,1,1,'#1b1b1f');
-  pr(g,2.5,-12,1,1,'#1b1b1f');
-  pr(g,-2,-12.5,0.5,0.5,'#ffffff');
-  pr(g,2.5,-12.5,0.5,0.5,'#ffffff');
-
-  pr(g,-3.5,-14.5,3,1,p.hairLo);
-  pr(g,1,-14.5,3,1,p.hairLo);
-  pr(g,-0.5,-11,1,1.5,p.skinLo);
-  pr(g,-1.5,-9.5,3,1,'#c0645a');
-  pr(g,-1,-9.5,2,0.5,'#d4756b');
-
-  if(isGown){
-    pr(g,-6,-19,12,4,p.hair);
-    pr(g,-6,-19,12,1.5,p.hairHi);
-    pr(g,-6,-16,1.5,9,p.hair);
-    pr(g,4.5,-16,1.5,9,p.hair);
-    pr(g,-2,-20,4,2,'#ffffff');
-    pr(g,0,-20,1,1,p.accessory);
-  } else {
-    pr(g,-5.5,-19,11,4,p.hair);
-    pr(g,-5.5,-19,11,1.5,p.hairHi);
-    pr(g,-5.5,-16,1.5,3,p.hair);
-    pr(g,4,-16,1.5,3,p.hair);
-  }
+  drawFace(g, p, 0, -18, isGown);
 
   g.restore();
 }
@@ -424,7 +437,7 @@ function drawFullBodyFront(g, p, cw, ch, unit){
 function drawPortraitBust(g, p, cw, ch, unit){
   g.imageSmoothingEnabled = false;
   g.save();
-  g.translate(cw/2, ch*0.35);
+  g.translate(cw/2, ch*0.4);
   g.scale(unit,unit);
   const isGown = p.outfitType==='gown';
 
@@ -432,34 +445,12 @@ function drawPortraitBust(g, p, cw, ch, unit){
   pr(g,-8,6,16,1.5,p.outfitLight);
   if(!isGown){
     pr(g,-2,6,4,4,'#ffffff');
-    pr(g,-1,6,2,2.5,p.accessory);
+    pr(g,-1.7,6.2,3.4,3,'#141416');
   } else {
     pr(g,-8,6,16,2,'#ffffff');
   }
   pr(g,-2,4,4,3,p.skin);
-  pr(g,-5,-5,10,10,p.skin);
-  pr(g,-4.5,-4.5,9,1,p.skinHi);
-  pr(g,-3,-1,2,2,'#ffffff');
-  pr(g,1,-1,2,2,'#ffffff');
-  pr(g,-2,-.5,1.5,1.5,'#2a1f0e');
-  pr(g,1.5,-.5,1.5,1.5,'#2a1f0e');
-  pr(g,-1.5,0,1,1,'#1b1b1f');
-  pr(g,2,0,1,1,'#1b1b1f');
-  pr(g,-.5,2,1,1,p.skinLo);
-  pr(g,-1,3.5,2,.8,'#c0645a');
-
-  if(isGown){
-    pr(g,-6,-6,12,3.5,p.hair);
-    pr(g,-6,-6,12,1.2,p.hairHi);
-    pr(g,-6,-4,1.5,8,p.hair);
-    pr(g,4.5,-4,1.5,8,p.hair);
-    pr(g,-1,-7,2,1.5,'#ffffff');
-  } else {
-    pr(g,-5.5,-6,11,3,p.hair);
-    pr(g,-5.5,-6,11,1.2,p.hairHi);
-    pr(g,-5.5,-4,1.5,3,p.hair);
-    pr(g,4,-4,1.5,3,p.hair);
-  }
+  drawFace(g, p, 0, -6, isGown);
 
   g.restore();
 }
@@ -470,77 +461,70 @@ function bustCanvas(p, size){
   return c;
 }
 
-function drawFullKartBack(g, p, boostTier, frameTime){
+function drawWeddingCar(g, p, boostTier, frameTime){
   const isGown = p.outfitType==='gown';
-  const ft = frameTime || 0;
+  const sway = Math.sin(frameTime*3)*1.1;
 
-  pr(g,-3,9,2.5,4,'#6e6e74');
-  pr(g,0.5,9,2.5,4,'#6e6e74');
+  // Dangling cans + "Just Married" ribbon trailing off the back bumper.
+  pr(g,-6,10,1,5+sway*0.2,'#c9c9c9');
+  pr(g,-6.5,15+sway*0.2,2,2.2,'#d8d8d8');
+  pr(g,3,10,1,6+sway*0.3,'#c9c9c9');
+  pr(g,2.5,16+sway*0.3,2,2.2,'#d8d8d8');
+  pr(g,-9,10.5,18,3.4,'#fff8ec');
+  pr(g,-9,11.4,18,0.8,p.trim);
+  pr(g,-7,11.6,2,1,'#c8302a'); pr(g,-3,11.6,2,1,'#c8302a'); pr(g,1,11.6,2,1,'#c8302a'); pr(g,5,11.6,2,1,'#c8302a');
 
-  pr(g,-15,1,5,11,'#1a1018');
-  pr(g,-14.5,2,4,9,'#2a2028');
-  pr(g,10,1,5,11,'#1a1018');
-  pr(g,10.5,2,4,9,'#2a2028');
+  pr(g,-3,9,2.5,3.6,'#6e6e74');
+  pr(g,0.5,9,2.5,3.6,'#6e6e74');
 
-  pr(g,-10,-3,20,12,p.kart);
-  pr(g,-10,-3,20,2.5,p.kartLight);
-  pr(g,-10,7,20,2,p.kartDark);
-  pr(g,-11,-1,2,8,p.kartDark);
-  pr(g,9,-1,2,8,p.kartDark);
-  pr(g,-9,7,3,2,'#d4506b');
-  pr(g,6,7,3,2,'#d4506b');
-  pr(g,-3,5,6,3,'#ffffff');
+  pr(g,-15,1,5,10.5,'#1a1018');
+  pr(g,-14.5,2,4,8.5,'#2a2028');
+  pr(g,10,1,5,10.5,'#1a1018');
+  pr(g,10.5,2,4,8.5,'#2a2028');
 
-  pr(g,-9,-6,18,3,p.trim);
-  pr(g,-9,-6,18,1,shade(p.trim,0.2));
-  pr(g,-10,-6,1.5,5,p.trim);
-  pr(g,8.5,-6,1.5,5,p.trim);
+  // Low, wide convertible body -- reads as a car, not a buggy.
+  pr(g,-11,-2,22,10.5,p.kart);
+  pr(g,-11,-2,22,2.2,p.kartLight);
+  pr(g,-11,6.5,22,2,p.kartDark);
+  pr(g,-12,0,2,7,p.kartDark);
+  pr(g,10,0,2,7,p.kartDark);
+  pr(g,-10,7,3,1.6,'#e2572c'); pr(g,7,7,3,1.6,'#e2572c');
+  pr(g,-3,5,6,2.6,'#f4f0e6');
+  pr(g,-9,-5,18,2.4,p.trim);
+  pr(g,-9,-5,18,0.8,shade(p.trim,0.25));
+  pr(g,-10,-5,1.5,4.4,p.trim);
+  pr(g,8.5,-5,1.5,4.4,p.trim);
 
+  // Open cabin -- torso clearly visible above the doors, driving the car.
   if(isGown){
-    pr(g,-7,-13,14,9,p.outfit);
-    pr(g,-7,-13,14,2,p.outfitLight);
-    pr(g,-7,-6,14,2,p.outfitDark);
+    pr(g,-6.5,-11,13,7.5,p.outfit);
+    pr(g,-6.5,-11,13,1.8,p.outfitLight);
+    pr(g,-6.5,-5,13,1.6,p.accessory);
   } else {
-    pr(g,-6,-13,12,9,p.outfit);
-    pr(g,-6,-13,12,2,p.outfitLight);
-    pr(g,-6,-6,12,2,p.outfitDark);
-    pr(g,-6,-13,2,5,p.outfitDark);
-    pr(g,4,-13,2,5,p.outfitDark);
+    pr(g,-6,-11,12,7.5,p.outfit);
+    pr(g,-6,-11,12,1.8,p.outfitLight);
+    pr(g,-6,-11,2.6,5,p.outfitDark);
+    pr(g,3.4,-11,2.6,5,p.outfitDark);
+    pr(g,-1.4,-11,2.8,7.5,'#ffffff');
+    pr(g,-1.5,-9.6,3,2.4,'#141416');
+    pr(g,-0.4,-8.6,1,1,p.accessory);
   }
 
-  pr(g,-8,-10,2.5,4,p.outfit);
-  pr(g,-8,-7,2.5,2,p.skin || '#f0b892');
-  pr(g,5.5,-10,2.5,4,p.outfit);
-  pr(g,5.5,-7,2.5,2,p.skin || '#f0b892');
+  pr(g,-8,-8.5,2.6,4,p.outfit);
+  pr(g,-8,-5.4,2.6,1.8,p.skin);
+  pr(g,5.4,-8.5,2.6,4,p.outfit);
+  pr(g,5.4,-5.4,2.6,1.8,p.skin);
 
-  pr(g,-5,-21,10,9,p.skin || '#f0b892');
-  pr(g,-4.5,-20.5,9,1,p.skinHi || '#ffeedd');
-  pr(g,-5,-13,10,1,p.skinLo || '#d09070');
-  pr(g,-5.5,-18,1,3,p.skin || '#f0b892');
-  pr(g,4.5,-18,1,3,p.skin || '#f0b892');
-
-  if(isGown){
-    pr(g,-6,-22,12,4,p.hair);
-    pr(g,-6,-22,12,1.5,p.hairHi);
-    pr(g,-6,-19,1.5,7,p.hair);
-    pr(g,4.5,-19,1.5,7,p.hair);
-    pr(g,-1,-23,2,2,'#ffffff');
-    pr(g,0,-23.5,1,1,p.accessory);
-  } else {
-    pr(g,-5.5,-22,11,4,p.hair);
-    pr(g,-5.5,-22,11,1.5,p.hairHi);
-    pr(g,-5.5,-19,1.5,3,p.hair);
-    pr(g,4,-19,1.5,3,p.hair);
-  }
+  drawFace(g, p, 0, -21, isGown);
 
   if(boostTier>0){
     const cols = [['#d4506b','#f0889e'],['#e8b830','#f5d56a'],['#d4506b','#ffffff']];
     const [c1,c2] = cols[Math.min(boostTier,3)-1];
     const len = 4 + boostTier*3 + Math.random()*3;
-    pr(g,-5,12,4,len,c1);
-    pr(g,-4,13,2,len-2,c2);
-    pr(g,1,12,4,len,c1);
-    pr(g,2,13,2,len-2,c2);
+    pr(g,-5,13.5,4,len,c1);
+    pr(g,-4,14.5,2,len-2,c2);
+    pr(g,1,13.5,4,len,c1);
+    pr(g,2,14.5,2,len-2,c2);
   }
 }
 
@@ -619,57 +603,71 @@ document.getElementById('presetGroom').addEventListener('click', ()=>{ customCon
 document.getElementById('presetBride').addEventListener('click', ()=>{ customConfig=Object.assign({},PRESETS.bride); refreshBuilderUI(); });
 refreshBuilderUI();
 
-/* ============================= TRACK ============================= */
-const TRACK = { cx: 480, cy: 300, aOut: 430, bOut: 250, aIn: 220, bIn: 105 };
-const MID_A = (TRACK.aOut+TRACK.aIn)/2, MID_B = (TRACK.bOut+TRACK.bIn)/2;
-const BAND_HALF = ((TRACK.aOut-TRACK.aIn)/2)/MID_A;
-const START_ANGLE = -Math.PI/2;
+const nameField = document.getElementById('nameField');
+try{ nameField.value = localStorage.getItem('weddingDashName') || ''; }catch(e){}
 
-function centerlinePoint(t){
-  const ang = t*Math.PI*2;
-  return { x: TRACK.cx + Math.cos(ang)*MID_A, y: TRACK.cy + Math.sin(ang)*MID_B, ang };
-}
-const WAYPOINT_COUNT = 72;
-const WAYPOINTS = [];
-for(let i=0;i<WAYPOINT_COUNT;i++) WAYPOINTS.push(centerlinePoint(i/WAYPOINT_COUNT));
-
-function onTrack(x,y){
-  const dx = x-TRACK.cx, dy = y-TRACK.cy;
-  return (dx/TRACK.aOut)**2 + (dy/TRACK.bOut)**2 <= 1.02 &&
-         (dx/TRACK.aIn)**2 + (dy/TRACK.bIn)**2 >= 0.98;
-}
-function lateralOffset(x,y){
-  const dx=x-TRACK.cx, dy=y-TRACK.cy;
-  const midNorm = Math.sqrt((dx/MID_A)**2 + (dy/MID_B)**2);
-  return Math.max(-1.5, Math.min(1.5, (midNorm-1)/BAND_HALF));
-}
-
-/* ============================= ROAD MODEL ============================= */
-const SEG_COUNT = 300;
-const SEGMENT_LEN = 12;
-const ROAD_HALF_W = 6;
+/* ============================= PATH (point-to-point) ============================= */
+const SEGMENT_LEN = 10;
+const ROAD_HALF_W = 7;
 const CAM_HEIGHT = 1.3;
 const CAM_DEPTH = 1/Math.tan((100/2)*Math.PI/180);
 const DRAW_DIST = 100;
+const MAX_LATERAL = ROAD_HALF_W*2.4;
 
-const ROAD = [];
-(function(){
-  for(let i=0;i<SEG_COUNT;i++){
-    const p0=centerlinePoint(i/SEG_COUNT), p1=centerlinePoint((i+1)/SEG_COUNT), p2=centerlinePoint((i+2)/SEG_COUNT);
-    const h0=Math.atan2(p1.y-p0.y,p1.x-p0.x), h1=Math.atan2(p2.y-p1.y,p2.x-p1.x);
-    let dh=h1-h0; while(dh>Math.PI)dh-=Math.PI*2; while(dh<-Math.PI)dh+=Math.PI*2;
-    ROAD.push({ curve: dh, alt: Math.floor(i/3)%2===0, dash: Math.floor(i/6)%2===0 });
-  }
+const LEGS = [
+  {len:400, curve:0},
+  {len:300, curve:0.007},
+  {len:220, curve:0},
+  {len:300, curve:-0.009},
+  {len:220, curve:0},
+  {len:260, curve:0.012, jump:true},
+  {len:180, curve:0},
+  {len:240, curve:-0.012},
+  {len:180, curve:0},
+  {len:340, curve:0.005},
+  {len:260, curve:0},
+  {len:220, curve:-0.010, jump:true},
+  {len:180, curve:0},
+  {len:260, curve:0.010},
+  {len:450, curve:0}
+];
+
+const PATH = [];
+(function buildPath(){
+  let heading = 0, x = 0, y = 0, cum = 0;
+  PATH.push({x,y,curve:0,jump:false,s:0});
+  LEGS.forEach(leg=>{
+    const nSeg = Math.max(1, Math.round(leg.len/SEGMENT_LEN));
+    const segLen = leg.len/nSeg;
+    for(let i=0;i<nSeg;i++){
+      heading += leg.curve*segLen;
+      x += Math.cos(heading)*segLen;
+      y += Math.sin(heading)*segLen;
+      cum += segLen;
+      PATH.push({x,y,curve:leg.curve*segLen,jump:!!leg.jump && i<Math.ceil(nSeg*0.4),s:cum});
+    }
+  });
 })();
+const PATH_LEN = PATH.length;
+const FINISH_S = PATH[PATH_LEN-1].s;
 
-const TREES = [];
-for(let i=0;i<SEG_COUNT;i+=7){ TREES.push({segIdx:i, side:(i/7)%2===0?1:-1}); }
+const ALT = i => Math.floor(i/3)%2===0;
+const DASH = i => Math.floor(i/6)%2===0;
 
-const ITEM_T = [0.08,0.22,0.36,0.5,0.64,0.78,0.92];
-let items = ITEM_T.map(t=>{
-  const cp = centerlinePoint(t);
-  return {x:cp.x, y:cp.y, active:true, respawnAt:0, segIdx: Math.round(t*SEG_COUNT)};
+/* ============================= ROADSIDE DECOR ============================= */
+const BUSHES = [];
+for(let i=6;i<PATH_LEN-4;i+=6){
+  const side = (i/6)%2===0 ? 1 : -1;
+  BUSHES.push({ idx:i, side, lat: ROAD_HALF_W + 2.2 + (Math.sin(i*12.9898)*0.5+0.5)*2.2 });
+}
+
+const HEART_T = [0.05,0.14,0.22,0.31,0.4,0.48,0.56,0.64,0.72,0.8,0.88,0.95];
+let items = HEART_T.map((t,i)=>{
+  const idx = Math.round(t*(PATH_LEN-1));
+  return { idx, side: (i%2===0)?0.5:-0.5, active:true, respawnAt:0 };
 });
+
+const BOOST_PADS = [0.27,0.58,0.83].map(t=>({ idx: Math.round(t*(PATH_LEN-1)) }));
 
 /* ============================= CONFETTI (hearts) ============================= */
 const HEART_COLORS = ['#d4506b','#e87090','#f0a0b0','#ffffff','#e8b830'];
@@ -700,78 +698,28 @@ function drawConfetti(g){
   });
 }
 
-/* ============================= KART ENTITY ============================= */
-function makeKart(palette, isPlayer, startIndex){
-  const spread = 0.028;
-  const t0 = (START_ANGLE/(Math.PI*2)) - startIndex*spread - 0.01;
-  const startFrac = ((t0%1)+1)%1;
-  const startPos = centerlinePoint(startFrac);
-  const ahead = centerlinePoint((((t0+0.01)%1)+1)%1);
+/* ============================= CAR ENTITY ============================= */
+function makeCar(palette){
   return {
-    p: palette, isPlayer,
-    x: startPos.x, y: startPos.y,
-    heading: Math.atan2(ahead.y-startPos.y, ahead.x-startPos.x),
-    speed:0,
-    wpIndex: (Math.floor(startFrac*WAYPOINT_COUNT)+1)%WAYPOINT_COUNT,
-    totalAngle: 0, prevAngle: null, lap:0,
-    startSeg: Math.round(startFrac * SEG_COUNT),
-    drifting:false, driftTime:0, boost:0, boostTimer:0, boostTier:0,
-    finished:false, aiSpeed: 150+Math.random()*24,
-    rank:1, rowEl:null
+    p: palette,
+    idx: 0, lateral: 0, speed: 0,
+    boost:0, boostTimer:0, boostTier:0,
+    love: 0, finished:false, hopT:0
   };
 }
+let player = null;
 
-const MAX_SPEED = 260, ACCEL = 240, BRAKE = 320, OFFTRACK_MULT = 0.42, TURN_RATE = 2.6;
+const MAX_SPEED = 230, ACCEL = 210, COAST_DECEL = 90, BRAKE_DECEL = 300;
+const STEER_SPEED = 34;
+const CENTER_PULL = 0.9;
 
-function angleAround(x,y){
-  return Math.atan2((y-TRACK.cy)/MID_B, (x-TRACK.cx)/MID_A);
-}
-function updateKartProgress(k){
-  const ang = angleAround(k.x,k.y);
-  if(k.prevAngle===null) k.prevAngle = ang;
-  let d = ang - k.prevAngle;
-  while(d>Math.PI) d-=Math.PI*2;
-  while(d<-Math.PI) d+=Math.PI*2;
-  k.totalAngle += d;
-  k.prevAngle = ang;
-  k.lap = Math.max(0, Math.floor(k.totalAngle/(Math.PI*2)));
-}
-function applyBoost(k, tier){
-  k.boost = [0, 90, 150, 230][tier];
-  k.boostTimer = [0, 0.35, 0.55, 0.85][tier];
-  k.boostTier = tier;
-}
+function stepCar(k, dt, inp){
+  if(k.finished) return;
 
-function stepKart(k, dt, inp){
-  const onT = onTrack(k.x, k.y);
-  const speedMult = onT ? 1 : OFFTRACK_MULT;
-  k.speed += ACCEL*dt;
-  if(inp.brake) k.speed -= BRAKE*dt;
-  k.speed = Math.max(0, Math.min(MAX_SPEED*speedMult, k.speed));
-
-  const target = WAYPOINTS[k.wpIndex];
-  const wdx = target.x-k.x, wdy = target.y-k.y;
-  if(Math.hypot(wdx,wdy) < 34) k.wpIndex = (k.wpIndex+1)%WAYPOINT_COUNT;
-  const desired = Math.atan2(wdy,wdx);
-  let autoSteer = desired - k.heading;
-  while(autoSteer>Math.PI) autoSteer-=Math.PI*2;
-  while(autoSteer<-Math.PI) autoSteer+=Math.PI*2;
-
-  const turnFactor = Math.max(0.25, Math.min(1, k.speed/120));
-  k.heading += Math.max(-1,Math.min(1,autoSteer*2.2))*TURN_RATE*turnFactor*dt;
-  let turning = (inp.left?-1:0) + (inp.right?1:0);
-  k.heading += turning*TURN_RATE*0.8*turnFactor*dt;
-
-  if(inp.drift && turning!==0 && k.speed > 60){
-    k.drifting = true;
-    k.driftTime += dt;
-  } else {
-    if(k.drifting){
-      let tier = k.driftTime>0.9?3 : k.driftTime>0.5?2 : k.driftTime>0.22?1 : 0;
-      if(tier>0) applyBoost(k, tier);
-    }
-    k.drifting = false; k.driftTime = 0;
-  }
+  if(inp.gas) k.speed += ACCEL*dt;
+  else k.speed -= COAST_DECEL*dt;
+  if(inp.brake) k.speed -= BRAKE_DECEL*dt;
+  k.speed = clamp(k.speed, 0, MAX_SPEED);
 
   let effSpeed = k.speed;
   if(k.boostTimer>0){
@@ -779,76 +727,70 @@ function stepKart(k, dt, inp){
     effSpeed += k.boost;
     if(k.boostTimer<=0){ k.boost=0; k.boostTier=0; }
   }
+  effSpeed = Math.min(effSpeed, MAX_SPEED*1.3);
 
-  k.x += Math.cos(k.heading)*effSpeed*dt;
-  k.y += Math.sin(k.heading)*effSpeed*dt;
-  updateKartProgress(k);
+  // A gentle, constant pull toward the road centre plus the player's own
+  // steering means casual players stay on the road almost by default,
+  // while steering input still meaningfully shifts the line for pickups.
+  const steerInput = (inp.left?-1:0) + (inp.right?1:0);
+  k.lateral += (steerInput*STEER_SPEED - k.lateral*CENTER_PULL)*dt;
+  k.lateral = clamp(k.lateral, -MAX_LATERAL, MAX_LATERAL);
 
-  items.forEach(it=>{
-    if(it.active){
-      const dx=it.x-k.x, dy=it.y-k.y;
-      if(dx*dx+dy*dy < 26*26){ it.active=false; it.respawnAt = raceTime+4; applyBoost(k, 2); }
-    }
-  });
-}
+  k.idx += (effSpeed*dt)/SEGMENT_LEN;
+  k.idx = clamp(k.idx, 0, PATH_LEN-1);
 
-function stepAI(k, dt){
-  const target = WAYPOINTS[k.wpIndex];
-  const dx = target.x-k.x, dy=target.y-k.y;
-  if(Math.hypot(dx,dy) < 34) k.wpIndex = (k.wpIndex+1)%WAYPOINT_COUNT;
-  const desired = Math.atan2(dy,dx);
-  let diff = desired - k.heading;
-  while(diff>Math.PI) diff-=Math.PI*2;
-  while(diff<-Math.PI) diff+=Math.PI*2;
+  const offroad = Math.abs(k.lateral) > ROAD_HALF_W;
+  if(offroad) k.speed *= (1 - dt*0.9);
 
-  const speedMult = onTrack(k.x,k.y)?1:OFFTRACK_MULT;
-  k.speed += (k.aiSpeed*speedMult - k.speed) * Math.min(1, dt*2.2);
-  k.heading += Math.max(-1,Math.min(1,diff*2.2)) * TURN_RATE*Math.max(0.3, Math.min(1, k.speed/120))*dt;
+  if(k.hopT>0) k.hopT = Math.max(0, k.hopT-dt);
 
-  let effSpeed = k.speed;
-  if(Math.abs(diff) > 0.35 && Math.random()<0.02) applyBoost(k,1);
-  if(k.boostTimer>0){ k.boostTimer-=dt; effSpeed += k.boost; if(k.boostTimer<=0){k.boost=0;k.boostTier=0;} }
-
-  k.x += Math.cos(k.heading)*effSpeed*dt;
-  k.y += Math.sin(k.heading)*effSpeed*dt;
-  updateKartProgress(k);
+  const segIdx = Math.round(k.idx);
+  const seg = PATH[Math.min(PATH_LEN-1,segIdx)];
+  if(seg && seg.jump && k.hopT<=0 && effSpeed>40){ k.hopT = 0.55; }
 
   items.forEach(it=>{
-    if(it.active){
-      const ddx=it.x-k.x, ddy=it.y-k.y;
-      if(ddx*ddx+ddy*ddy < 26*26){ it.active=false; it.respawnAt=raceTime+4; applyBoost(k,1); }
+    if(it.active && Math.abs(it.idx-segIdx)<=1){
+      const itemLat = it.side*ROAD_HALF_W*1.1;
+      if(Math.abs(k.lateral-itemLat) < 4.2){
+        it.active=false; it.respawnAt=raceTime+9;
+        k.love += 1;
+        k.boost = 70; k.boostTimer = 0.5; k.boostTier = 2;
+      }
     }
   });
+  BOOST_PADS.forEach(pad=>{
+    const near = Math.abs(pad.idx-segIdx)<=1;
+    const ready = !pad.usedAt || (raceTime-pad.usedAt>2.5);
+    if(near && ready){
+      pad.usedAt = raceTime;
+      k.boost = 100; k.boostTimer = 0.6; k.boostTier = 3;
+    }
+  });
+
+  if(!k.finished && seg && seg.s >= FINISH_S-1){
+    k.finished = true;
+  }
 }
 
 /* ============================= GAME STATE ============================= */
-let state = 'select', karts = [], player = null;
-let raceTime = 0, gameTime = 0, countdownVal = 3, countdownTimer = 0;
-const FINISH_LAPS = 3, TARGET_ANGLE = FINISH_LAPS*Math.PI*2;
-const input = { left:false, right:false, brake:false, drift:false };
+let state = 'select', raceTime = 0, gameTime = 0, countdownVal = 3, countdownTimer = 0;
+const input = { left:false, right:false, gas:false, brake:false };
+
+const LEADERBOARD_KEY = 'weddingDashLeaderboard';
+function loadLeaderboard(){
+  try{ return JSON.parse(localStorage.getItem(LEADERBOARD_KEY)) || []; }catch(e){ return []; }
+}
+function saveLeaderboard(list){
+  try{ localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(list.slice(0,20))); }catch(e){}
+}
 
 function setupRace(){
-  const playerPalette = buildPalette(Object.assign({}, customConfig, {label:'You'}));
-  const aiConfigs = [PRESETS.groomsman, PRESETS.bridesmaid, customConfig.outfitType==='gown' ? PRESETS.groom : PRESETS.bride];
-  karts = [];
-  aiConfigs.forEach((cfg,i)=> karts.push(makeKart(buildPalette(cfg), false, i)));
-  player = makeKart(playerPalette, true, aiConfigs.length);
-  karts.push(player);
+  const playerName = (nameField.value||'').trim().slice(0,18) || 'Guest';
+  try{ localStorage.setItem('weddingDashName', playerName); }catch(e){}
+  player = makeCar(buildPalette(Object.assign({}, customConfig, {label:playerName})));
   raceTime = 0;
   items.forEach(it=>{ it.active=true; it.respawnAt=0; });
-
-  const lb = document.getElementById('leaderboard');
-  lb.innerHTML = '';
-  karts.forEach(k=>{
-    const row = document.createElement('div');
-    row.className = 'lbRow' + (k.isPlayer ? ' me' : '');
-    const rank = document.createElement('div'); rank.className='lbRank'; rank.textContent='1st';
-    const av = bustCanvas(k.p, 28);
-    const name = document.createElement('div'); name.className='lbName'; name.textContent = k.p.label;
-    row.appendChild(rank); row.appendChild(av); row.appendChild(name);
-    lb.appendChild(row);
-    k.rowEl = row; k.rankEl = rank;
-  });
+  BOOST_PADS.forEach(p=>{ p.usedAt = 0; });
 }
 
 function startCountdown(){
@@ -860,50 +802,67 @@ function startCountdown(){
   document.getElementById('countdownPanel').classList.remove('hidden');
   document.getElementById('countdownNum').textContent = countdownVal;
   document.getElementById('hud').classList.add('hidden');
+  document.getElementById('progressWrap').classList.add('hidden');
 }
 function beginRace(){
   document.getElementById('countdownPanel').classList.add('hidden');
   document.getElementById('hud').classList.remove('hidden');
+  document.getElementById('progressWrap').classList.remove('hidden');
   state = 'race';
 }
 function endRace(){
   state = 'finish';
   document.getElementById('hud').classList.add('hidden');
-  const sorted = [...karts].sort((a,b)=>b.totalAngle-a.totalAngle);
-  const playerRank = sorted.indexOf(player)+1;
-  const titles = ['They made it!', '2nd Place', '3rd Place', '4th Place'];
-  document.getElementById('finishTitle').textContent = titles[playerRank-1] || titles[3];
-  document.getElementById('finishSubtitle').textContent = playerRank===1
-    ? 'Mairead and Paul got to the wedding on time!'
-    : 'So close! Thanks for racing at our wedding.';
+  document.getElementById('progressWrap').classList.add('hidden');
+
+  const list = loadLeaderboard();
+  const entry = { name: player.p.label, time: raceTime, palette: {
+    outfitType: player.p.outfitType, skin: customConfig.skin, hair: customConfig.hair,
+    primary: customConfig.primary, accent: customConfig.accent
+  }};
+  list.push(entry);
+  list.sort((a,b)=>a.time-b.time);
+  const trimmed = list.slice(0,20);
+  saveLeaderboard(trimmed);
+  const myRank = trimmed.indexOf(entry);
+
+  document.getElementById('finishTitle').textContent = 'They made it!';
+  document.getElementById('finishSubtitle').textContent = myRank===0
+    ? 'Fastest to the venue so far -- Mairead and Paul thank you!'
+    : 'Mairead and Paul made it to the venue on time!';
+
   const box = document.getElementById('resultBox');
   box.innerHTML = '';
-  const suffixes = ['st','nd','rd','th'];
-  sorted.forEach((k,i)=>{
-    const row = document.createElement('div'); row.className='resRow';
-    const rank = document.createElement('div'); rank.className='resRank'; rank.textContent = `${i+1}${suffixes[Math.min(i,3)]}`;
-    const av = bustCanvas(k.p, 30);
-    const nm = document.createElement('div'); nm.className='resName'; nm.textContent = `${k.p.label}${k.isPlayer?' (you)':''}`;
-    row.appendChild(rank); row.appendChild(av); row.appendChild(nm);
+  trimmed.forEach((e,i)=>{
+    const row = document.createElement('div'); row.className='resRow'+(e===entry?' me':'');
+    const rank = document.createElement('div'); rank.className='resRank'; rank.textContent = (i+1)+'.';
+    const av = bustCanvas(buildPalette(Object.assign({},e.palette,{label:e.name})), 28);
+    const nm = document.createElement('div'); nm.className='resName'; nm.textContent = e.name;
+    const tm = document.createElement('div'); tm.className='resTime'; tm.textContent = fmtTime(e.time);
+    row.appendChild(rank); row.appendChild(av); row.appendChild(nm); row.appendChild(tm);
     box.appendChild(row);
   });
   document.getElementById('finishPanel').classList.remove('hidden');
   spawnConfetti(80);
+}
+function fmtTime(t){
+  const mm = Math.floor(t/60).toString().padStart(2,'0');
+  const ss = (t%60).toFixed(1).padStart(4,'0');
+  return `${mm}:${ss}`;
 }
 
 /* ============================= INPUT ============================= */
 window.addEventListener('keydown', e=>{
   if(['ArrowLeft','a','A'].includes(e.key)) input.left = true;
   if(['ArrowRight','d','D'].includes(e.key)) input.right = true;
+  if(['ArrowUp','w','W'].includes(e.key)) input.gas = true;
   if(['ArrowDown','s','S'].includes(e.key)) input.brake = true;
-  if([' ','Shift','ArrowUp','w','W'].includes(e.key)) input.drift = true;
-  if(e.key===' ') e.preventDefault();
 });
 window.addEventListener('keyup', e=>{
   if(['ArrowLeft','a','A'].includes(e.key)) input.left = false;
   if(['ArrowRight','d','D'].includes(e.key)) input.right = false;
+  if(['ArrowUp','w','W'].includes(e.key)) input.gas = false;
   if(['ArrowDown','s','S'].includes(e.key)) input.brake = false;
-  if([' ','Shift','ArrowUp','w','W'].includes(e.key)) input.drift = false;
 });
 function bindHold(id, prop){
   const el = document.getElementById(id);
@@ -914,7 +873,8 @@ function bindHold(id, prop){
   el.addEventListener('pointercancel', off);
   el.addEventListener('pointerleave', off);
 }
-bindHold('steerLeft','left'); bindHold('steerRight','right'); bindHold('boostBtn','drift');
+bindHold('steerLeft','left'); bindHold('steerRight','right');
+bindHold('gasBtn','gas'); bindHold('brakeBtn','brake');
 
 document.getElementById('startBtn').addEventListener('click', startCountdown);
 document.getElementById('againBtn').addEventListener('click', ()=>{
@@ -939,6 +899,23 @@ for(let i=0;i<10;i++){
 const HILLS = [];
 for(let i=0;i<16;i++){
   HILLS.push({ x: i/16, h: 10+Math.random()*24, w: 0.06+Math.random()*0.07 });
+}
+
+function drawVenue(g, cx, cy, size){
+  g.save();
+  g.translate(cx,cy);
+  g.scale(size/20, size/20);
+  pr(g,-10,-2,20,12,'#fff8ec');
+  pr(g,-10,-2,20,2,'#f0e6d0');
+  pr(g,-11,10,22,2,'#e8dcc0');
+  g.beginPath(); g.moveTo(-12,-2); g.lineTo(0,-16); g.lineTo(12,-2); g.closePath();
+  g.fillStyle = '#d4506b'; g.fill();
+  pr(g,-1.4,-15,2.8,4,'#d4506b');
+  pr(g,-0.6,-18,1.2,3.4,'#e8b830');
+  pr(g,-2.6,3,5.2,7,'#a83d55');
+  pr(g,-1.2,5.5,1,1,'#fff8ec');
+  pr(g,-7,1,3,4,'#8fd4ff'); pr(g,4,1,3,4,'#8fd4ff');
+  g.restore();
 }
 
 function renderChaseCam(g){
@@ -973,41 +950,34 @@ function renderChaseCam(g){
   grassGrad.addColorStop(1,'#2c9a3c');
   g.fillStyle = grassGrad; g.fillRect(0,horizonY,w,h-horizonY);
 
-  const zTotal = (player.totalAngle/(Math.PI*2)) * SEG_COUNT * SEGMENT_LEN;
-  const zSegF = zTotal/SEGMENT_LEN;
-  const baseIdx = ((Math.floor(zSegF) + player.startSeg) % SEG_COUNT + SEG_COUNT) % SEG_COUNT;
-  const frac = zSegF - Math.floor(zSegF);
-  const camX = lateralOffset(player.x,player.y) * ROAD_HALF_W * 0.85;
+  const baseIdx = clamp(Math.floor(player.idx), 0, PATH_LEN-1);
+  const frac = player.idx - baseIdx;
+  const camX = player.lateral*0.85;
 
   const buckets = {};
   function addBucket(rel, entry){ if(!buckets[rel]) buckets[rel]=[]; buckets[rel].push(entry); }
-  karts.forEach(k=>{
-    if(k.isPlayer) return;
-    const kZSeg = (k.totalAngle/(Math.PI*2))*SEG_COUNT;
-    const kAbsSeg = ((Math.round(kZSeg) + k.startSeg) % SEG_COUNT + SEG_COUNT) % SEG_COUNT;
-    let rel = kAbsSeg - baseIdx;
-    while(rel < -SEG_COUNT/2) rel += SEG_COUNT;
-    while(rel > SEG_COUNT/2) rel -= SEG_COUNT;
-    if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'kart', obj:k});
-  });
   items.forEach(it=>{
     if(!it.active) return;
-    let rel = it.segIdx - baseIdx;
-    while(rel < 0) rel += SEG_COUNT;
-    if(rel<DRAW_DIST) addBucket(rel, {type:'heart', obj:it});
+    const rel = it.idx - baseIdx;
+    if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'heart', obj:it});
   });
-  TREES.forEach(t=>{
-    let rel = t.segIdx - baseIdx;
-    while(rel < 0) rel += SEG_COUNT;
-    if(rel<DRAW_DIST) addBucket(rel, {type:'tree', obj:t});
+  BUSHES.forEach(bIt=>{
+    const rel = bIt.idx - baseIdx;
+    if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'bush', obj:bIt});
   });
+  BOOST_PADS.forEach(padIt=>{
+    const rel = padIt.idx - baseIdx;
+    if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'pad', obj:padIt});
+  });
+  const venueRel = (PATH_LEN-1) - baseIdx;
+  if(venueRel>=0 && venueRel<DRAW_DIST) addBucket(venueRel, {type:'venue'});
 
   let x = 0, dx = 0;
   const posts = [];
   for(let n=0;n<=DRAW_DIST;n++){
-    const idx = (baseIdx+n)%SEG_COUNT;
+    const idx = Math.min(PATH_LEN-1, baseIdx+n);
     x += dx*SEGMENT_LEN;
-    dx += ROAD[idx].curve;
+    dx += PATH[idx].curve;
     const z = (n+1-frac)*SEGMENT_LEN;
     const pt = projectPoint(x, z, camX, w, h);
     posts.push(Object.assign(pt, {idx, roadX:x, z}));
@@ -1016,90 +986,72 @@ function renderChaseCam(g){
   for(let n=DRAW_DIST; n>=1; n--){
     const p1 = posts[n-1], p2 = posts[n];
     if(p2.y < horizonY-2) continue;
-    const seg = ROAD[p1.idx];
-    const roadCol = seg.alt ? '#5a5a62' : '#4e4e56';
-    const rumbleCol = seg.alt ? '#d4506b' : '#ffffff';
-    const grassCol = seg.alt ? '#3ec14f' : '#35a843';
+    const idx = p1.idx;
+    const roadCol = ALT(idx) ? '#5a5a62' : '#4e4e56';
+    const rumbleCol = ALT(idx) ? '#d4506b' : '#ffffff';
+    const grassCol = ALT(idx) ? '#3ec14f' : '#35a843';
 
     quad(g, p1.x,p1.y,p1.w*3.5, p2.x,p2.y,p2.w*3.5, grassCol);
     quad(g, p1.x,p1.y,p1.w*1.25, p2.x,p2.y,p2.w*1.25, rumbleCol);
     quad(g, p1.x,p1.y,p1.w, p2.x,p2.y,p2.w, roadCol);
     quad(g, p1.x-p1.w*0.96,p1.y,p1.w*0.035, p2.x-p2.w*0.96,p2.y,p2.w*0.035, '#ffffff99');
     quad(g, p1.x+p1.w*0.96,p1.y,p1.w*0.035, p2.x+p2.w*0.96,p2.y,p2.w*0.035, '#ffffff99');
-    if(seg.dash){ quad(g, p1.x,p1.y,p1.w*0.025, p2.x,p2.y,p2.w*0.025, '#ffffff'); }
-    if(p1.idx===0 || p1.idx===1){
+    if(DASH(idx)){ quad(g, p1.x,p1.y,p1.w*0.025, p2.x,p2.y,p2.w*0.025, '#ffffff'); }
+    if(idx===0 || idx===1){
+      quad(g, p1.x,p1.y,p1.w*0.9, p2.x,p2.y,p2.w*0.9, '#ffffffcc');
+    }
+    if(idx>=PATH_LEN-2){
       quad(g, p1.x,p1.y,p1.w*0.9, p2.x,p2.y,p2.w*0.9, '#ffffffcc');
     }
 
     const bucket = buckets[n];
     if(bucket){
       bucket.forEach(entry=>{
-        if(entry.type==='kart'){
-          const k = entry.obj;
-          const lat = p1.roadX + lateralOffset(k.x,k.y)*ROAD_HALF_W*0.85;
+        if(entry.type==='heart'){
+          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*1.1;
           const sp = projectPoint(lat, p1.z, camX, w, h);
-          const size = Math.max(3, sp.scale*260);
-          g.save();
-          g.translate(sp.x, sp.y - size*0.42);
-          g.scale(size/26, size/26);
-          drawFullKartBack(g, k.p, k.boostTier, gameTime);
-          g.restore();
-        } else if(entry.type==='heart'){
-          const sp = projectPoint(p1.roadX, p1.z, camX, w, h);
           const size = Math.max(4, sp.scale*200);
           const bob = Math.sin(gameTime*3)*size*0.08;
           drawPixelHeart(g, sp.x, sp.y - size*0.35 + bob, size*0.7, '#d4506b', '#f0889e');
-        } else if(entry.type==='tree'){
-          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*1.8;
-          const sp = projectPoint(lat, p1.z, camX, w, h);
-          const size = Math.max(3, sp.scale*320);
-          g.save();
-          g.translate(sp.x, sp.y - size*0.45);
-          g.scale(size/20, size/20);
-          pr(g,-1.5,4,3,6,'#7a5230');
-          pr(g,-1,4.5,1,5,'#8a6240');
-          pr(g,-6,-4,12,8,'#2c9a3c');
-          pr(g,-5,-8,10,6,'#36ab45');
-          pr(g,-3,-11,6,4,'#40bc50');
+        } else if(entry.type==='pad'){
+          const sp = projectPoint(p1.roadX, p1.z, camX, w, h);
+          const sw = p1.w*1.6;
+          g.save(); g.translate(sp.x, sp.y);
+          g.fillStyle = 'rgba(232,184,48,0.85)';
+          g.beginPath();
+          g.moveTo(-sw*0.5,4); g.lineTo(0,-6); g.lineTo(sw*0.5,4);
+          g.lineTo(sw*0.25,4); g.lineTo(0,-1); g.lineTo(-sw*0.25,4);
+          g.closePath(); g.fill();
           g.restore();
+        } else if(entry.type==='bush'){
+          const lat = p1.roadX + entry.obj.side*entry.obj.lat;
+          const sp = projectPoint(lat, p1.z, camX, w, h);
+          const size = Math.max(3, sp.scale*280);
+          g.save();
+          g.translate(sp.x, sp.y - size*0.4);
+          g.scale(size/20, size/20);
+          pr(g,-1.2,3,2.4,5,'#5a4530');
+          pr(g,-6,-3,12,7,'#2c9a3c');
+          pr(g,-5,-7,10,6,'#e87090');
+          pr(g,-3,-10,6,4,'#f0a0b0');
+          g.restore();
+        } else if(entry.type==='venue'){
+          const sp = projectPoint(p1.roadX, p1.z, camX, w, h);
+          const size = Math.max(6, sp.scale*900);
+          drawVenue(g, sp.x, sp.y - size*0.55, size);
         }
       });
     }
   }
 
-  // foreground kart
-  const lean = (input.left?-1:0) + (input.right?1:0);
-  const unit = h*0.011;
+  // player car, in front of the road but behind the HUD
+  const lean = clamp(player.lateral*0.06, -1, 1);
+  const unit = h*0.01;
+  const hop = player.hopT>0 ? Math.sin((0.55-player.hopT)/0.55*Math.PI)*unit*4 : 0;
   g.save();
-  g.translate(w/2 + lean*unit*2.2, h - 4*unit);
+  g.translate(w/2 + lean*unit*3, h*0.815 - hop);
   g.scale(unit, unit);
-  drawFullKartBack(g, player.p, player.boostTier, gameTime);
-  g.restore();
-}
-
-function drawMinimap(g){
-  if(state!=='race' && state!=='countdown') return;
-  const mmW=72, mmH=48;
-  const originX = viewport.w - mmW - 18;
-  const originY = viewport.h - mmH - 18;
-  g.save();
-  roundRectPath(g, originX-6, originY-6, mmW+12, mmH+12, 8);
-  g.fillStyle = 'rgba(255,248,236,0.85)';
-  g.fill();
-  g.strokeStyle = 'rgba(27,27,31,0.3)';
-  g.lineWidth = 1.5;
-  g.stroke();
-  g.beginPath();
-  g.ellipse(originX+mmW/2, originY+mmH/2, mmW/2, mmH/2, 0,0,Math.PI*2);
-  g.strokeStyle='rgba(27,27,31,0.25)'; g.lineWidth=1.5; g.stroke();
-  karts.forEach(k=>{
-    const nx = (k.x-TRACK.cx)/TRACK.aOut, ny=(k.y-TRACK.cy)/TRACK.bOut;
-    const px = originX+mmW/2 + nx*(mmW/2-3);
-    const py = originY+mmH/2 + ny*(mmH/2-3);
-    g.fillStyle = k.isPlayer ? '#d4506b' : k.p.kart;
-    g.beginPath(); g.arc(px,py, k.isPlayer?4:2.5, 0, Math.PI*2); g.fill();
-    if(k.isPlayer){ g.strokeStyle='#d4506b'; g.lineWidth=1; g.stroke(); }
-  });
+  drawWeddingCar(g, player.p, player.boostTier, gameTime);
   g.restore();
 }
 
@@ -1129,28 +1081,14 @@ function frame(now){
 
   if(state==='race'){
     raceTime += dt;
-    stepKart(player, dt, input);
-    karts.forEach(k=>{ if(!k.isPlayer) stepAI(k, dt); });
+    stepCar(player, dt, input);
     items.forEach(it=>{ if(!it.active && raceTime>it.respawnAt) it.active=true; });
 
-    const sorted = [...karts].sort((a,b)=>b.totalAngle-a.totalAngle);
-    const sfx = ['st','nd','rd','th'];
-    sorted.forEach((k,i)=>{
-      k.rank = i+1;
-      if(k.rowEl){ k.rowEl.style.order = i; k.rankEl.textContent = (i+1)+sfx[Math.min(i,3)]; }
-    });
+    document.getElementById('timeNum').textContent = fmtTime(raceTime);
+    document.getElementById('loveNum').textContent = player.love;
+    document.getElementById('progressFill').style.width = clamp(player.idx/(PATH_LEN-1)*100,0,100)+'%';
 
-    document.getElementById('lapNum').textContent = Math.min(FINISH_LAPS, player.lap+1);
-    const mm = Math.floor(raceTime/60).toString().padStart(2,'0');
-    const ss = (raceTime%60).toFixed(1).padStart(4,'0');
-    document.getElementById('timeNum').textContent = `${mm}:${ss}`;
-    const boostPct = player.drifting ? Math.min(100, player.driftTime/0.9*100) : (player.boostTimer>0?100:0);
-    const bar = document.getElementById('boostBar');
-    bar.style.width = boostPct+'%';
-    bar.style.background = player.driftTime>0.9?'#d4506b':player.driftTime>0.5?'#e8b830':'#5cb2ff';
-
-    if(player.totalAngle >= TARGET_ANGLE && !player.finished){
-      player.finished = true;
+    if(player.finished){
       endRace();
     }
   }
@@ -1158,7 +1096,6 @@ function frame(now){
   ctx.clearRect(0,0,viewport.w,viewport.h);
   if(state==='race' || state==='countdown'){
     renderChaseCam(ctx);
-    drawMinimap(ctx);
   } else {
     const horizonY = viewport.h*0.46;
     const skyGrad = ctx.createLinearGradient(0,0,0,horizonY);
