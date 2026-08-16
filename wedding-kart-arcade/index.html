@@ -3,24 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Just Married Grand Prix</title>
+<title>Mairead & Paul's Wedding Dash</title>
 <style>
   :root{
     --sky:#5cb2ff;
     --sky-deep:#2f7fe0;
     --grass:#3ec14f;
     --road:#57575f;
-    --red:#e6394a;
-    --red-deep:#b81f30;
-    --yellow:#ffcc00;
+    --rose:#d4506b;
+    --rose-deep:#a83d55;
+    --gold:#e8b830;
     --ink:#1b1b1f;
     --cream:#fff8ec;
+    --white:#ffffff;
   }
   *{box-sizing:border-box;}
   html,body{
     margin:0;padding:0;height:100%;overflow:hidden;
-    background: var(--sky);
-    font-family: 'Courier New', Courier, monospace;
+    background:var(--sky);
+    font-family: Georgia, 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
     color:var(--ink);
     -webkit-user-select:none;user-select:none;
     touch-action:none;
@@ -35,131 +36,157 @@
   }
   .panel{
     pointer-events:auto; text-align:center;
-    background: rgba(255,248,236,.97);
-    border:4px solid var(--ink);
-    border-radius:16px;
-    padding: clamp(12px,2.6vw,22px) clamp(12px,3.6vw,26px);
+    background:rgba(255,248,236,.97);
+    border:3px solid var(--ink);
+    border-radius:14px;
+    padding: clamp(14px,3vw,24px) clamp(14px,4vw,28px);
     max-width:94vw; max-height:94vh; overflow-y:auto;
-    box-shadow:0 10px 0 var(--sky-deep), 0 14px 30px rgba(0,0,0,.35);
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
   }
   h1.title{
-    font-size:clamp(18px,4.6vw,32px);
-    letter-spacing:1px;
-    color:var(--red);
-    -webkit-text-stroke: 2px var(--ink);
+    font-size:clamp(20px,5vw,34px);
+    font-weight:bold;
+    font-style:italic;
+    color:var(--rose);
     text-wrap:balance;
-    margin:0 0 2px 0;
-    line-height:1.15;
+    margin:0 0 4px 0;
+    line-height:1.2;
+    letter-spacing:0.5px;
   }
   .subtitle{
-    font-size:clamp(10px,2.2vw,13px);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-size:clamp(12px,2.8vw,15px);
     color:var(--ink);
-    opacity:.75;
-    margin-bottom:10px;
-    letter-spacing:.5px;
+    opacity:.7;
+    margin-bottom:12px;
+    line-height:1.4;
   }
 
-  /* ---- Avatar builder ---- */
   #builder{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
   #previewCol{ display:flex; flex-direction:column; align-items:center; gap:6px; }
-  #previewCanvas{ image-rendering:pixelated; background:linear-gradient(var(--sky),var(--grass) 72%); border:4px solid var(--ink); border-radius:10px; }
+  #previewCanvas{ image-rendering:pixelated; background:linear-gradient(var(--sky),var(--grass) 72%); border:3px solid var(--ink); border-radius:10px; }
   #optionsCol{ text-align:left; width:min(260px,80vw); }
   .presetRow{ display:flex; gap:8px; margin-bottom:10px; justify-content:center; }
   .presetBtn{
-    font-family:inherit; font-size:10px; font-weight:bold; letter-spacing:.5px;
-    background:var(--sky); border:3px solid var(--ink); border-radius:8px; padding:6px 10px; cursor:pointer;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size:12px; font-weight:600; letter-spacing:.3px;
+    background:var(--cream); border:2px solid var(--ink); border-radius:8px;
+    padding:7px 14px; cursor:pointer;
+    color:var(--ink);
   }
   .presetBtn:active{ transform:translateY(2px); }
-  .fieldLabel{ font-size:10px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; opacity:.7; margin:8px 0 4px; }
+  .fieldLabel{
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size:11px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase;
+    opacity:.6; margin:8px 0 4px;
+  }
   .outfitTabs{ display:flex; gap:6px; }
   .outfitTab{
-    flex:1; font-family:inherit; font-size:10px; font-weight:bold;
-    background:var(--sky); border:3px solid var(--ink); border-radius:7px; padding:6px 4px; cursor:pointer;
+    flex:1;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size:11px; font-weight:600;
+    background:var(--cream); border:2px solid var(--ink); border-radius:7px;
+    padding:7px 4px; cursor:pointer; color:var(--ink);
   }
-  .outfitTab.active{ background:var(--yellow); box-shadow:0 0 0 2px var(--red) inset; }
+  .outfitTab.active{ background:var(--gold); }
   .swatchRow{ display:flex; gap:6px; flex-wrap:wrap; }
   .swatch{
-    width:26px; height:26px; border-radius:50%; border:3px solid var(--ink); cursor:pointer; padding:0;
+    width:28px; height:28px; border-radius:50%; border:3px solid var(--ink); cursor:pointer; padding:0;
   }
-  .swatch.active{ box-shadow:0 0 0 3px var(--red); transform:scale(1.08); }
+  .swatch.active{ box-shadow:0 0 0 3px var(--rose); transform:scale(1.1); }
 
-  button.arcadeBtn{
-    font-family:inherit;
-    background: var(--red);
-    color:#fff;
-    border:4px solid var(--ink);
+  button.mainBtn{
+    font-family: Georgia, serif;
+    font-style:italic;
+    background:var(--rose);
+    color:var(--white);
+    border:3px solid var(--ink);
     border-radius:10px;
-    padding:12px 26px;
-    font-size:15px;
+    padding:13px 30px;
+    font-size:clamp(15px,3.6vw,18px);
     font-weight:bold;
-    letter-spacing:1.5px;
+    letter-spacing:0.5px;
     cursor:pointer;
-    box-shadow:0 5px 0 var(--red-deep);
-    margin-top:12px;
+    box-shadow:0 4px 0 var(--rose-deep);
+    margin-top:14px;
   }
-  button.arcadeBtn:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--red-deep); }
+  button.mainBtn:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--rose-deep); }
   .hidden{ display:none !important; }
-  small.hint{ display:block; margin-top:10px; font-size:9px; opacity:.7; line-height:1.5; }
+  small.hint{
+    display:block; margin-top:12px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size:clamp(10px,2.2vw,12px);
+    opacity:.55; line-height:1.5;
+  }
 
   #countdownNum{
-    font-size:clamp(70px,20vw,130px); color:var(--yellow);
-    -webkit-text-stroke:4px var(--ink);
+    font-size:clamp(70px,20vw,130px);
+    font-weight:bold;
+    color:var(--cream);
+    text-shadow: 0 4px 0 var(--ink), 0 0 40px rgba(0,0,0,.3);
   }
 
   #hud{
-    position:fixed; top:calc(env(safe-area-inset-top,0px) + 10px); left:calc(env(safe-area-inset-left,0px) + 10px);
-    display:flex; flex-direction:column; gap:5px; pointer-events:none; z-index:5;
+    position:fixed; top:calc(env(safe-area-inset-top,0px) + 12px); left:calc(env(safe-area-inset-left,0px) + 12px);
+    display:flex; flex-direction:column; gap:6px; pointer-events:none; z-index:5;
   }
   .hudBox{
-    background:rgba(27,27,31,.82); border:3px solid var(--yellow); border-radius:8px;
-    padding:5px 9px; font-size:clamp(11px,2.6vw,14px); font-weight:bold; color:#fff;
+    font-family: system-ui, -apple-system, sans-serif;
+    background:rgba(255,248,236,.92); border:2px solid var(--ink); border-radius:8px;
+    padding:6px 10px; font-size:clamp(12px,2.8vw,15px); font-weight:600; color:var(--ink);
     font-variant-numeric: tabular-nums;
-    text-shadow:0 1px 2px rgba(0,0,0,.5);
   }
-  .hudLabel{ font-size:9px; opacity:.7; letter-spacing:1px; }
-  #boostWrap{ width:96px; height:10px; border:2px solid var(--yellow); background:rgba(0,0,0,.35); border-radius:5px; overflow:hidden; margin-top:3px;}
-  #boostBar{ height:100%; width:0%; background:var(--sky-deep); transition:background .15s; }
+  .hudLabel{ font-size:10px; font-weight:500; opacity:.55; letter-spacing:0.5px; }
+  #boostWrap{ width:90px; height:8px; border:2px solid var(--ink); background:rgba(0,0,0,.08); border-radius:4px; overflow:hidden; margin-top:4px;}
+  #boostBar{ height:100%; width:0%; background:var(--rose); transition:background .15s; }
 
   #leaderboard{
-    position:fixed; top:calc(env(safe-area-inset-top,0px) + 10px); right:calc(env(safe-area-inset-right,0px) + 10px);
+    position:fixed; top:calc(env(safe-area-inset-top,0px) + 12px); right:calc(env(safe-area-inset-right,0px) + 12px);
     display:flex; flex-direction:column; gap:4px; z-index:5;
   }
   .lbRow{
+    font-family: system-ui, -apple-system, sans-serif;
     display:flex; align-items:center; gap:5px; order:4;
-    background:rgba(27,27,31,.75); border:2px solid rgba(255,204,0,.5); border-radius:8px;
-    padding:3px 7px 3px 3px;
+    background:rgba(255,248,236,.9); border:2px solid var(--ink); border-radius:8px;
+    padding:3px 8px 3px 3px;
   }
-  .lbRow.me{ box-shadow:0 0 0 2px var(--red); background:rgba(230,57,74,.35); border-color:var(--red); }
+  .lbRow.me{ background:rgba(212,80,107,.15); border-color:var(--rose); }
   .lbRow canvas{ image-rendering:pixelated; border-radius:50%; border:2px solid var(--ink); background:var(--sky); }
-  .lbRank{ font-size:11px; font-weight:bold; width:16px; text-align:center; color:#fff; text-shadow:0 1px 1px #000; }
-  .lbName{ font-size:9px; font-weight:bold; color:#fff; max-width:56px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-shadow:0 1px 1px #000; }
+  .lbRank{ font-size:11px; font-weight:700; width:18px; text-align:center; color:var(--ink); }
+  .lbName{ font-size:10px; font-weight:600; color:var(--ink); max-width:60px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-  #resultBox{ font-size:12px; margin:8px 0 16px; display:flex; flex-direction:column; gap:5px; }
-  .resRow{ display:flex; align-items:center; gap:8px; justify-content:center; }
+  #resultBox{
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size:13px; margin:10px 0 16px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .resRow{ display:flex; align-items:center; gap:10px; justify-content:center; }
   .resRow canvas{ image-rendering:pixelated; border-radius:50%; border:2px solid var(--ink); background:var(--sky); }
-  .resMedal{ width:20px; text-align:center; }
+  .resRank{ font-weight:700; width:28px; text-align:right; font-size:13px; color:var(--ink); }
+  .resName{ text-align:left; color:var(--ink); }
 
   .ctrlBtn{
     position:fixed; z-index:6; pointer-events:auto;
-    width:clamp(56px,15vw,74px); height:clamp(56px,15vw,74px);
+    width:clamp(60px,16vw,78px); height:clamp(60px,16vw,78px);
     border-radius:50%;
-    background:rgba(27,27,31,.7); border:3px solid rgba(255,204,0,.7);
-    color:#fff; font-size:clamp(20px,5vw,28px); font-weight:bold;
+    background:rgba(255,248,236,.88); border:3px solid var(--ink);
+    color:var(--ink);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size:clamp(14px,3.5vw,17px); font-weight:700;
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 4px 0 rgba(0,0,0,.4), 0 0 12px rgba(255,204,0,.15);
+    box-shadow:0 3px 0 rgba(0,0,0,.2);
     display:none;
-    text-shadow:0 1px 2px #000;
   }
   .ctrlBtn.show{ display:flex; }
-  .ctrlBtn:active{ transform:translateY(3px); box-shadow:none; background:rgba(230,57,74,.7); }
-  #steerLeft{ left:calc(env(safe-area-inset-left,0px) + 14px); bottom:calc(env(safe-area-inset-bottom,0px) + 18px); }
-  #steerRight{ left:calc(env(safe-area-inset-left,0px) + 14px + clamp(64px,17vw,84px)); bottom:calc(env(safe-area-inset-bottom,0px) + 18px); }
+  .ctrlBtn:active{ transform:translateY(3px); box-shadow:none; }
+  #steerLeft{ left:calc(env(safe-area-inset-left,0px) + 14px); bottom:calc(env(safe-area-inset-bottom,0px) + 20px); }
+  #steerRight{ left:calc(env(safe-area-inset-left,0px) + 14px + clamp(68px,18vw,88px)); bottom:calc(env(safe-area-inset-bottom,0px) + 20px); }
   #boostBtn{
-    right:calc(env(safe-area-inset-right,0px) + 16px); bottom:calc(env(safe-area-inset-bottom,0px) + 20px);
-    background:rgba(230,57,74,.7);
-    border-color:var(--red);
-    width:clamp(66px,18vw,86px); height:clamp(66px,18vw,86px);
-    box-shadow:0 4px 0 rgba(0,0,0,.4), 0 0 16px rgba(230,57,74,.25);
+    right:calc(env(safe-area-inset-right,0px) + 16px); bottom:calc(env(safe-area-inset-bottom,0px) + 22px);
+    background:rgba(212,80,107,.85);
+    border-color:var(--rose-deep);
+    color:var(--white);
+    width:clamp(68px,18vw,88px); height:clamp(68px,18vw,88px);
   }
 </style>
 </head>
@@ -168,25 +195,24 @@
   <canvas id="game"></canvas>
 
   <div id="hud" class="hidden">
-    <div class="hudBox"><span class="hudLabel">LAP </span><span id="lapNum">1</span>/3</div>
+    <div class="hudBox"><span class="hudLabel">Lap </span><span id="lapNum">1</span>/3</div>
     <div class="hudBox">
-      <span class="hudLabel">TIME </span><span id="timeNum">00:00.0</span>
+      <span id="timeNum">00:00.0</span>
       <div id="boostWrap"><div id="boostBar"></div></div>
     </div>
-    <div class="hudBox"><span class="hudLabel">SPEED </span><span id="speedNum">0</span></div>
   </div>
   <div id="leaderboard"></div>
 
   <div id="ui">
     <div class="panel" id="selectPanel">
-      <h1 class="title">JUST MARRIED<br>GRAND PRIX</h1>
-      <div class="subtitle">Build your racer — 3 laps around the reception!</div>
+      <h1 class="title">Mairead &amp; Paul's<br>Wedding Dash</h1>
+      <div class="subtitle">Help them get to the wedding on time!</div>
       <div id="builder">
         <div id="previewCol">
           <canvas id="previewCanvas" width="150" height="190"></canvas>
           <div class="presetRow">
-            <button class="presetBtn" id="presetGroom">GROOM</button>
-            <button class="presetBtn" id="presetBride">BRIDE</button>
+            <button class="presetBtn" id="presetGroom">Play as Paul</button>
+            <button class="presetBtn" id="presetBride">Play as Mairead</button>
           </div>
         </div>
         <div id="optionsCol">
@@ -194,31 +220,31 @@
           <div class="outfitTabs" id="outfitTabs"></div>
           <div class="fieldLabel">Skin Tone</div>
           <div class="swatchRow" id="skinRow"></div>
-          <div class="fieldLabel">Hair Color</div>
+          <div class="fieldLabel">Hair Colour</div>
           <div class="swatchRow" id="hairRow"></div>
-          <div class="fieldLabel">Outfit Color</div>
+          <div class="fieldLabel">Outfit Colour</div>
           <div class="swatchRow" id="primaryRow"></div>
-          <div class="fieldLabel">Accent Color</div>
+          <div class="fieldLabel">Accent Colour</div>
           <div class="swatchRow" id="accentRow"></div>
         </div>
       </div>
-      <button class="arcadeBtn" id="startBtn">START RACE</button>
-      <small class="hint">Tap left/right to steer, hold DRIFT while turning to boost<br>(or use arrow keys / WASD + space on desktop)</small>
+      <button class="mainBtn" id="startBtn">Start Race</button>
+      <small class="hint">Tap Left / Right to steer, hold Boost while turning to drift<br>On desktop: arrow keys or WASD, space to boost</small>
     </div>
     <div class="panel hidden" id="countdownPanel" style="background:transparent;border:none;box-shadow:none;">
       <div id="countdownNum">3</div>
     </div>
     <div class="panel hidden" id="finishPanel">
-      <h1 class="title" id="finishTitle" style="font-size:clamp(18px,4.6vw,30px);">YOU WIN!</h1>
-      <div class="subtitle">Thanks for racing at our wedding!</div>
+      <h1 class="title" id="finishTitle" style="font-size:clamp(20px,5vw,32px);">They made it!</h1>
+      <div class="subtitle" id="finishSubtitle">Thanks for racing at our wedding!</div>
       <div id="resultBox"></div>
-      <button class="arcadeBtn" id="againBtn">RACE AGAIN</button>
+      <button class="mainBtn" id="againBtn">Race Again</button>
     </div>
   </div>
 
-  <div class="ctrlBtn" id="steerLeft">◀</div>
-  <div class="ctrlBtn" id="steerRight">▶</div>
-  <div class="ctrlBtn" id="boostBtn">DRIFT</div>
+  <div class="ctrlBtn" id="steerLeft">Left</div>
+  <div class="ctrlBtn" id="steerRight">Right</div>
+  <div class="ctrlBtn" id="boostBtn">Boost</div>
 </div>
 
 <script>
@@ -251,7 +277,6 @@ function updateControlVisibility(){
   });
 }
 
-/* ============================= HELPERS ============================= */
 function pr(g,x,y,w,h,color){
   g.fillStyle = color;
   g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
@@ -277,16 +302,12 @@ function shade(hex, pct){
   r=Math.max(0,Math.min(255,r)); g2=Math.max(0,Math.min(255,g2)); b=Math.max(0,Math.min(255,b));
   return '#'+((1<<24)+(r<<16)+(g2<<8)+b).toString(16).slice(1);
 }
-function hexToRgb(hex){
-  const n=parseInt(hex.slice(1),16);
-  return [(n>>16)&0xff,(n>>8)&0xff,n&0xff];
-}
 
-/* ============================= AVATAR PALETTE SYSTEM ============================= */
+/* ============================= PALETTE ============================= */
 const SKIN_TONES = ['#ffe0bd','#f0b892','#c68642','#8d5524','#5c3a21'];
 const HAIR_COLORS = ['#1b1210','#3a2415','#6b4a2a','#d9b36c','#8a4b2f','#c44a3c'];
-const PRIMARY_COLORS = ['#1fb6b0','#e6394a','#3ec14f','#ffcc00','#2c3e6b','#fff8ec','#9b59b6'];
-const ACCENT_COLORS = ['#ffffff','#e6394a','#ffcc00','#1fb6b0','#9b59b6'];
+const PRIMARY_COLORS = ['#1fb6b0','#d4506b','#3ec14f','#e8b830','#2c3e6b','#fff8ec','#9b59b6'];
+const ACCENT_COLORS = ['#ffffff','#d4506b','#e8b830','#1fb6b0','#9b59b6'];
 const OUTFITS = [
   {key:'suit', label:'Suit'},
   {key:'gown', label:'Gown'},
@@ -294,10 +315,10 @@ const OUTFITS = [
 ];
 
 const PRESETS = {
-  groom:     { outfitType:'suit',  skin:'#f0b892', hair:'#7a5230', primary:'#1fb6b0', accent:'#ffffff', label:'Groom' },
-  bride:     { outfitType:'gown',  skin:'#f3c39f', hair:'#3a2415', primary:'#fff8ec', accent:'#e6394a', label:'Bride' },
-  groomsman: { outfitType:'suit',  skin:'#e8a97a', hair:'#5a3a1a', primary:'#3ec14f', accent:'#ffffff', label:'Best Man' },
-  bridesmaid:{ outfitType:'gown',  skin:'#f0c8a0', hair:'#241005', primary:'#9b59b6', accent:'#ffcc00', label:'Bridesmaid' }
+  groom:     { outfitType:'suit',  skin:'#f0b892', hair:'#7a5230', primary:'#1fb6b0', accent:'#ffffff', label:'Paul' },
+  bride:     { outfitType:'gown',  skin:'#f3c39f', hair:'#3a2415', primary:'#fff8ec', accent:'#d4506b', label:'Mairead' },
+  groomsman: { outfitType:'suit',  skin:'#e8a97a', hair:'#5a3a1a', primary:'#2c3e6b', accent:'#ffffff', label:'Best Man' },
+  bridesmaid:{ outfitType:'gown',  skin:'#f0c8a0', hair:'#241005', primary:'#9b59b6', accent:'#e8b830', label:'Bridesmaid' }
 };
 
 function buildPalette(cfg){
@@ -314,7 +335,7 @@ function buildPalette(cfg){
   };
 }
 
-/* ============================= HIGH-RES SPRITE DRAWING ============================= */
+/* ============================= SPRITES ============================= */
 
 function drawFullBodyFront(g, p, cw, ch, unit){
   g.imageSmoothingEnabled = false;
@@ -324,49 +345,30 @@ function drawFullBodyFront(g, p, cw, ch, unit){
   const isGown = p.outfitType==='gown';
   const isCasual = p.outfitType==='casual';
 
-  // shadow
-  g.fillStyle = 'rgba(0,0,0,0.12)';
+  g.fillStyle = 'rgba(0,0,0,0.1)';
   g.beginPath(); g.ellipse(0, 16, 9, 2.5, 0, 0, Math.PI*2); g.fill();
 
-  // legs
   if(isGown){
     pr(g,-9,2,18,14,p.outfit);
     pr(g,-9,2,18,1.5,p.outfitLight);
     pr(g,-9,13,18,2,p.outfitDark);
-    pr(g,-9,14.5,18,1,shade(p.outfit,-0.35));
     pr(g,-3,14,2.5,2.5,'#2a2024'); pr(g,0.5,14,2.5,2.5,'#2a2024');
-    pr(g,-2.5,14.5,2,1,'#3a3034'); pr(g,1,14.5,2,1,'#3a3034');
   } else {
     pr(g,-5,5,4,10, isCasual ? '#2c3e6b' : shade(p.outfit,-0.35));
     pr(g,1,5,4,10, isCasual ? '#2c3e6b' : shade(p.outfit,-0.35));
-    pr(g,-5,5,4,1, isCasual ? '#35487a' : shade(p.outfit,-0.2));
-    pr(g,1,5,4,1, isCasual ? '#35487a' : shade(p.outfit,-0.2));
     pr(g,-5,14,4,2.5,'#2a2024'); pr(g,1,14,4,2.5,'#2a2024');
-    pr(g,-4.5,14.5,3,1,'#3a3034'); pr(g,1.5,14.5,3,1,'#3a3034');
   }
 
-  // arms
   const sleeveCol = isGown ? p.skin : p.outfit;
-  const sleeveDk = isGown ? p.skinLo : p.outfitDark;
   pr(g,-9,-6,3,9,sleeveCol);
-  pr(g,-9,-6,3,1.5,isGown ? p.skinHi : p.outfitLight);
-  pr(g,-9,1.5,3,1.5,sleeveDk);
   pr(g,-9,3,3,3.5,p.skin);
-  pr(g,-8.5,5,2,1,p.skinLo);
-
   pr(g,6,-6,3,9,sleeveCol);
-  pr(g,6,-6,3,1.5,isGown ? p.skinHi : p.outfitLight);
-  pr(g,6,1.5,3,1.5,sleeveDk);
   pr(g,6,3,3,3.5,p.skin);
-  pr(g,6.5,5,2,1,p.skinLo);
 
-  // torso
   if(isGown){
     pr(g,-6,-7,12,10,p.outfit);
     pr(g,-6,-7,12,2,p.outfitLight);
     pr(g,-6,1,12,2,p.accessory);
-    pr(g,-2,-6,1,3,'#ffffff');
-    pr(g,1,-6,1,3,'#ffffff');
   } else {
     pr(g,-6,-7,12,12,p.outfit);
     pr(g,-6,-7,12,2,p.outfitLight);
@@ -378,24 +380,15 @@ function drawFullBodyFront(g, p, cw, ch, unit){
       pr(g,-0.5,-3,1,1,'#cccccc');
       pr(g,-0.5,0,1,1,'#cccccc');
       pr(g,-0.5,3,1,1,'#cccccc');
-      pr(g,-4,-7,2,1.5,p.outfitDark);
-      pr(g,2,-7,2,1.5,p.outfitDark);
     } else {
       pr(g,-6,-4,12,2,p.accessory);
-      pr(g,-3,-7,6,2,p.outfitDark);
     }
   }
 
-  // neck
   pr(g,-2,-8.5,4,2.5,p.skin);
-  pr(g,-1.5,-8,3,1,p.skinHi);
-
-  // head
   pr(g,-5,-18,10,10,p.skin);
   pr(g,-4.5,-17.5,9,1,p.skinHi);
-  pr(g,-5,-9,10,1,p.skinLo);
 
-  // eyes
   pr(g,-3.5,-13,2.5,2.5,'#ffffff');
   pr(g,1,-13,2.5,2.5,'#ffffff');
   pr(g,-2.5,-12.5,1.5,2,'#2a1f0e');
@@ -405,41 +398,24 @@ function drawFullBodyFront(g, p, cw, ch, unit){
   pr(g,-2,-12.5,0.5,0.5,'#ffffff');
   pr(g,2.5,-12.5,0.5,0.5,'#ffffff');
 
-  // eyebrows
   pr(g,-3.5,-14.5,3,1,p.hairLo);
   pr(g,1,-14.5,3,1,p.hairLo);
-
-  // nose
   pr(g,-0.5,-11,1,1.5,p.skinLo);
-
-  // mouth
   pr(g,-1.5,-9.5,3,1,'#c0645a');
   pr(g,-1,-9.5,2,0.5,'#d4756b');
 
-  // ears
-  pr(g,-5.5,-13,1,2.5,p.skin);
-  pr(g,4.5,-13,1,2.5,p.skin);
-
-  // hair
   if(isGown){
     pr(g,-6,-19,12,4,p.hair);
     pr(g,-6,-19,12,1.5,p.hairHi);
     pr(g,-6,-16,1.5,9,p.hair);
     pr(g,4.5,-16,1.5,9,p.hair);
-    pr(g,-6,-16,1.5,2,p.hairHi);
-    pr(g,4.5,-16,1.5,2,p.hairHi);
-    // veil
     pr(g,-2,-20,4,2,'#ffffff');
-    pr(g,-1.5,-20.5,3,1,'#ffffffcc');
     pr(g,0,-20,1,1,p.accessory);
   } else {
     pr(g,-5.5,-19,11,4,p.hair);
     pr(g,-5.5,-19,11,1.5,p.hairHi);
     pr(g,-5.5,-16,1.5,3,p.hair);
     pr(g,4,-16,1.5,3,p.hair);
-    if(isCasual){
-      pr(g,-5,-15,10,1.5,p.hair);
-    }
   }
 
   g.restore();
@@ -452,7 +428,6 @@ function drawPortraitBust(g, p, cw, ch, unit){
   g.scale(unit,unit);
   const isGown = p.outfitType==='gown';
 
-  // shoulders/top
   pr(g,-8,6,16,7,p.outfit);
   pr(g,-8,6,16,1.5,p.outfitLight);
   if(!isGown){
@@ -461,27 +436,18 @@ function drawPortraitBust(g, p, cw, ch, unit){
   } else {
     pr(g,-8,6,16,2,'#ffffff');
   }
-
-  // neck
   pr(g,-2,4,4,3,p.skin);
-
-  // head
   pr(g,-5,-5,10,10,p.skin);
   pr(g,-4.5,-4.5,9,1,p.skinHi);
-
-  // eyes
   pr(g,-3,-1,2,2,'#ffffff');
   pr(g,1,-1,2,2,'#ffffff');
   pr(g,-2,-.5,1.5,1.5,'#2a1f0e');
   pr(g,1.5,-.5,1.5,1.5,'#2a1f0e');
   pr(g,-1.5,0,1,1,'#1b1b1f');
   pr(g,2,0,1,1,'#1b1b1f');
-
-  // nose + mouth
   pr(g,-.5,2,1,1,p.skinLo);
   pr(g,-1,3.5,2,.8,'#c0645a');
 
-  // hair
   if(isGown){
     pr(g,-6,-6,12,3.5,p.hair);
     pr(g,-6,-6,12,1.2,p.hairHi);
@@ -508,44 +474,28 @@ function drawFullKartBack(g, p, boostTier, frameTime){
   const isGown = p.outfitType==='gown';
   const ft = frameTime || 0;
 
-  // exhaust pipes
   pr(g,-3,9,2.5,4,'#6e6e74');
-  pr(g,-2.5,9.5,1.5,1,'#8a8a90');
   pr(g,0.5,9,2.5,4,'#6e6e74');
-  pr(g,1,9.5,1.5,1,'#8a8a90');
 
-  // wheels with detail
   pr(g,-15,1,5,11,'#1a1018');
   pr(g,-14.5,2,4,9,'#2a2028');
-  pr(g,-14,3,1,7,'#3a3038');
   pr(g,10,1,5,11,'#1a1018');
   pr(g,10.5,2,4,9,'#2a2028');
-  pr(g,13,3,1,7,'#3a3038');
 
-  // kart body
   pr(g,-10,-3,20,12,p.kart);
   pr(g,-10,-3,20,2.5,p.kartLight);
   pr(g,-10,7,20,2,p.kartDark);
-  // side panels
   pr(g,-11,-1,2,8,p.kartDark);
   pr(g,9,-1,2,8,p.kartDark);
-  // tail lights
-  pr(g,-9,7,3,2,'#e6394a');
-  pr(g,-8.5,7.5,2,1,'#ff6b6b');
-  pr(g,6,7,3,2,'#e6394a');
-  pr(g,6.5,7.5,2,1,'#ff6b6b');
-  // number plate
+  pr(g,-9,7,3,2,'#d4506b');
+  pr(g,6,7,3,2,'#d4506b');
   pr(g,-3,5,6,3,'#ffffff');
-  pr(g,-2,5.5,1,2,p.kart);
-  pr(g,1,5.5,1,2,p.kart);
 
-  // spoiler
   pr(g,-9,-6,18,3,p.trim);
   pr(g,-9,-6,18,1,shade(p.trim,0.2));
   pr(g,-10,-6,1.5,5,p.trim);
   pr(g,8.5,-6,1.5,5,p.trim);
 
-  // driver torso
   if(isGown){
     pr(g,-7,-13,14,9,p.outfit);
     pr(g,-7,-13,14,2,p.outfitLight);
@@ -558,27 +508,22 @@ function drawFullKartBack(g, p, boostTier, frameTime){
     pr(g,4,-13,2,5,p.outfitDark);
   }
 
-  // arms gripping
   pr(g,-8,-10,2.5,4,p.outfit);
   pr(g,-8,-7,2.5,2,p.skin || '#f0b892');
   pr(g,5.5,-10,2.5,4,p.outfit);
   pr(g,5.5,-7,2.5,2,p.skin || '#f0b892');
 
-  // head
   pr(g,-5,-21,10,9,p.skin || '#f0b892');
   pr(g,-4.5,-20.5,9,1,p.skinHi || '#ffeedd');
   pr(g,-5,-13,10,1,p.skinLo || '#d09070');
-  // ears
   pr(g,-5.5,-18,1,3,p.skin || '#f0b892');
   pr(g,4.5,-18,1,3,p.skin || '#f0b892');
 
-  // hair
   if(isGown){
     pr(g,-6,-22,12,4,p.hair);
     pr(g,-6,-22,12,1.5,p.hairHi);
     pr(g,-6,-19,1.5,7,p.hair);
     pr(g,4.5,-19,1.5,7,p.hair);
-    // veil
     pr(g,-1,-23,2,2,'#ffffff');
     pr(g,0,-23.5,1,1,p.accessory);
   } else {
@@ -588,30 +533,37 @@ function drawFullKartBack(g, p, boostTier, frameTime){
     pr(g,4,-19,1.5,3,p.hair);
   }
 
-  // helmet visor hint (on back of head)
-  pr(g,-4,-17,8,1, 'rgba(0,0,0,0.15)');
-
-  // boost flames
   if(boostTier>0){
-    const cols = [['#5cb2ff','#a0d4ff'],['#ffcc00','#ffe066'],['#e6394a','#ff7b8a']];
+    const cols = [['#d4506b','#f0889e'],['#e8b830','#f5d56a'],['#d4506b','#ffffff']];
     const [c1,c2] = cols[Math.min(boostTier,3)-1];
-    const flicker = Math.sin(ft*18)*1.5;
     const len = 4 + boostTier*3 + Math.random()*3;
     pr(g,-5,12,4,len,c1);
     pr(g,-4,13,2,len-2,c2);
-    pr(g,1,12,4,len+flicker,c1);
-    pr(g,2,13,2,len+flicker-2,c2);
-    // sparks
-    if(boostTier>=2){
-      for(let i=0;i<3;i++){
-        const sx = -6+Math.random()*12, sy = 14+Math.random()*(len+2);
-        pr(g,sx,sy,1,1,'#ffffff');
-      }
-    }
+    pr(g,1,12,4,len,c1);
+    pr(g,2,13,2,len-2,c2);
   }
 }
 
-/* ============================= AVATAR BUILDER UI ============================= */
+/* ============================= PIXEL HEART DRAWING ============================= */
+function drawPixelHeart(g, cx, cy, size, color, hiColor){
+  const s = size/8;
+  const lx = cx - 4*s, ty = cy - 3.5*s;
+  pr(g, lx+1*s, ty+0*s, 2*s, s, color);
+  pr(g, lx+5*s, ty+0*s, 2*s, s, color);
+  pr(g, lx+0*s, ty+1*s, 4*s, s, color);
+  pr(g, lx+4*s, ty+1*s, 4*s, s, color);
+  pr(g, lx+0*s, ty+2*s, 8*s, s, color);
+  pr(g, lx+0*s, ty+3*s, 8*s, s, color);
+  pr(g, lx+1*s, ty+4*s, 6*s, s, color);
+  pr(g, lx+2*s, ty+5*s, 4*s, s, color);
+  pr(g, lx+3*s, ty+6*s, 2*s, s, color);
+  if(hiColor){
+    pr(g, lx+1*s, ty+1*s, 1*s, 1*s, hiColor);
+    pr(g, lx+2*s, ty+0*s, 1*s, 1*s, hiColor);
+  }
+}
+
+/* ============================= BUILDER UI ============================= */
 let customConfig = Object.assign({}, PRESETS.groom);
 
 function renderBuilderPreview(){
@@ -683,9 +635,8 @@ for(let i=0;i<WAYPOINT_COUNT;i++) WAYPOINTS.push(centerlinePoint(i/WAYPOINT_COUN
 
 function onTrack(x,y){
   const dx = x-TRACK.cx, dy = y-TRACK.cy;
-  const outer = (dx/TRACK.aOut)**2 + (dy/TRACK.bOut)**2;
-  const inner = (dx/TRACK.aIn)**2 + (dy/TRACK.bIn)**2;
-  return outer <= 1.02 && inner >= 0.98;
+  return (dx/TRACK.aOut)**2 + (dy/TRACK.bOut)**2 <= 1.02 &&
+         (dx/TRACK.aIn)**2 + (dy/TRACK.bIn)**2 >= 0.98;
 }
 function lateralOffset(x,y){
   const dx=x-TRACK.cx, dy=y-TRACK.cy;
@@ -693,7 +644,7 @@ function lateralOffset(x,y){
   return Math.max(-1.5, Math.min(1.5, (midNorm-1)/BAND_HALF));
 }
 
-/* ============================= PSEUDO-3D ROAD MODEL ============================= */
+/* ============================= ROAD MODEL ============================= */
 const SEG_COUNT = 300;
 const SEGMENT_LEN = 12;
 const ROAD_HALF_W = 6;
@@ -702,67 +653,41 @@ const CAM_DEPTH = 1/Math.tan((100/2)*Math.PI/180);
 const DRAW_DIST = 100;
 
 const ROAD = [];
-(function buildRoad(){
+(function(){
   for(let i=0;i<SEG_COUNT;i++){
     const p0=centerlinePoint(i/SEG_COUNT), p1=centerlinePoint((i+1)/SEG_COUNT), p2=centerlinePoint((i+2)/SEG_COUNT);
-    const h0=Math.atan2(p1.y-p0.y,p1.x-p0.x);
-    const h1=Math.atan2(p2.y-p1.y,p2.x-p1.x);
+    const h0=Math.atan2(p1.y-p0.y,p1.x-p0.x), h1=Math.atan2(p2.y-p1.y,p2.x-p1.x);
     let dh=h1-h0; while(dh>Math.PI)dh-=Math.PI*2; while(dh<-Math.PI)dh+=Math.PI*2;
     ROAD.push({ curve: dh, alt: Math.floor(i/3)%2===0, dash: Math.floor(i/6)%2===0 });
   }
 })();
 
-// roadside objects
 const TREES = [];
-for(let i=0;i<SEG_COUNT;i+=5){ TREES.push({segIdx:i, side:(i/5)%2===0?1:-1, type: i%15===0?'banner':i%10===0?'balloon':'tree'}); }
+for(let i=0;i<SEG_COUNT;i+=7){ TREES.push({segIdx:i, side:(i/7)%2===0?1:-1}); }
 
-const ITEM_T = [0.08,0.2,0.34,0.48,0.62,0.76,0.9];
+const ITEM_T = [0.08,0.22,0.36,0.5,0.64,0.78,0.92];
 let items = ITEM_T.map(t=>{
   const cp = centerlinePoint(t);
   return {x:cp.x, y:cp.y, active:true, respawnAt:0, segIdx: Math.round(t*SEG_COUNT)};
 });
 
-/* ============================= PARTICLES ============================= */
-let particles = [];
-function spawnParticle(x,y,vx,vy,color,life,size){
-  if(particles.length>200) return;
-  particles.push({x,y,vx,vy,color,life,maxLife:life,size:size||2});
-}
-function updateParticles(dt){
-  for(let i=particles.length-1;i>=0;i--){
-    const p=particles[i];
-    p.x+=p.vx*dt; p.y+=p.vy*dt; p.life-=dt;
-    p.vy+=120*dt;
-    if(p.life<=0) particles.splice(i,1);
-  }
-}
-function drawParticlesScreen(g){
-  particles.forEach(p=>{
-    const a=Math.max(0,p.life/p.maxLife);
-    g.globalAlpha=a;
-    g.fillStyle=p.color;
-    g.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size);
-  });
-  g.globalAlpha=1;
-}
-
-/* ============================= CONFETTI ============================= */
-const CONFETTI_COLORS = ['#e6394a','#ffcc00','#ffffff','#1fb6b0','#9b59b6','#ff7b8a'];
+/* ============================= CONFETTI (hearts) ============================= */
+const HEART_COLORS = ['#d4506b','#e87090','#f0a0b0','#ffffff','#e8b830'];
 let confetti = [];
 function spawnConfetti(n){
   for(let i=0;i<n;i++){
     confetti.push({
       x: Math.random()*viewport.w, y: -20-Math.random()*300,
-      vy: 50+Math.random()*70, vx: (Math.random()-.5)*30,
-      size: 3+Math.random()*4, color: CONFETTI_COLORS[(Math.random()*CONFETTI_COLORS.length)|0],
-      rot: Math.random()*Math.PI, vr:(Math.random()-.5)*4
+      vy: 40+Math.random()*50, vx: (Math.random()-.5)*20,
+      size: 6+Math.random()*8, color: HEART_COLORS[(Math.random()*HEART_COLORS.length)|0],
+      rot: (Math.random()-.3)*0.5
     });
   }
 }
-spawnConfetti(50);
+spawnConfetti(40);
 function updateConfetti(dt){
   confetti.forEach(c=>{
-    c.y += c.vy*dt; c.x += c.vx*dt; c.rot += c.vr*dt;
+    c.y += c.vy*dt; c.x += c.vx*dt;
     if(c.y>viewport.h+20){ c.y=-20; c.x=Math.random()*viewport.w; }
   });
 }
@@ -770,8 +695,7 @@ function drawConfetti(g){
   confetti.forEach(c=>{
     g.save();
     g.translate(c.x,c.y); g.rotate(c.rot);
-    g.fillStyle = c.color;
-    g.fillRect(-c.size/2,-c.size/2,c.size,c.size);
+    drawPixelHeart(g, 0, 0, c.size, c.color, null);
     g.restore();
   });
 }
@@ -782,10 +706,10 @@ function makeKart(palette, isPlayer, startIndex){
   const t0 = (START_ANGLE/(Math.PI*2)) - startIndex*spread - 0.01;
   const startPos = centerlinePoint(((t0%1)+1)%1);
   const ahead = centerlinePoint((((t0+0.01)%1)+1)%1);
-  const heading0 = Math.atan2(ahead.y-startPos.y, ahead.x-startPos.x);
   return {
     p: palette, isPlayer,
-    x: startPos.x, y: startPos.y, heading: heading0,
+    x: startPos.x, y: startPos.y,
+    heading: Math.atan2(ahead.y-startPos.y, ahead.x-startPos.x),
     speed:0,
     wpIndex: Math.floor((((t0%1)+1)%1)*WAYPOINT_COUNT),
     totalAngle: 0, prevAngle: null, lap:0,
@@ -795,15 +719,10 @@ function makeKart(palette, isPlayer, startIndex){
   };
 }
 
-const MAX_SPEED = 260;
-const ACCEL = 240;
-const BRAKE = 320;
-const OFFTRACK_MULT = 0.42;
-const TURN_RATE = 2.6;
+const MAX_SPEED = 260, ACCEL = 240, BRAKE = 320, OFFTRACK_MULT = 0.42, TURN_RATE = 2.6;
 
 function angleAround(x,y){
-  const dx=(x-TRACK.cx)/MID_A, dy=(y-TRACK.cy)/MID_B;
-  return Math.atan2(dy,dx);
+  return Math.atan2((y-TRACK.cy)/MID_B, (x-TRACK.cx)/MID_A);
 }
 function updateKartProgress(k){
   const ang = angleAround(k.x,k.y);
@@ -816,25 +735,20 @@ function updateKartProgress(k){
   k.lap = Math.max(0, Math.floor(k.totalAngle/(Math.PI*2)));
 }
 function applyBoost(k, tier){
-  const strength = [0, 90, 150, 230][tier];
-  const duration = [0, 0.35, 0.55, 0.85][tier];
-  k.boost = strength; k.boostTimer = duration; k.boostTier = tier;
+  k.boost = [0, 90, 150, 230][tier];
+  k.boostTimer = [0, 0.35, 0.55, 0.85][tier];
+  k.boostTier = tier;
 }
 
 function stepKart(k, dt, inp){
   const onT = onTrack(k.x, k.y);
   const speedMult = onT ? 1 : OFFTRACK_MULT;
-
   k.speed += ACCEL*dt;
   if(inp.brake) k.speed -= BRAKE*dt;
-
-  const capMax = MAX_SPEED*speedMult;
-  k.speed = Math.max(0, Math.min(capMax, k.speed));
+  k.speed = Math.max(0, Math.min(MAX_SPEED*speedMult, k.speed));
 
   const turnFactor = Math.max(0.25, Math.min(1, k.speed/120));
-  let turning = 0;
-  if(inp.left) turning -= 1;
-  if(inp.right) turning += 1;
+  let turning = (inp.left?-1:0) + (inp.right?1:0);
   k.heading += turning*TURN_RATE*turnFactor*dt;
 
   if(inp.drift && turning!==0 && k.speed > 60){
@@ -842,8 +756,7 @@ function stepKart(k, dt, inp){
     k.driftTime += dt;
   } else {
     if(k.drifting){
-      let tier = 0;
-      if(k.driftTime>0.9) tier=3; else if(k.driftTime>0.5) tier=2; else if(k.driftTime>0.22) tier=1;
+      let tier = k.driftTime>0.9?3 : k.driftTime>0.5?2 : k.driftTime>0.22?1 : 0;
       if(tier>0) applyBoost(k, tier);
     }
     k.drifting = false; k.driftTime = 0;
@@ -871,19 +784,15 @@ function stepKart(k, dt, inp){
 function stepAI(k, dt){
   const target = WAYPOINTS[k.wpIndex];
   const dx = target.x-k.x, dy=target.y-k.y;
-  const dist = Math.hypot(dx,dy);
-  if(dist < 34) k.wpIndex = (k.wpIndex+1)%WAYPOINT_COUNT;
+  if(Math.hypot(dx,dy) < 34) k.wpIndex = (k.wpIndex+1)%WAYPOINT_COUNT;
   const desired = Math.atan2(dy,dx);
   let diff = desired - k.heading;
   while(diff>Math.PI) diff-=Math.PI*2;
   while(diff<-Math.PI) diff+=Math.PI*2;
 
-  const onT = onTrack(k.x,k.y);
-  const speedMult = onT?1:OFFTRACK_MULT;
-  const targetSpeed = k.aiSpeed*speedMult;
-  k.speed += (targetSpeed - k.speed) * Math.min(1, dt*2.2);
-  const turnFactor = Math.max(0.3, Math.min(1, k.speed/120));
-  k.heading += Math.max(-1,Math.min(1,diff*2.2)) * TURN_RATE*turnFactor*dt;
+  const speedMult = onTrack(k.x,k.y)?1:OFFTRACK_MULT;
+  k.speed += (k.aiSpeed*speedMult - k.speed) * Math.min(1, dt*2.2);
+  k.heading += Math.max(-1,Math.min(1,diff*2.2)) * TURN_RATE*Math.max(0.3, Math.min(1, k.speed/120))*dt;
 
   let effSpeed = k.speed;
   if(Math.abs(diff) > 0.35 && Math.random()<0.02) applyBoost(k,1);
@@ -902,17 +811,9 @@ function stepAI(k, dt){
 }
 
 /* ============================= GAME STATE ============================= */
-let state = 'select';
-let karts = [];
-let player = null;
-let raceTime = 0;
-let gameTime = 0;
-let countdownVal = 3;
-let countdownTimer = 0;
-let screenShake = 0;
-const FINISH_LAPS = 3;
-const TARGET_ANGLE = FINISH_LAPS*Math.PI*2;
-
+let state = 'select', karts = [], player = null;
+let raceTime = 0, gameTime = 0, countdownVal = 3, countdownTimer = 0;
+const FINISH_LAPS = 3, TARGET_ANGLE = FINISH_LAPS*Math.PI*2;
 const input = { left:false, right:false, brake:false, drift:false };
 
 function setupRace(){
@@ -923,7 +824,6 @@ function setupRace(){
   karts.push(player);
   aiConfigs.forEach((cfg,i)=> karts.push(makeKart(buildPalette(cfg), false, i+1)));
   raceTime = 0;
-  particles = [];
   items.forEach(it=>{ it.active=true; it.respawnAt=0; });
 
   const lb = document.getElementById('leaderboard');
@@ -931,7 +831,7 @@ function setupRace(){
   karts.forEach(k=>{
     const row = document.createElement('div');
     row.className = 'lbRow' + (k.isPlayer ? ' me' : '');
-    const rank = document.createElement('div'); rank.className='lbRank'; rank.textContent='1';
+    const rank = document.createElement('div'); rank.className='lbRank'; rank.textContent='1st';
     const av = bustCanvas(k.p, 28);
     const name = document.createElement('div'); name.className='lbName'; name.textContent = k.p.label;
     row.appendChild(rank); row.appendChild(av); row.appendChild(name);
@@ -960,21 +860,24 @@ function endRace(){
   document.getElementById('hud').classList.add('hidden');
   const sorted = [...karts].sort((a,b)=>b.totalAngle-a.totalAngle);
   const playerRank = sorted.indexOf(player)+1;
-  const suffix = {1:'ST',2:'ND',3:'RD',4:'TH'}[playerRank]||'TH';
-  document.getElementById('finishTitle').textContent = playerRank===1 ? 'YOU WIN!' : `${playerRank}${suffix} PLACE`;
+  const titles = ['They made it!', '2nd Place', '3rd Place', '4th Place'];
+  document.getElementById('finishTitle').textContent = titles[playerRank-1] || titles[3];
+  document.getElementById('finishSubtitle').textContent = playerRank===1
+    ? 'Mairead and Paul got to the wedding on time!'
+    : 'So close! Thanks for racing at our wedding.';
   const box = document.getElementById('resultBox');
   box.innerHTML = '';
-  const medals = ['🥇','🥈','🥉','🎗️'];
+  const suffixes = ['st','nd','rd','th'];
   sorted.forEach((k,i)=>{
     const row = document.createElement('div'); row.className='resRow';
-    const medal = document.createElement('div'); medal.className='resMedal'; medal.textContent = medals[i]||'';
+    const rank = document.createElement('div'); rank.className='resRank'; rank.textContent = `${i+1}${suffixes[Math.min(i,3)]}`;
     const av = bustCanvas(k.p, 30);
-    const label = document.createElement('div'); label.textContent = `${i+1}${['ST','ND','RD','TH'][Math.min(i,3)]} — ${k.p.label}${k.isPlayer?' (you)':''}`;
-    row.appendChild(medal); row.appendChild(av); row.appendChild(label);
+    const nm = document.createElement('div'); nm.className='resName'; nm.textContent = `${k.p.label}${k.isPlayer?' (you)':''}`;
+    row.appendChild(rank); row.appendChild(av); row.appendChild(nm);
     box.appendChild(row);
   });
   document.getElementById('finishPanel').classList.remove('hidden');
-  spawnConfetti(110);
+  spawnConfetti(80);
 }
 
 /* ============================= INPUT ============================= */
@@ -1010,61 +913,41 @@ document.getElementById('againBtn').addEventListener('click', ()=>{
 
 resize();
 
-/* ============================= PSEUDO-3D RENDERING ============================= */
+/* ============================= RENDERING ============================= */
 function projectPoint(lat, z, camX, w, h){
   const zc = Math.max(z, 1.5);
   const scale = CAM_DEPTH/zc;
   const ref = h/2;
-  return {
-    x: w/2 + scale*(lat-camX)*ref,
-    y: h/2 + scale*CAM_HEIGHT*ref,
-    w: scale*ROAD_HALF_W*ref,
-    scale
-  };
+  return { x: w/2 + scale*(lat-camX)*ref, y: h/2 + scale*CAM_HEIGHT*ref, w: scale*ROAD_HALF_W*ref, scale };
 }
 
-// pre-generated cloud positions
 const CLOUDS = [];
-for(let i=0;i<12;i++){
-  CLOUDS.push({ x: Math.random(), y: 0.06+Math.random()*0.28, w: 40+Math.random()*80, h:16+Math.random()*20, speed: 0.003+Math.random()*0.006 });
+for(let i=0;i<10;i++){
+  CLOUDS.push({ x: Math.random(), y: 0.08+Math.random()*0.25, w: 40+Math.random()*70, h:14+Math.random()*16, speed: 0.003+Math.random()*0.005 });
 }
-// distant hills
 const HILLS = [];
-for(let i=0;i<20;i++){
-  HILLS.push({ x: i/20, h: 12+Math.random()*28, w: 0.06+Math.random()*0.08 });
+for(let i=0;i<16;i++){
+  HILLS.push({ x: i/16, h: 10+Math.random()*24, w: 0.06+Math.random()*0.07 });
 }
 
 function renderChaseCam(g){
   const w = viewport.w, h = viewport.h;
   const horizonY = h*0.44;
 
-  // sky gradient
   const skyGrad = g.createLinearGradient(0,0,0,horizonY);
   skyGrad.addColorStop(0,'#3a8ee8');
-  skyGrad.addColorStop(0.5,'#5cb2ff');
+  skyGrad.addColorStop(0.6,'#5cb2ff');
   skyGrad.addColorStop(1,'#8fd4ff');
   g.fillStyle = skyGrad;
   g.fillRect(0,0,w,horizonY);
 
-  // sun
-  const sunX = w*0.78, sunY = horizonY*0.25;
-  g.fillStyle = '#fff8e0';
-  g.beginPath(); g.arc(sunX,sunY,22,0,Math.PI*2); g.fill();
-  g.fillStyle = 'rgba(255,248,200,0.2)';
-  g.beginPath(); g.arc(sunX,sunY,40,0,Math.PI*2); g.fill();
-
-  // clouds
   CLOUDS.forEach(c=>{
     const cx = ((c.x + gameTime*c.speed)%1.3 - 0.15)*w;
-    g.fillStyle = 'rgba(255,255,255,0.7)';
+    g.fillStyle = 'rgba(255,255,255,0.6)';
     roundRectPath(g, cx, c.y*horizonY, c.w, c.h, c.h/2);
-    g.fill();
-    g.fillStyle = 'rgba(255,255,255,0.5)';
-    roundRectPath(g, cx+c.w*0.15, c.y*horizonY-c.h*0.3, c.w*0.6, c.h*0.7, c.h/2.5);
     g.fill();
   });
 
-  // distant hills
   g.fillStyle = '#2ba840';
   HILLS.forEach(hi=>{
     const hx = hi.x*w;
@@ -1074,21 +957,17 @@ function renderChaseCam(g){
     g.fill();
   });
 
-  // grass gradient
   const grassGrad = g.createLinearGradient(0,horizonY,0,h);
   grassGrad.addColorStop(0,'#3ec14f');
-  grassGrad.addColorStop(0.3,'#35a843');
   grassGrad.addColorStop(1,'#2c9a3c');
   g.fillStyle = grassGrad; g.fillRect(0,horizonY,w,h-horizonY);
 
-  // grass stripes
   const zTotal = (player.totalAngle/(Math.PI*2)) * SEG_COUNT * SEGMENT_LEN;
   const zSegF = zTotal/SEGMENT_LEN;
   const baseIdx = Math.floor(zSegF) % SEG_COUNT;
   const frac = zSegF - Math.floor(zSegF);
   const camX = lateralOffset(player.x,player.y) * ROAD_HALF_W * 0.85;
 
-  // bucket sprites
   const buckets = {};
   function addBucket(rel, entry){ if(!buckets[rel]) buckets[rel]=[]; buckets[rel].push(entry); }
   karts.forEach(k=>{
@@ -1103,12 +982,12 @@ function renderChaseCam(g){
     if(!it.active) return;
     let rel = it.segIdx - baseIdx;
     while(rel < 0) rel += SEG_COUNT;
-    if(rel<DRAW_DIST) addBucket(rel, {type:'item', obj:it});
+    if(rel<DRAW_DIST) addBucket(rel, {type:'heart', obj:it});
   });
   TREES.forEach(t=>{
     let rel = t.segIdx - baseIdx;
     while(rel < 0) rel += SEG_COUNT;
-    if(rel<DRAW_DIST) addBucket(rel, {type:t.type, obj:t});
+    if(rel<DRAW_DIST) addBucket(rel, {type:'tree', obj:t});
   });
 
   let x = 0, dx = 0;
@@ -1127,27 +1006,17 @@ function renderChaseCam(g){
     if(p2.y < horizonY-2) continue;
     const seg = ROAD[p1.idx];
     const roadCol = seg.alt ? '#5a5a62' : '#4e4e56';
-    const rumbleCol = seg.alt ? '#e6394a' : '#ffffff';
+    const rumbleCol = seg.alt ? '#d4506b' : '#ffffff';
     const grassCol = seg.alt ? '#3ec14f' : '#35a843';
 
-    // grass strips
     quad(g, p1.x,p1.y,p1.w*3.5, p2.x,p2.y,p2.w*3.5, grassCol);
-
-    // shoulder
-    quad(g, p1.x,p1.y,p1.w*1.3, p2.x,p2.y,p2.w*1.3, rumbleCol);
-    // road
+    quad(g, p1.x,p1.y,p1.w*1.25, p2.x,p2.y,p2.w*1.25, rumbleCol);
     quad(g, p1.x,p1.y,p1.w, p2.x,p2.y,p2.w, roadCol);
-
-    // road edge white line
-    quad(g, p1.x-p1.w*0.96,p1.y,p1.w*0.04, p2.x-p2.w*0.96,p2.y,p2.w*0.04, '#ffffffaa');
-    quad(g, p1.x+p1.w*0.96,p1.y,p1.w*0.04, p2.x+p2.w*0.96,p2.y,p2.w*0.04, '#ffffffaa');
-
-    // center dashes
-    if(seg.dash){ quad(g, p1.x,p1.y,p1.w*0.03, p2.x,p2.y,p2.w*0.03, '#ffffff'); }
-
-    // start/finish line
+    quad(g, p1.x-p1.w*0.96,p1.y,p1.w*0.035, p2.x-p2.w*0.96,p2.y,p2.w*0.035, '#ffffff99');
+    quad(g, p1.x+p1.w*0.96,p1.y,p1.w*0.035, p2.x+p2.w*0.96,p2.y,p2.w*0.035, '#ffffff99');
+    if(seg.dash){ quad(g, p1.x,p1.y,p1.w*0.025, p2.x,p2.y,p2.w*0.025, '#ffffff'); }
     if(p1.idx===0 || p1.idx===1){
-      quad(g, p1.x,p1.y,p1.w*0.9, p2.x,p2.y,p2.w*0.9, '#ffffffdd');
+      quad(g, p1.x,p1.y,p1.w*0.9, p2.x,p2.y,p2.w*0.9, '#ffffffcc');
     }
 
     const bucket = buckets[n];
@@ -1157,152 +1026,40 @@ function renderChaseCam(g){
           const k = entry.obj;
           const lat = p1.roadX + lateralOffset(k.x,k.y)*ROAD_HALF_W*0.85;
           const sp = projectPoint(lat, p1.z, camX, w, h);
-          drawBillboardKart(g, sp, k.p, k.boostTier);
-        } else if(entry.type==='item'){
+          const size = Math.max(3, sp.scale*260);
+          g.save();
+          g.translate(sp.x, sp.y - size*0.42);
+          g.scale(size/26, size/26);
+          drawFullKartBack(g, k.p, k.boostTier, gameTime);
+          g.restore();
+        } else if(entry.type==='heart'){
           const sp = projectPoint(p1.roadX, p1.z, camX, w, h);
-          drawBillboardItem(g, sp);
+          const size = Math.max(4, sp.scale*200);
+          const bob = Math.sin(gameTime*3)*size*0.08;
+          drawPixelHeart(g, sp.x, sp.y - size*0.35 + bob, size*0.7, '#d4506b', '#f0889e');
         } else if(entry.type==='tree'){
           const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*1.8;
           const sp = projectPoint(lat, p1.z, camX, w, h);
-          drawBillboardTree(g, sp);
-        } else if(entry.type==='banner'){
-          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*1.6;
-          const sp = projectPoint(lat, p1.z, camX, w, h);
-          drawBillboardBanner(g, sp);
-        } else if(entry.type==='balloon'){
-          const lat = p1.roadX + entry.obj.side*ROAD_HALF_W*1.5;
-          const sp = projectPoint(lat, p1.z, camX, w, h);
-          drawBillboardBalloon(g, sp);
+          const size = Math.max(3, sp.scale*320);
+          g.save();
+          g.translate(sp.x, sp.y - size*0.45);
+          g.scale(size/20, size/20);
+          pr(g,-1.5,4,3,6,'#7a5230');
+          pr(g,-1,4.5,1,5,'#8a6240');
+          pr(g,-6,-4,12,8,'#2c9a3c');
+          pr(g,-5,-8,10,6,'#36ab45');
+          pr(g,-3,-11,6,4,'#40bc50');
+          g.restore();
         }
       });
     }
   }
 
-  // speed lines
-  if(player && player.speed > 150){
-    const intensity = Math.min(1, (player.speed - 150)/110);
-    g.globalAlpha = intensity*0.25;
-    g.strokeStyle = '#ffffff';
-    g.lineWidth = 1.5;
-    for(let i=0;i<8;i++){
-      const sx = Math.random()*w;
-      const sy = h*0.3+Math.random()*h*0.5;
-      g.beginPath();
-      g.moveTo(sx, sy);
-      g.lineTo(sx+(sx-w/2)*0.15, sy+30+Math.random()*40);
-      g.stroke();
-    }
-    g.globalAlpha = 1;
-  }
-
-  drawForegroundKart(g, w, h);
-
-  // drift sparks from player kart
-  if(player && player.drifting){
-    const sparkColors = player.driftTime>0.9?['#e6394a','#ff7b8a']:player.driftTime>0.5?['#ffcc00','#ffe066']:['#5cb2ff','#a0d4ff'];
-    for(let i=0;i<2;i++){
-      const sx = w/2 + (Math.random()-0.5)*40;
-      const sy = h - 20 + Math.random()*10;
-      spawnParticle(sx, sy, (Math.random()-0.5)*80, -40-Math.random()*60, sparkColors[i%2], 0.3+Math.random()*0.3, 2+Math.random()*2);
-    }
-  }
-
-  drawParticlesScreen(g);
-}
-
-function drawBillboardKart(g, sp, p, boostTier){
-  const size = Math.max(3, sp.scale*260);
-  g.save();
-  g.translate(sp.x, sp.y - size*0.42);
-  g.scale(size/26, size/26);
-  drawFullKartBack(g, p, boostTier, gameTime);
-  g.restore();
-}
-function drawBillboardItem(g, sp){
-  const size = Math.max(3, sp.scale*180);
-  const bob = Math.sin(gameTime*4)*size*0.06;
-  g.save();
-  g.translate(sp.x, sp.y - size*0.35 + bob);
-  g.scale(size/10, size/10);
-  // question box
-  pr(g,-4,-4,8,8,'#ffcc00');
-  pr(g,-4,-4,8,1.5,'#ffe680');
-  pr(g,-4,2.5,8,1.5,'#cc9a00');
-  pr(g,-3.5,-3.5,7,7,'#ffdd44');
-  // ? mark
-  pr(g,-1,-2.5,2,1,'#1b1b1f');
-  pr(g,0.5,-1.5,1.5,1.5,'#1b1b1f');
-  pr(g,-0.5,0,1.5,1.5,'#1b1b1f');
-  pr(g,-0.5,2,1.5,1,'#1b1b1f');
-  // sparkle
-  pr(g,-4.5,-4.5,1,1,'#ffffff');
-  pr(g,3.5,-4.5,1,1,'#ffffff');
-  g.restore();
-}
-function drawBillboardTree(g, sp){
-  const size = Math.max(3, sp.scale*320);
-  g.save();
-  g.translate(sp.x, sp.y - size*0.45);
-  g.scale(size/20, size/20);
-  // trunk
-  pr(g,-1.5,4,3,6,'#7a5230');
-  pr(g,-1,4.5,1,5,'#8a6240');
-  // foliage layers
-  pr(g,-6,-4,12,8,'#2c9a3c');
-  pr(g,-5,-8,10,6,'#36ab45');
-  pr(g,-3,-11,6,4,'#40bc50');
-  // highlights
-  pr(g,-4,-7,3,2,'#4cd05c');
-  pr(g,1,-5,3,2,'#4cd05c');
-  g.restore();
-}
-function drawBillboardBanner(g, sp){
-  const size = Math.max(3, sp.scale*280);
-  g.save();
-  g.translate(sp.x, sp.y - size*0.5);
-  g.scale(size/16, size/16);
-  // pole
-  pr(g,-0.5,4,1,8,'#8a8a90');
-  pr(g,-0.5,-6,1,10,'#8a8a90');
-  // banner
-  pr(g,-5,-5,10,7,'#fff8ec');
-  pr(g,-5,-5,10,1,'#e6394a');
-  pr(g,-5,1,10,1,'#e6394a');
-  // heart
-  pr(g,-2,-3,1,2,'#e6394a');
-  pr(g,1,-3,1,2,'#e6394a');
-  pr(g,-1,-2,2,2,'#e6394a');
-  pr(g,-0.5,-3.5,1,1,'#e6394a');
-  g.restore();
-}
-function drawBillboardBalloon(g, sp){
-  const size = Math.max(3, sp.scale*200);
-  const sway = Math.sin(gameTime*2+sp.x)*size*0.03;
-  g.save();
-  g.translate(sp.x+sway, sp.y - size*0.4);
-  g.scale(size/12, size/12);
-  // string
-  g.strokeStyle = '#888';
-  g.lineWidth = 0.3;
-  g.beginPath(); g.moveTo(0,4); g.lineTo(0,10); g.stroke();
-  // balloon
-  const bCol = ['#e6394a','#ffcc00','#1fb6b0','#9b59b6'][Math.floor(sp.x)%4];
-  pr(g,-3,-4,6,7,bCol);
-  pr(g,-2,-5,4,2,shade(bCol,0.2));
-  pr(g,-2,2,4,2,shade(bCol,-0.2));
-  pr(g,-0.5,3,1,1.5,shade(bCol,-0.3));
-  // highlight
-  pr(g,-1,-3,1.5,2,shade(bCol,0.35));
-  g.restore();
-}
-
-function drawForegroundKart(g, w, h){
+  // foreground kart
   const lean = (input.left?-1:0) + (input.right?1:0);
   const unit = h*0.011;
-  const shakeX = screenShake>0 ? (Math.random()-0.5)*screenShake*4 : 0;
-  const shakeY = screenShake>0 ? (Math.random()-0.5)*screenShake*2 : 0;
   g.save();
-  g.translate(w/2 + lean*unit*2.2 + shakeX, h - 4*unit + shakeY);
+  g.translate(w/2 + lean*unit*2.2, h - 4*unit);
   g.scale(unit, unit);
   drawFullKartBack(g, player.p, player.boostTier, gameTime);
   g.restore();
@@ -1310,27 +1067,26 @@ function drawForegroundKart(g, w, h){
 
 function drawMinimap(g){
   if(state!=='race' && state!=='countdown') return;
-  const mmW=78, mmH=52;
-  const pad = 10;
-  const originX = viewport.w - mmW - pad - 8;
-  const originY = viewport.h - mmH - pad - 8;
+  const mmW=72, mmH=48;
+  const originX = viewport.w - mmW - 18;
+  const originY = viewport.h - mmH - 18;
   g.save();
-  roundRectPath(g, originX-8, originY-8, mmW+16, mmH+16, 10);
-  g.fillStyle = 'rgba(27,27,31,0.7)';
+  roundRectPath(g, originX-6, originY-6, mmW+12, mmH+12, 8);
+  g.fillStyle = 'rgba(255,248,236,0.85)';
   g.fill();
-  g.strokeStyle = 'rgba(255,204,0,0.4)';
-  g.lineWidth = 2;
+  g.strokeStyle = 'rgba(27,27,31,0.3)';
+  g.lineWidth = 1.5;
   g.stroke();
   g.beginPath();
   g.ellipse(originX+mmW/2, originY+mmH/2, mmW/2, mmH/2, 0,0,Math.PI*2);
-  g.strokeStyle='rgba(255,255,255,0.5)'; g.lineWidth=1.5; g.stroke();
+  g.strokeStyle='rgba(27,27,31,0.25)'; g.lineWidth=1.5; g.stroke();
   karts.forEach(k=>{
     const nx = (k.x-TRACK.cx)/TRACK.aOut, ny=(k.y-TRACK.cy)/TRACK.bOut;
     const px = originX+mmW/2 + nx*(mmW/2-3);
     const py = originY+mmH/2 + ny*(mmH/2-3);
-    g.fillStyle = k.p.kart;
-    g.beginPath(); g.arc(px,py, k.isPlayer?4:2.6, 0, Math.PI*2); g.fill();
-    if(k.isPlayer){ g.strokeStyle='#e6394a'; g.lineWidth=1.5; g.stroke(); }
+    g.fillStyle = k.isPlayer ? '#d4506b' : k.p.kart;
+    g.beginPath(); g.arc(px,py, k.isPlayer?4:2.5, 0, Math.PI*2); g.fill();
+    if(k.isPlayer){ g.strokeStyle='#d4506b'; g.lineWidth=1; g.stroke(); }
   });
   g.restore();
 }
@@ -1341,8 +1097,6 @@ function frame(now){
   const dt = Math.min(0.033, (now-lastT)/1000);
   lastT = now;
   gameTime += dt;
-
-  if(screenShake>0) screenShake = Math.max(0, screenShake-dt*8);
 
   if(state==='select' || state==='finish'){ updateConfetti(dt); }
 
@@ -1363,39 +1117,28 @@ function frame(now){
 
   if(state==='race'){
     raceTime += dt;
-    const prevLap = player.lap;
     stepKart(player, dt, input);
     karts.forEach(k=>{ if(!k.isPlayer) stepAI(k, dt); });
     items.forEach(it=>{ if(!it.active && raceTime>it.respawnAt) it.active=true; });
-    updateParticles(dt);
-
-    if(player.lap > prevLap && player.lap < FINISH_LAPS){
-      screenShake = 1;
-    }
-
-    if(player.boostTier >= 2 && player.boostTimer > 0){
-      screenShake = Math.max(screenShake, 0.5);
-    }
 
     const sorted = [...karts].sort((a,b)=>b.totalAngle-a.totalAngle);
+    const sfx = ['st','nd','rd','th'];
     sorted.forEach((k,i)=>{
       k.rank = i+1;
-      if(k.rowEl){ k.rowEl.style.order = i; k.rankEl.textContent = (i+1)+({1:'ST',2:'ND',3:'RD',4:'TH'}[i+1]||'TH'); }
+      if(k.rowEl){ k.rowEl.style.order = i; k.rankEl.textContent = (i+1)+sfx[Math.min(i,3)]; }
     });
 
     document.getElementById('lapNum').textContent = Math.min(FINISH_LAPS, player.lap+1);
     const mm = Math.floor(raceTime/60).toString().padStart(2,'0');
     const ss = (raceTime%60).toFixed(1).padStart(4,'0');
     document.getElementById('timeNum').textContent = `${mm}:${ss}`;
-    document.getElementById('speedNum').textContent = Math.round(player.speed + (player.boostTimer>0?player.boost:0));
     const boostPct = player.drifting ? Math.min(100, player.driftTime/0.9*100) : (player.boostTimer>0?100:0);
     const bar = document.getElementById('boostBar');
     bar.style.width = boostPct+'%';
-    bar.style.background = player.driftTime>0.9?'#e6394a':player.driftTime>0.5?'#ffcc00':'#2f7fe0';
+    bar.style.background = player.driftTime>0.9?'#d4506b':player.driftTime>0.5?'#e8b830':'#5cb2ff';
 
     if(player.totalAngle >= TARGET_ANGLE && !player.finished){
       player.finished = true;
-      screenShake = 2;
       endRace();
     }
   }
@@ -1411,10 +1154,9 @@ function frame(now){
     skyGrad.addColorStop(1,'#5cb2ff');
     ctx.fillStyle = skyGrad; ctx.fillRect(0,0,viewport.w,horizonY);
     ctx.fillStyle = '#3ec14f'; ctx.fillRect(0,horizonY,viewport.w,viewport.h-horizonY);
-    // clouds on menu
     CLOUDS.forEach(c=>{
       const cx = ((c.x + gameTime*c.speed)%1.3 - 0.15)*viewport.w;
-      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
       roundRectPath(ctx, cx, c.y*horizonY, c.w, c.h, c.h/2);
       ctx.fill();
     });
