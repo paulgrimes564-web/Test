@@ -704,15 +704,17 @@ function drawConfetti(g){
 function makeKart(palette, isPlayer, startIndex){
   const spread = 0.028;
   const t0 = (START_ANGLE/(Math.PI*2)) - startIndex*spread - 0.01;
-  const startPos = centerlinePoint(((t0%1)+1)%1);
+  const startFrac = ((t0%1)+1)%1;
+  const startPos = centerlinePoint(startFrac);
   const ahead = centerlinePoint((((t0+0.01)%1)+1)%1);
   return {
     p: palette, isPlayer,
     x: startPos.x, y: startPos.y,
     heading: Math.atan2(ahead.y-startPos.y, ahead.x-startPos.x),
     speed:0,
-    wpIndex: Math.floor((((t0%1)+1)%1)*WAYPOINT_COUNT),
+    wpIndex: (Math.floor(startFrac*WAYPOINT_COUNT)+1)%WAYPOINT_COUNT,
     totalAngle: 0, prevAngle: null, lap:0,
+    startSeg: Math.round(startFrac * SEG_COUNT),
     drifting:false, driftTime:0, boost:0, boostTimer:0, boostTier:0,
     finished:false, aiSpeed: 150+Math.random()*24,
     rank:1, rowEl:null
@@ -747,9 +749,18 @@ function stepKart(k, dt, inp){
   if(inp.brake) k.speed -= BRAKE*dt;
   k.speed = Math.max(0, Math.min(MAX_SPEED*speedMult, k.speed));
 
+  const target = WAYPOINTS[k.wpIndex];
+  const wdx = target.x-k.x, wdy = target.y-k.y;
+  if(Math.hypot(wdx,wdy) < 34) k.wpIndex = (k.wpIndex+1)%WAYPOINT_COUNT;
+  const desired = Math.atan2(wdy,wdx);
+  let autoSteer = desired - k.heading;
+  while(autoSteer>Math.PI) autoSteer-=Math.PI*2;
+  while(autoSteer<-Math.PI) autoSteer+=Math.PI*2;
+
   const turnFactor = Math.max(0.25, Math.min(1, k.speed/120));
+  k.heading += Math.max(-1,Math.min(1,autoSteer*2.2))*TURN_RATE*turnFactor*dt;
   let turning = (inp.left?-1:0) + (inp.right?1:0);
-  k.heading += turning*TURN_RATE*turnFactor*dt;
+  k.heading += turning*TURN_RATE*0.8*turnFactor*dt;
 
   if(inp.drift && turning!==0 && k.speed > 60){
     k.drifting = true;
@@ -820,9 +831,9 @@ function setupRace(){
   const playerPalette = buildPalette(Object.assign({}, customConfig, {label:'You'}));
   const aiConfigs = [PRESETS.groomsman, PRESETS.bridesmaid, customConfig.outfitType==='gown' ? PRESETS.groom : PRESETS.bride];
   karts = [];
-  player = makeKart(playerPalette, true, 0);
+  aiConfigs.forEach((cfg,i)=> karts.push(makeKart(buildPalette(cfg), false, i)));
+  player = makeKart(playerPalette, true, aiConfigs.length);
   karts.push(player);
-  aiConfigs.forEach((cfg,i)=> karts.push(makeKart(buildPalette(cfg), false, i+1)));
   raceTime = 0;
   items.forEach(it=>{ it.active=true; it.respawnAt=0; });
 
@@ -964,7 +975,7 @@ function renderChaseCam(g){
 
   const zTotal = (player.totalAngle/(Math.PI*2)) * SEG_COUNT * SEGMENT_LEN;
   const zSegF = zTotal/SEGMENT_LEN;
-  const baseIdx = Math.floor(zSegF) % SEG_COUNT;
+  const baseIdx = ((Math.floor(zSegF) + player.startSeg) % SEG_COUNT + SEG_COUNT) % SEG_COUNT;
   const frac = zSegF - Math.floor(zSegF);
   const camX = lateralOffset(player.x,player.y) * ROAD_HALF_W * 0.85;
 
@@ -973,7 +984,8 @@ function renderChaseCam(g){
   karts.forEach(k=>{
     if(k.isPlayer) return;
     const kZSeg = (k.totalAngle/(Math.PI*2))*SEG_COUNT;
-    let rel = Math.round(kZSeg) - Math.floor(zSegF);
+    const kAbsSeg = ((Math.round(kZSeg) + k.startSeg) % SEG_COUNT + SEG_COUNT) % SEG_COUNT;
+    let rel = kAbsSeg - baseIdx;
     while(rel < -SEG_COUNT/2) rel += SEG_COUNT;
     while(rel > SEG_COUNT/2) rel -= SEG_COUNT;
     if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'kart', obj:k});
