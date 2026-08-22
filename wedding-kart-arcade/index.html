@@ -314,55 +314,59 @@ function buildPalette(cfg){
 /* ============================= SPRITES ============================= */
 
 function drawFace(g, p, cx, cy, isGown){
-  // Head, hair and a warm, clearly emotive face -- shared by the builder preview and the in-car view.
-  pr(g,cx-5,cy,10,10,p.skin);
+  // Head, hair and a warm, clearly emotive face with a proper jaw and chin
+  // below the mouth -- shared by the builder preview and the in-car view.
+  pr(g,cx-5,cy,10,9.6,p.skin);
+  pr(g,cx-4.3,cy+9.6,8.6,1,p.skin);
+  pr(g,cx-3.4,cy+10.6,6.8,0.9,p.skin);
   pr(g,cx-4.5,cy+0.5,9,1,p.skinHi);
 
   // Eyebrows so the expression actually reads at a glance.
-  pr(g,cx-3.3,cy+3.5,2.2,0.8,'#3a2a1c');
-  pr(g,cx+1.1,cy+3.5,2.2,0.8,'#3a2a1c');
+  pr(g,cx-3.3,cy+3.2,2.2,0.8,'#3a2a1c');
+  pr(g,cx+1.1,cy+3.2,2.2,0.8,'#3a2a1c');
 
   if(isGown){
     // Soft colourful eyeshadow.
-    pr(g,cx-3.7,cy+4.5,2.7,1.1,'#c98fd6');
-    pr(g,cx+1,cy+4.5,2.7,1.1,'#c98fd6');
+    pr(g,cx-3.7,cy+4.2,2.7,1.1,'#c98fd6');
+    pr(g,cx+1,cy+4.2,2.7,1.1,'#c98fd6');
   }
 
-  pr(g,cx-3.5,cy+5.5,2.5,2.5,'#ffffff');
-  pr(g,cx+1,cy+5.5,2.5,2.5,'#ffffff');
-  pr(g,cx-2.5,cy+6,1.5,2,'#2a1f0e');
-  pr(g,cx+2,cy+6,1.5,2,'#2a1f0e');
-  pr(g,cx-2,cy+6.5,1,1,'#1b1b1f');
-  pr(g,cx+2.5,cy+6.5,1,1,'#1b1b1f');
-  pr(g,cx-2,cy+6,0.6,0.6,'#ffffff');
-  pr(g,cx+2.5,cy+6,0.6,0.6,'#ffffff');
+  pr(g,cx-3.5,cy+5.2,2.5,2.5,'#ffffff');
+  pr(g,cx+1,cy+5.2,2.5,2.5,'#ffffff');
+  pr(g,cx-2.5,cy+5.7,1.5,2,'#2a1f0e');
+  pr(g,cx+2,cy+5.7,1.5,2,'#2a1f0e');
+  pr(g,cx-2,cy+6.2,1,1,'#1b1b1f');
+  pr(g,cx+2.5,cy+6.2,1,1,'#1b1b1f');
+  pr(g,cx-2,cy+5.7,0.6,0.6,'#ffffff');
+  pr(g,cx+2.5,cy+5.7,0.6,0.6,'#ffffff');
 
   if(isGown){
     // Longer, flicked-out lashes.
-    pr(g,cx-4.3,cy+5.3,1,0.6,'#1b1b1f');
-    pr(g,cx-4.7,cy+4.9,0.8,0.6,'#1b1b1f');
-    pr(g,cx+3.6,cy+5.3,1,0.6,'#1b1b1f');
-    pr(g,cx+4.3,cy+4.9,0.8,0.6,'#1b1b1f');
+    pr(g,cx-4.3,cy+5,1,0.6,'#1b1b1f');
+    pr(g,cx-4.7,cy+4.6,0.8,0.6,'#1b1b1f');
+    pr(g,cx+3.6,cy+5,1,0.6,'#1b1b1f');
+    pr(g,cx+4.3,cy+4.6,0.8,0.6,'#1b1b1f');
   }
 
-  pr(g,cx-4,cy+8,1.6,1.1,'#f0a898');
-  pr(g,cx+2.4,cy+8,1.6,1.1,'#f0a898');
-  pr(g,cx-0.5,cy+8.4,1,1.3,p.skinLo);
+  pr(g,cx-4,cy+7.3,1.6,1.1,'#f0a898');
+  pr(g,cx+2.4,cy+7.3,1.6,1.1,'#f0a898');
+  pr(g,cx-0.5,cy+7.6,1,1.2,p.skinLo);
 
-  // Bright red lips curving into a clear smile, with dimples at the corners.
-  pr(g,cx-2.2,cy+9.9,4.4,0.7,'#c41f1f');
-  pr(g,cx-2,cy+10.5,4,1.1,'#e8342a');
-  pr(g,cx-2.6,cy+10.1,0.8,0.8,'#e8342a');
-  pr(g,cx+1.8,cy+10.1,0.8,0.8,'#e8342a');
-  pr(g,cx-0.6,cy+10.6,1.2,0.4,'#ff8a7a');
-  pr(g,cx-3.2,cy+10.3,0.8,0.8,'#d69a86');
-  pr(g,cx+2.4,cy+10.3,0.8,0.8,'#d69a86');
+  // Bright red lips curving into a clear smile, with dimples at the corners,
+  // and a clear chin below.
+  pr(g,cx-2.2,cy+8.9,4.4,0.6,'#c41f1f');
+  pr(g,cx-2,cy+9.4,4,0.9,'#e8342a');
+  pr(g,cx-2.6,cy+9,0.7,0.7,'#e8342a');
+  pr(g,cx+1.9,cy+9,0.7,0.7,'#e8342a');
+  pr(g,cx-0.6,cy+9.5,1.2,0.4,'#ff8a7a');
+  pr(g,cx-3.1,cy+9.2,0.7,0.7,'#d69a86');
+  pr(g,cx+2.4,cy+9.2,0.7,0.7,'#d69a86');
 
   if(isGown){
     pr(g,cx-6,cy-1,12,4,p.hair);
     pr(g,cx-6,cy-1,12,1.5,p.hairHi);
-    pr(g,cx-6,cy+2,1.5,9,p.hair);
-    pr(g,cx+4.5,cy+2,1.5,9,p.hair);
+    pr(g,cx-6,cy+2,1.5,9.5,p.hair);
+    pr(g,cx+4.5,cy+2,1.5,9.5,p.hair);
     pr(g,cx-1,cy-2,2,2,'#ffffff');
     pr(g,cx+0.5,cy-2.4,1,1,p.accessory);
   } else {
@@ -404,7 +408,11 @@ function drawRiderTorso(g, p, xOff){
   pr(g,5.4,-8.5,2.6,4,p.outfit);
   pr(g,5.4,-5.4,2.6,1.8,p.skin);
 
-  drawFace(g, p, 0, -21, isGown);
+  g.save();
+  g.translate(0, -20.5);
+  g.scale(0.8, 0.8);
+  drawFace(g, p, 0, 0, isGown);
+  g.restore();
   g.restore();
 }
 
@@ -450,6 +458,14 @@ function drawCoupleCar(g, pA, pB, boostTier, frameTime){
   pr(g,-16,-5,32,0.8,shade(pA.trim,0.25));
   pr(g,-17,-5,1.5,4.4,pA.trim);
   pr(g,15.5,-5,1.5,4.4,pA.trim);
+
+  // Roof and rear windshield -- the couple sit inside the car, not on top of it.
+  pr(g,-17.5,-24.5,35,4.2,shade(pA.kart,-0.16));
+  pr(g,-17.5,-24.5,35,1,shade(pA.kart,0.14));
+  pr(g,-16,-20.3,32,9.4,'#bfe3f5');
+  pr(g,-16,-20.3,32,1.2,'#eef9ff');
+  pr(g,-16,-20.3,1.3,9.4,'#241c14');
+  pr(g,14.7,-20.3,1.3,9.4,'#241c14');
 
   drawRiderTorso(g, pA, -10.5);
   drawRiderTorso(g, pB, 10.5);
