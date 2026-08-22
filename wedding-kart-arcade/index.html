@@ -326,9 +326,9 @@ function drawFace(g, p, cx, cy, isGown){
   pr(g,cx+1.1,cy+3.2,2.2,0.8,'#3a2a1c');
 
   if(isGown){
-    // Soft colourful eyeshadow.
-    pr(g,cx-3.7,cy+4.2,2.7,1.1,'#c98fd6');
-    pr(g,cx+1,cy+4.2,2.7,1.1,'#c98fd6');
+    // A clean, simple band of colourful eyeshadow -- no overlap with the eye.
+    pr(g,cx-3.7,cy+4.1,2.7,1,'#c98fd6');
+    pr(g,cx+1,cy+4.1,2.7,1,'#c98fd6');
   }
 
   pr(g,cx-3.5,cy+5.2,2.5,2.5,'#ffffff');
@@ -340,35 +340,26 @@ function drawFace(g, p, cx, cy, isGown){
   pr(g,cx-2,cy+5.7,0.6,0.6,'#ffffff');
   pr(g,cx+2.5,cy+5.7,0.6,0.6,'#ffffff');
 
-  if(isGown){
-    // Longer, flicked-out lashes.
-    pr(g,cx-4.3,cy+5,1,0.6,'#1b1b1f');
-    pr(g,cx-4.7,cy+4.6,0.8,0.6,'#1b1b1f');
-    pr(g,cx+3.6,cy+5,1,0.6,'#1b1b1f');
-    pr(g,cx+4.3,cy+4.6,0.8,0.6,'#1b1b1f');
-  }
-
   pr(g,cx-4,cy+7.3,1.6,1.1,'#f0a898');
   pr(g,cx+2.4,cy+7.3,1.6,1.1,'#f0a898');
   pr(g,cx-0.5,cy+7.6,1,1.2,p.skinLo);
 
-  // Bright red lips curving into a clear smile, with dimples at the corners,
-  // and a clear chin below.
-  pr(g,cx-2.2,cy+8.9,4.4,0.6,'#c41f1f');
-  pr(g,cx-2,cy+9.4,4,0.9,'#e8342a');
-  pr(g,cx-2.6,cy+9,0.7,0.7,'#e8342a');
-  pr(g,cx+1.9,cy+9,0.7,0.7,'#e8342a');
-  pr(g,cx-0.6,cy+9.5,1.2,0.4,'#ff8a7a');
-  pr(g,cx-3.1,cy+9.2,0.7,0.7,'#d69a86');
-  pr(g,cx+2.4,cy+9.2,0.7,0.7,'#d69a86');
+  // Bright red lips as a clear stepped smile-arc -- the corners sit well
+  // above the centre -- with dimples, and a clear chin below.
+  pr(g,cx-2.6,cy+9.3,1,0.6,'#e8342a');
+  pr(g,cx-1.6,cy+9.6,1,0.9,'#e8342a');
+  pr(g,cx-0.7,cy+9.9,1.4,1.1,'#e8342a');
+  pr(g,cx+0.7,cy+9.6,1,0.9,'#e8342a');
+  pr(g,cx+1.6,cy+9.3,1,0.6,'#e8342a');
+  pr(g,cx-0.4,cy+10.2,0.8,0.4,'#ff8a7a');
+  pr(g,cx-3,cy+9.6,0.7,0.7,'#d69a86');
+  pr(g,cx+2.3,cy+9.6,0.7,0.7,'#d69a86');
 
   if(isGown){
     pr(g,cx-6,cy-1,12,4,p.hair);
     pr(g,cx-6,cy-1,12,1.5,p.hairHi);
     pr(g,cx-6,cy+2,1.5,9.5,p.hair);
     pr(g,cx+4.5,cy+2,1.5,9.5,p.hair);
-    pr(g,cx-1,cy-2,2,2,'#ffffff');
-    pr(g,cx+0.5,cy-2.4,1,1,p.accessory);
   } else {
     pr(g,cx-5.5,cy-1,11,4,p.hair);
     pr(g,cx-5.5,cy-1,11,1.5,p.hairHi);
