@@ -906,20 +906,31 @@ const input = { left:false, right:false, gas:false, brake:false };
 /* ===================== SHARED LEADERBOARD =====================
    Every guest plays on their own phone, so localStorage alone can never show
    who actually won -- each device would only ever see its own runs. Scores are
-   therefore posted to a shared Firebase Realtime Database and read back, so
-   one global table is visible to everyone.
+   therefore posted to a shared store over plain HTTP and read back, so one
+   global table is visible to everyone.
 
-   To switch it on, put the Realtime Database URL in DEFAULT_DB below (looks
-   like https://something-default-rtdb.firebaseio.com). It can also be passed
-   at runtime as ?db=<url>, which is handy for testing before baking it in.
+   The contract is deliberately tiny and provider-neutral:
+     POST <base>/scores.json  with a JSON run  -> appends it
+     GET  <base>/scores.json                   -> { key: run, ... } (or null)
+   Firebase Realtime Database speaks this natively, and the bundled
+   /api/scores endpoint in this repo speaks it too, so the same client code
+   works against either with no SDK and no build step.
 
-   With no URL configured the game still works perfectly -- it just falls back
+   Point it at a store by setting DEFAULT_DB below, or at runtime with
+   ?db=<url>. '/api' uses this site's own endpoint.
+
+   With nothing configured the game still works perfectly -- it just falls back
    to a per-device board and says so, rather than silently pretending the
    scores are global. */
-const DEFAULT_DB = '';
+const DEFAULT_DB = '/api';
 const QUERY = new URLSearchParams(location.search);
 const LEADERBOARD_DB = (QUERY.get('db') || DEFAULT_DB).replace(/\/+$/,'');
-const REMOTE_ON = /^https:\/\//.test(LEADERBOARD_DB);
+// https anywhere, a same-origin relative path, or plain http only on localhost
+// (so the store can be exercised locally without shipping a plaintext
+// endpoint to guests).
+const REMOTE_ON = /^https:\/\//.test(LEADERBOARD_DB)
+  || /^\//.test(LEADERBOARD_DB)
+  || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(LEADERBOARD_DB);
 const NET_TIMEOUT = 8000;
 
 const LEADERBOARD_KEY = 'weddingDashLeaderboard';
@@ -947,6 +958,20 @@ function withTimeout(promise, ms){
 // POST appends with a server-generated key, so two guests finishing at the
 // same moment can never overwrite each other (which a whole-document
 // read-modify-write store would risk).
+// The bundled endpoint answers 503 until a store is provisioned. That is a
+// settled "there is no shared board yet", not a blip, so it is tracked
+// separately: no point queueing runs for retry, and the UI should say so
+// plainly rather than blaming the network.
+let storeUnconfigured = false;
+function noteStatus(res){
+  if(res.status === 503){
+    storeUnconfigured = true;
+    const err = new Error('store not configured');
+    err.unconfigured = true;
+    throw err;
+  }
+}
+
 async function postScore(entry){
   const ctrl = new AbortController();
   const timer = setTimeout(()=>ctrl.abort(), NET_TIMEOUT);
@@ -957,6 +982,7 @@ async function postScore(entry){
       body: JSON.stringify(entry),
       signal: ctrl.signal
     });
+    noteStatus(res);
     if(!res.ok) throw new Error('HTTP '+res.status);
     return true;
   } finally {
@@ -969,6 +995,7 @@ async function fetchScores(){
   const timer = setTimeout(()=>ctrl.abort(), NET_TIMEOUT);
   try{
     const res = await fetch(LEADERBOARD_DB+'/scores.json', { signal: ctrl.signal });
+    noteStatus(res);
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     if(!data) return [];
@@ -1001,9 +1028,12 @@ async function submitScore(entry){
     await postScore(entry);
     return true;
   }catch(e){
-    const queue = loadPending();
-    queue.push(entry);
-    savePending(queue);
+    // Only hold on to runs that failed for a reason a retry could fix.
+    if(!e.unconfigured){
+      const queue = loadPending();
+      queue.push(entry);
+      savePending(queue);
+    }
     return false;
   }
 }
@@ -1121,9 +1151,14 @@ function endRace(){
       }
     }catch(e){
       note.className = 'warn';
-      note.textContent = sent
-        ? 'Your time was saved, but the full leaderboard could not be loaded right now.'
-        : 'No connection — your time is saved on this phone and will be sent next time you open the game.';
+      if(storeUnconfigured){
+        document.getElementById('resultHeading').textContent = 'Leaderboard (this device)';
+        note.textContent = 'Shared leaderboard not switched on yet, so this only shows runs from this phone.';
+      } else {
+        note.textContent = sent
+          ? 'Your time was saved, but the full leaderboard could not be loaded right now.'
+          : 'No connection — your time is saved on this phone and will be sent next time you open the game.';
+      }
     }
   })();
 }
@@ -1197,7 +1232,12 @@ if(BOARD_MODE){
       status.textContent = scores.length + ' run' + (scores.length===1?'':'s') +
         ' · updated ' + new Date().toLocaleTimeString();
     }catch(e){
-      status.textContent = 'Could not reach the leaderboard — retrying…';
+      if(storeUnconfigured){
+        renderBoardRows(list, loadLeaderboard(), null);
+        status.textContent = 'Shared leaderboard not switched on yet — showing this device only.';
+      } else {
+        status.textContent = 'Could not reach the leaderboard — retrying…';
+      }
     }
   }
   refreshBoard();
