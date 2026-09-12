@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Mairead & Paul's Wedding Dash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   :root{
     --sky:#5cb2ff;
@@ -16,6 +19,9 @@
     --ink:#1b1b1f;
     --cream:#fff8ec;
     --white:#ffffff;
+    /* Arcade face for numbers, titles and buttons. display=swap means text
+       still paints instantly on a slow venue wifi, just in the fallback. */
+    --pixel: 'Press Start 2P', 'Courier New', monospace;
   }
   *{box-sizing:border-box;}
   html,body{
@@ -44,14 +50,16 @@
     box-shadow:0 8px 24px rgba(0,0,0,.25);
   }
   h1.title{
-    font-size:clamp(20px,5vw,34px);
-    font-weight:bold;
-    font-style:italic;
+    font-family:var(--pixel);
+    font-size:clamp(13px,3.2vw,20px);
+    font-weight:normal;
+    font-style:normal;
     color:var(--rose);
     text-wrap:balance;
-    margin:0 0 4px 0;
-    line-height:1.2;
+    margin:0 0 10px 0;
+    line-height:1.6;
     letter-spacing:0.5px;
+    text-shadow:2px 2px 0 var(--ink);
   }
   .subtitle{
     font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -87,16 +95,17 @@
   .swatch.active{ box-shadow:0 0 0 3px var(--rose); transform:scale(1.1); }
 
   button.mainBtn{
-    font-family: Georgia, serif;
-    font-style:italic;
+    font-family:var(--pixel);
+    font-style:normal;
     background:var(--rose);
     color:var(--white);
     border:3px solid var(--ink);
-    border-radius:10px;
-    padding:13px 30px;
-    font-size:clamp(15px,3.6vw,18px);
-    font-weight:bold;
+    border-radius:4px;
+    padding:14px 26px;
+    font-size:clamp(10px,2.6vw,13px);
+    font-weight:normal;
     letter-spacing:0.5px;
+    line-height:1.4;
     cursor:pointer;
     box-shadow:0 4px 0 var(--rose-deep);
     margin-top:14px;
@@ -111,10 +120,11 @@
   }
 
   #countdownNum{
-    font-size:clamp(70px,20vw,130px);
-    font-weight:bold;
+    font-family:var(--pixel);
+    font-size:clamp(44px,13vw,86px);
+    font-weight:normal;
     color:var(--cream);
-    text-shadow: 0 4px 0 var(--ink), 0 0 40px rgba(0,0,0,.3);
+    text-shadow: 5px 5px 0 var(--ink), 0 0 40px rgba(0,0,0,.35);
   }
 
   #hud{
@@ -122,12 +132,13 @@
     display:flex; flex-direction:column; gap:6px; pointer-events:none; z-index:5;
   }
   .hudBox{
-    font-family: system-ui, -apple-system, sans-serif;
-    background:rgba(255,248,236,.92); border:2px solid var(--ink); border-radius:8px;
-    padding:6px 10px; font-size:clamp(12px,2.8vw,15px); font-weight:600; color:var(--ink);
+    font-family:var(--pixel);
+    background:rgba(255,248,236,.92); border:3px solid var(--ink); border-radius:3px;
+    padding:8px 10px; font-size:clamp(9px,2.2vw,12px); font-weight:normal; color:var(--ink);
     font-variant-numeric: tabular-nums;
+    box-shadow:0 3px 0 rgba(0,0,0,.25);
   }
-  .hudLabel{ font-size:10px; font-weight:500; opacity:.55; letter-spacing:0.5px; }
+  .hudLabel{ font-size:8px; opacity:.55; letter-spacing:0.5px; }
 
   #progressWrap{
     position:fixed; left:calc(env(safe-area-inset-left,0px) + 12px); bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
@@ -145,11 +156,50 @@
   }
   .resRow{ display:flex; align-items:center; gap:8px; }
   .resRow canvas{ image-rendering:pixelated; border-radius:50%; border:2px solid var(--ink); background:var(--sky); flex-shrink:0; }
-  .resRank{ font-weight:700; width:22px; text-align:right; font-size:13px; color:var(--ink); flex-shrink:0; }
-  .resName{ flex:1; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .resTime{ font-family:'Consolas','Menlo','Courier New',monospace; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; }
-  .resRow.me{ background:rgba(212,80,107,.15); border-radius:8px; padding:3px 6px; margin:0 -6px; }
-  #resultHeading{ font-family:system-ui,-apple-system,sans-serif; font-size:11px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; opacity:.55; margin:6px 0 2px; }
+  .resRank{ font-family:var(--pixel); font-size:10px; width:30px; text-align:right; color:var(--ink); flex-shrink:0; }
+  .resName{ flex:1; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
+  .resTime{ font-family:var(--pixel); font-size:10px; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .resRow.me{ background:rgba(212,80,107,.18); border-radius:6px; padding:4px 6px; margin:0 -6px; box-shadow:inset 0 0 0 2px rgba(212,80,107,.5); }
+  .resRow.top1 .resRank{ color:var(--gold); text-shadow:1px 1px 0 var(--ink); }
+  #resultHeading{ font-family:var(--pixel); font-size:9px; letter-spacing:0.6px; text-transform:uppercase; opacity:.65; margin:10px 0 6px; }
+
+  /* Where the shown scores came from -- global vs this device only. */
+  #boardNote{
+    font-family:system-ui,-apple-system,sans-serif;
+    font-size:11px; opacity:.6; margin-top:6px; line-height:1.4;
+  }
+  #boardNote.warn{ color:var(--rose-deep); opacity:.85; }
+
+  /* Subtle CRT scanlines + vignette over the whole screen. Kept light so it
+     reads as arcade texture rather than muddying the pixel art. */
+  #crt{
+    position:fixed; inset:0; pointer-events:none; z-index:4;
+    background:
+      linear-gradient(rgba(0,0,0,0.10) 50%, rgba(0,0,0,0) 50%),
+      radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.28) 100%);
+    background-size:100% 3px, 100% 100%;
+    mix-blend-mode:multiply;
+  }
+
+  /* Standalone live leaderboard view (?board) for the hosts to keep open. */
+  #boardView{
+    position:fixed; inset:0; z-index:8; overflow-y:auto;
+    background:linear-gradient(var(--sky-deep), var(--sky) 55%, var(--grass) 55%, #2c9a3c);
+    padding:24px 16px 40px;
+  }
+  #boardCard{
+    max-width:560px; margin:0 auto;
+    background:rgba(255,248,236,.97);
+    border:3px solid var(--ink); border-radius:14px;
+    padding:20px clamp(14px,4vw,26px);
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+  }
+  #boardTitle{
+    font-family:var(--pixel); font-size:clamp(12px,3vw,17px); color:var(--rose);
+    text-shadow:2px 2px 0 var(--ink); line-height:1.6; margin-bottom:14px; text-align:center;
+  }
+  #boardList{ display:flex; flex-direction:column; gap:6px; font-family:system-ui,-apple-system,sans-serif; font-size:14px; }
+  #boardStatus{ font-family:system-ui,-apple-system,sans-serif; font-size:12px; opacity:.6; text-align:center; margin-top:14px; }
 
   .ctrlBtn{
     position:fixed; z-index:6; pointer-events:auto;
@@ -219,6 +269,7 @@
       <div class="subtitle" id="finishSubtitle">Thanks for racing at our wedding!</div>
       <div id="resultHeading">Venue Leaderboard</div>
       <div id="resultBox"></div>
+      <div id="boardNote"></div>
       <button class="mainBtn" id="againBtn">Race Again</button>
     </div>
   </div>
@@ -227,6 +278,15 @@
   <div class="ctrlBtn" id="steerRight">Right</div>
   <div class="ctrlBtn" id="gasBtn">Gas</div>
   <div class="ctrlBtn" id="brakeBtn">Brake</div>
+  <div id="crt"></div>
+</div>
+
+<div id="boardView" class="hidden">
+  <div id="boardCard">
+    <div id="boardTitle">Mairead &amp; Paul's<br>Wedding Dash<br>Leaderboard</div>
+    <div id="boardList"></div>
+    <div id="boardStatus">Loading…</div>
+  </div>
 </div>
 
 <script>
@@ -247,6 +307,7 @@ function resize(){
   canvas.style.height = viewport.h+'px';
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.imageSmoothingEnabled = false;
+  buildBackdrop();
   updateControlVisibility();
 }
 window.addEventListener('resize', resize);
@@ -285,6 +346,23 @@ function shade(hex, pct){
   return '#'+((1<<24)+(r<<16)+(g2<<8)+b).toString(16).slice(1);
 }
 function clamp(v,lo,hi){ return v<lo?lo:(v>hi?hi:v); }
+function mixHex(a,b,t){
+  const na = parseInt(a.slice(1),16), nb = parseInt(b.slice(1),16);
+  const ar=(na>>16)&255, ag=(na>>8)&255, ab=na&255;
+  const br=(nb>>16)&255, bg=(nb>>8)&255, bb=nb&255;
+  const r=Math.round(ar+(br-ar)*t), g2=Math.round(ag+(bg-ag)*t), b2=Math.round(ab+(bb-ab)*t);
+  return '#'+((1<<24)+(r<<16)+(g2<<8)+b2).toString(16).slice(1);
+}
+// Seeded RNG so the generated skyline is identical every load and every
+// resize -- a background that reshuffles itself mid-race looks broken.
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a>>>15, 1 | a);
+    t = t + Math.imul(t ^ t>>>7, 61 | t) ^ t;
+    return ((t ^ t>>>14) >>> 0) / 4294967296;
+  };
+}
 
 /* ============================= PALETTE ============================= */
 const PRIMARY_COLORS = ['#1b1b1f','#1fb6b0','#d4506b','#3ec14f','#e8b830','#2c3e6b','#fff8ec','#9b59b6'];
@@ -640,6 +718,34 @@ const PATH = [];
 const PATH_LEN = PATH.length;
 const FINISH_S = PATH[PATH_LEN-1].s;
 
+// Running compass heading at each segment. The parallax backdrop is shifted by
+// this, so the scenery genuinely swings past as the road bends instead of
+// sitting frozen behind a turning car.
+const HEADING = new Float32Array(PATH_LEN);
+(function(){
+  let sum = 0;
+  for(let i=0;i<PATH_LEN;i++){ sum += PATH[i].curve; HEADING[i] = sum; }
+})();
+
+// Per-distance fog tables: every road colour pre-blended toward the horizon
+// haze at each of the drawn steps. Precomputing means no colour parsing in the
+// render loop, which matters on phones.
+const FOG_COLOR = '#9ddcff';
+function fogLUT(base){
+  const arr = new Array(DRAW_DIST+1);
+  for(let n=0;n<=DRAW_DIST;n++){
+    arr[n] = mixHex(base, FOG_COLOR, Math.pow(n/DRAW_DIST, 2.2)*0.82);
+  }
+  return arr;
+}
+const FOG = {
+  roadA: fogLUT('#5a5a62'), roadB: fogLUT('#4e4e56'),
+  rumbleA: fogLUT('#d4506b'), rumbleB: fogLUT('#fff4f6'),
+  grassA: fogLUT('#3ec14f'), grassB: fogLUT('#35a843'),
+  vergeA: fogLUT('#8c9a55'), vergeB: fogLUT('#7e8b4b'),
+  lineA: fogLUT('#ffffff')
+};
+
 const ALT = i => Math.floor(i/3)%2===0;
 const DASH = i => Math.floor(i/6)%2===0;
 
@@ -654,6 +760,25 @@ for(let i=15;i<PATH_LEN-6;i+=15){
   const side = (i/15)%2===0 ? -1 : 1;
   BELLS.push({ idx:i, side, lat: ROAD_HALF_W + 2.4 });
 }
+
+// Taller roadside trees, set back further than the bushes so the verge reads
+// as having depth rather than one flat row of shrubs.
+const TREES = [];
+(function(){
+  const rnd = mulberry32(777);
+  for(let i=9;i<PATH_LEN-4;i+=9){
+    const side = rnd() > 0.5 ? 1 : -1;
+    TREES.push({
+      idx: i, side,
+      lat: ROAD_HALF_W + 4.5 + rnd()*5.5,
+      hgt: 0.9 + rnd()*0.5,
+      dark: rnd() > 0.5
+    });
+  }
+})();
+
+// Bunting arches spanning the road at a few points along the route.
+const ARCHES = [0.14,0.33,0.52,0.71,0.9].map(t=>({ idx: Math.round(t*(PATH_LEN-1)) }));
 
 const PICKUP_COUNT = Math.max(16, Math.round(FINISH_S/300));
 let items = Array.from({length:PICKUP_COUNT}, (_,i)=>{
@@ -778,12 +903,134 @@ function stepCar(k, dt, inp){
 let state = 'select', raceTime = 0, gameTime = 0, countdownVal = 3, countdownTimer = 0;
 const input = { left:false, right:false, gas:false, brake:false };
 
+/* ===================== SHARED LEADERBOARD =====================
+   Every guest plays on their own phone, so localStorage alone can never show
+   who actually won -- each device would only ever see its own runs. Scores are
+   therefore posted to a shared Firebase Realtime Database and read back, so
+   one global table is visible to everyone.
+
+   To switch it on, put the Realtime Database URL in DEFAULT_DB below (looks
+   like https://something-default-rtdb.firebaseio.com). It can also be passed
+   at runtime as ?db=<url>, which is handy for testing before baking it in.
+
+   With no URL configured the game still works perfectly -- it just falls back
+   to a per-device board and says so, rather than silently pretending the
+   scores are global. */
+const DEFAULT_DB = '';
+const QUERY = new URLSearchParams(location.search);
+const LEADERBOARD_DB = (QUERY.get('db') || DEFAULT_DB).replace(/\/+$/,'');
+const REMOTE_ON = /^https:\/\//.test(LEADERBOARD_DB);
+const NET_TIMEOUT = 8000;
+
 const LEADERBOARD_KEY = 'weddingDashLeaderboard';
+const PENDING_KEY = 'weddingDashPending';
+
 function loadLeaderboard(){
   try{ return JSON.parse(localStorage.getItem(LEADERBOARD_KEY)) || []; }catch(e){ return []; }
 }
 function saveLeaderboard(list){
-  try{ localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(list.slice(0,20))); }catch(e){}
+  try{ localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(list.slice(0,50))); }catch(e){}
+}
+function loadPending(){
+  try{ return JSON.parse(localStorage.getItem(PENDING_KEY)) || []; }catch(e){ return []; }
+}
+function savePending(list){
+  try{ localStorage.setItem(PENDING_KEY, JSON.stringify(list.slice(-25))); }catch(e){}
+}
+
+function withTimeout(promise, ms){
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), ms);
+  return { signal: ctrl.signal, done: promise, clear: ()=>clearTimeout(timer) };
+}
+
+// POST appends with a server-generated key, so two guests finishing at the
+// same moment can never overwrite each other (which a whole-document
+// read-modify-write store would risk).
+async function postScore(entry){
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), NET_TIMEOUT);
+  try{
+    const res = await fetch(LEADERBOARD_DB+'/scores.json', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(entry),
+      signal: ctrl.signal
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return true;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function fetchScores(){
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), NET_TIMEOUT);
+  try{
+    const res = await fetch(LEADERBOARD_DB+'/scores.json', { signal: ctrl.signal });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    if(!data) return [];
+    return Object.keys(data)
+      .map(k=>Object.assign({id:k}, data[k]))
+      .filter(e=>e && typeof e.time === 'number' && isFinite(e.time))
+      .sort((a,b)=>a.time-b.time);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Anything that failed to send (dead wifi at the venue) is kept and retried,
+// so a guest's run isn't silently lost just because the network blipped.
+async function flushPending(){
+  if(!REMOTE_ON) return;
+  let queue = loadPending();
+  if(!queue.length) return;
+  const stillPending = [];
+  for(const entry of queue){
+    try{ await postScore(entry); }
+    catch(e){ stillPending.push(entry); }
+  }
+  savePending(stillPending);
+}
+
+async function submitScore(entry){
+  if(!REMOTE_ON) return false;
+  try{
+    await postScore(entry);
+    return true;
+  }catch(e){
+    const queue = loadPending();
+    queue.push(entry);
+    savePending(queue);
+    return false;
+  }
+}
+
+function renderBoardRows(box, list, mineId){
+  box.innerHTML = '';
+  if(!list.length){
+    const empty = document.createElement('div');
+    empty.style.cssText = 'opacity:.6;padding:8px 0;';
+    empty.textContent = 'No runs yet — be the first!';
+    box.appendChild(empty);
+    return;
+  }
+  list.slice(0,20).forEach((e,i)=>{
+    const isMe = mineId && e.localId === mineId;
+    const row = document.createElement('div');
+    row.className = 'resRow'+(isMe?' me':'')+(i===0?' top1':'');
+    const rank = document.createElement('div');
+    rank.className='resRank'; rank.textContent = (i+1)+'.';
+    const av = heartSwatchCanvas(e.carColor||'#1fb6b0', 28);
+    const nm = document.createElement('div');
+    nm.className='resName'; nm.textContent = e.name || 'Guest';
+    const tm = document.createElement('div');
+    tm.className='resTime'; tm.textContent = fmtTime(e.time);
+    row.appendChild(rank); row.appendChild(av); row.appendChild(nm); row.appendChild(tm);
+    box.appendChild(row);
+  });
 }
 
 function setupRace(){
@@ -817,32 +1064,68 @@ function endRace(){
   document.getElementById('hud').classList.add('hidden');
   document.getElementById('progressWrap').classList.add('hidden');
 
-  const list = loadLeaderboard();
-  const entry = { name: player.name, time: raceTime, carColor: customConfig.primary };
-  list.push(entry);
-  list.sort((a,b)=>a.time-b.time);
-  const trimmed = list.slice(0,20);
-  saveLeaderboard(trimmed);
-  const myRank = trimmed.indexOf(entry);
+  const localId = 'r'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
+  const entry = {
+    name: player.name,
+    time: Math.round(raceTime*10)/10,
+    carColor: customConfig.primary,
+    love: player.love,
+    localId,
+    ts: Date.now()
+  };
 
-  document.getElementById('finishTitle').textContent = 'They made it!';
-  document.getElementById('finishSubtitle').textContent = myRank===0
-    ? 'Fastest to the Ulster Museum so far -- Mairead and Paul thank you!'
-    : 'Mairead and Paul made it to the Ulster Museum on time!';
+  // Always keep a local copy first: that way the run survives even if the
+  // network is down, and there is something to show instantly.
+  const localList = loadLeaderboard();
+  localList.push(entry);
+  localList.sort((a,b)=>a.time-b.time);
+  saveLeaderboard(localList);
 
   const box = document.getElementById('resultBox');
-  box.innerHTML = '';
-  trimmed.forEach((e,i)=>{
-    const row = document.createElement('div'); row.className='resRow'+(e===entry?' me':'');
-    const rank = document.createElement('div'); rank.className='resRank'; rank.textContent = (i+1)+'.';
-    const av = heartSwatchCanvas(e.carColor||'#1fb6b0', 28);
-    const nm = document.createElement('div'); nm.className='resName'; nm.textContent = e.name;
-    const tm = document.createElement('div'); tm.className='resTime'; tm.textContent = fmtTime(e.time);
-    row.appendChild(rank); row.appendChild(av); row.appendChild(nm); row.appendChild(tm);
-    box.appendChild(row);
-  });
+  const note = document.getElementById('boardNote');
+  document.getElementById('finishTitle').textContent = 'They made it!';
+  document.getElementById('finishSubtitle').textContent =
+    'Mairead and Paul made it to the Ulster Museum in ' + fmtTime(entry.time) + '!';
+
+  renderBoardRows(box, localList, localId);
+  note.className = '';
+  note.textContent = REMOTE_ON ? 'Sending your time to the shared leaderboard…' : '';
   document.getElementById('finishPanel').classList.remove('hidden');
   spawnConfetti(80);
+
+  if(!REMOTE_ON){
+    document.getElementById('resultHeading').textContent = 'Leaderboard (this device)';
+    note.className = 'warn';
+    note.textContent = 'Shared leaderboard not configured yet, so this only shows runs from this phone.';
+    return;
+  }
+
+  // Post, then pull the full global table so the guest sees where they placed
+  // against everyone, not just themselves.
+  (async ()=>{
+    const sent = await submitScore(entry);
+    try{
+      const remote = await fetchScores();
+      renderBoardRows(box, remote, localId);
+      const myRank = remote.findIndex(e=>e.localId===localId);
+      document.getElementById('resultHeading').textContent = 'Venue Leaderboard — All Players';
+      note.className = '';
+      note.textContent = myRank === 0
+        ? 'Fastest of all ' + remote.length + ' runs so far!'
+        : (myRank > 0
+            ? 'You placed ' + (myRank+1) + ' of ' + remote.length + ' runs so far.'
+            : remote.length + ' runs so far.');
+      if(myRank === 0){
+        document.getElementById('finishSubtitle').textContent =
+          'Fastest to the Ulster Museum so far — Mairead and Paul thank you!';
+      }
+    }catch(e){
+      note.className = 'warn';
+      note.textContent = sent
+        ? 'Your time was saved, but the full leaderboard could not be loaded right now.'
+        : 'No connection — your time is saved on this phone and will be sent next time you open the game.';
+    }
+  })();
 }
 function fmtTime(t){
   const mm = Math.floor(t/60).toString().padStart(2,'0');
@@ -881,6 +1164,46 @@ document.getElementById('againBtn').addEventListener('click', ()=>{
   document.getElementById('selectPanel').classList.remove('hidden');
 });
 
+// Remember the guest's name between runs so they don't retype it every race.
+try{
+  const saved = localStorage.getItem('weddingDashName');
+  if(saved) nameField.value = saved;
+}catch(e){}
+
+// Retry anything that failed to send on a previous visit.
+flushPending();
+
+/* ============ HOST VIEW: /?board ============
+   A standalone, auto-refreshing scoreboard for the couple to keep open on a
+   phone or a big screen -- no need to play a race to see who is winning. */
+const BOARD_MODE = QUERY.has('board');
+if(BOARD_MODE){
+  const view = document.getElementById('boardView');
+  const list = document.getElementById('boardList');
+  const status = document.getElementById('boardStatus');
+  view.classList.remove('hidden');
+  document.getElementById('ui').classList.add('hidden');
+  document.getElementById('crt').classList.add('hidden');
+
+  async function refreshBoard(){
+    if(!REMOTE_ON){
+      renderBoardRows(list, loadLeaderboard(), null);
+      status.textContent = 'Shared leaderboard not configured — showing this device only.';
+      return;
+    }
+    try{
+      const scores = await fetchScores();
+      renderBoardRows(list, scores, null);
+      status.textContent = scores.length + ' run' + (scores.length===1?'':'s') +
+        ' · updated ' + new Date().toLocaleTimeString();
+    }catch(e){
+      status.textContent = 'Could not reach the leaderboard — retrying…';
+    }
+  }
+  refreshBoard();
+  setInterval(refreshBoard, 10000);
+}
+
 resize();
 
 /* ============================= RENDERING ============================= */
@@ -892,12 +1215,118 @@ function projectPoint(lat, z, camX, w, h){
 }
 
 const CLOUDS = [];
-for(let i=0;i<10;i++){
-  CLOUDS.push({ x: Math.random(), y: 0.08+Math.random()*0.25, w: 40+Math.random()*70, h:14+Math.random()*16, speed: 0.003+Math.random()*0.005 });
+(function(){
+  const rnd = mulberry32(20260912);
+  for(let i=0;i<11;i++){
+    CLOUDS.push({ x: rnd(), y: 0.06+rnd()*0.26, w: 38+rnd()*72, h: 12+rnd()*14, speed: 0.003+rnd()*0.005 });
+  }
+})();
+
+/* ===================== PIXEL BACKDROP =====================
+   The sky, the distant ridgeline and the treeline are drawn once into
+   offscreen canvases and then blitted each frame at different horizontal
+   offsets. That gives real parallax through the corners for the cost of a
+   few drawImage calls, and lets the sky use a proper dithered gradient --
+   stepped colour bands with a checkerboard blend between them, the way a
+   16-bit console would do it -- without paying for it every frame. */
+var backdrop;
+
+function pixelDisc(g, cx, cy, r, blk, color){
+  g.fillStyle = color;
+  for(let dy=-r; dy<r; dy+=blk){
+    const hw = Math.sqrt(Math.max(0, r*r - dy*dy));
+    const x0 = Math.round((cx-hw)/blk)*blk;
+    const wdt = Math.round((hw*2)/blk)*blk;
+    if(wdt>0) g.fillRect(x0, Math.round(cy+dy), wdt, blk);
+  }
 }
-const HILLS = [];
-for(let i=0;i<16;i++){
-  HILLS.push({ x: i/16, h: 10+Math.random()*24, w: 0.06+Math.random()*0.07 });
+
+// Generates one seamless, pixel-stepped silhouette strip, twice the screen
+// wide so it can be blitted side by side and scrolled without a visible seam.
+function ridgeStrip(w, hgt, seed, step, body, cap, capH, trees){
+  const c = document.createElement('canvas');
+  c.width = w*2; c.height = hgt;
+  const g = c.getContext('2d');
+  g.imageSmoothingEnabled = false;
+  const rnd = mulberry32(seed);
+  const cols = Math.ceil(c.width/step);
+  const ys = new Array(cols);
+  let y = hgt*0.55;
+  for(let i=0;i<cols;i++){
+    y += (rnd()-0.5)*hgt*0.30;
+    y = clamp(y, hgt*0.16, hgt*0.90);
+    ys[i] = y;
+  }
+  // Ease the tail back to the head so the wrap point is invisible.
+  const blend = Math.max(4, Math.floor(cols*0.12));
+  for(let i=0;i<blend;i++){
+    const t = i/blend;
+    ys[cols-blend+i] = ys[cols-blend+i]*(1-t) + ys[0]*t;
+  }
+  for(let i=0;i<cols;i++){
+    const yi = Math.round(ys[i]);
+    g.fillStyle = body;
+    g.fillRect(i*step, yi, step, hgt-yi);
+    g.fillStyle = cap;
+    g.fillRect(i*step, yi, step, capH);
+    if(trees && rnd() > 0.55){
+      // A few chunky conifers breaking the ridgeline.
+      const th = Math.round(hgt*(0.14+rnd()*0.16));
+      const tx = i*step;
+      g.fillStyle = body;
+      g.fillRect(tx+Math.round(step*0.25), yi-th, Math.round(step*0.5), th);
+      g.fillRect(tx, yi-Math.round(th*0.55), step, Math.round(th*0.55));
+    }
+  }
+  return c;
+}
+
+function buildBackdrop(){
+  const w = Math.max(320, Math.round(viewport.w));
+  const h = Math.max(320, Math.round(viewport.h));
+  const horizonY = Math.max(80, Math.round(h*0.44));
+
+  const sky = document.createElement('canvas');
+  sky.width = w; sky.height = horizonY;
+  const sg = sky.getContext('2d');
+  sg.imageSmoothingEnabled = false;
+
+  const SKY_TOP = '#1e6fd0', SKY_MID = '#4fa4f5', SKY_LOW = '#9ddcff';
+  const BANDS = 12, blk = 4;
+  const skyAt = t => t < 0.55
+    ? mixHex(SKY_TOP, SKY_MID, t/0.55)
+    : mixHex(SKY_MID, SKY_LOW, (t-0.55)/0.45);
+  for(let i=0;i<BANDS;i++){
+    const y0 = Math.round(i/BANDS*horizonY);
+    const y1 = Math.round((i+1)/BANDS*horizonY);
+    sg.fillStyle = skyAt(i/BANDS);
+    sg.fillRect(0, y0, w, y1-y0);
+    const next = skyAt((i+1)/BANDS);
+    const dh = Math.min(blk*2, Math.max(blk, Math.floor((y1-y0)*0.5)));
+    sg.fillStyle = next;
+    for(let y=y1-dh; y<y1; y+=blk){
+      const offset = (Math.floor(y/blk)%2) ? blk : 0;
+      for(let x=offset; x<w; x+=blk*2) sg.fillRect(x, y, blk, blk);
+    }
+  }
+
+  // A low sun with a soft stepped halo, sitting off to one side.
+  const sunX = Math.round(w*0.78), sunY = Math.round(horizonY*0.26);
+  const sunR = Math.max(16, Math.round(Math.min(w,h)*0.045));
+  pixelDisc(sg, sunX, sunY, sunR*1.55, blk, 'rgba(255,248,214,0.18)');
+  pixelDisc(sg, sunX, sunY, sunR*1.2, blk, 'rgba(255,246,198,0.30)');
+  pixelDisc(sg, sunX, sunY, sunR, blk, '#fff3c4');
+  pixelDisc(sg, sunX, sunY, sunR*0.72, blk, '#fffdf0');
+
+  const ridgeH = Math.max(30, Math.round(h*0.115));
+  const treeH  = Math.max(22, Math.round(h*0.075));
+
+  backdrop = {
+    w, h, horizonY,
+    sky,
+    ridge: ridgeStrip(w, ridgeH, 9001, 10, '#4d7f92', '#6ea3b2', 3, false),
+    trees: ridgeStrip(w, treeH, 4242, 8, '#237a36', '#2f9a45', 3, true)
+  };
 }
 
 function drawVenue(g, cx, cy, size){
@@ -934,41 +1363,71 @@ function drawVenue(g, cx, cy, size){
   g.restore();
 }
 
+// Solid stepped grass bands rather than a smooth gradient, each one blended
+// toward the horizon haze by distance so the open field lines up with the
+// fogged road quads drawn over it instead of showing a hard seam at the sides.
+function grassBands(g, horizonY, w, h){
+  // Bands are spaced by a power curve, not evenly: perspective crams all the
+  // distance into the few pixels under the horizon, so that is where the thin
+  // bands (and nearly all of the haze) need to be. Evenly spaced bands put one
+  // big pale slab across the field instead, which reads as water.
+  const BANDS = 10, span = h - horizonY;
+  for(let i=0;i<BANDS;i++){
+    const t0 = Math.pow(i/BANDS, 2.2);
+    const t1 = Math.pow((i+1)/BANDS, 2.2);
+    const y0 = horizonY + span*t0;
+    const y1 = horizonY + span*t1;
+    const base = mixHex('#46c95a', '#238a33', t0);
+    const fog = 0.5*Math.max(0, 1 - t0*7);
+    g.fillStyle = mixHex(base, FOG_COLOR, fog);
+    g.fillRect(0, Math.round(y0), w, Math.ceil(y1-y0)+1);
+  }
+}
+
+function drawParallaxStrip(g, strip, offset, baselineY, w){
+  const sw = strip.width;
+  const ox = ((offset % sw) + sw) % sw;
+  const y = Math.round(baselineY - strip.height);
+  g.drawImage(strip, Math.round(-ox), y);
+  if(-ox + sw < w) g.drawImage(strip, Math.round(-ox+sw), y);
+}
+
 function renderChaseCam(g){
   const w = viewport.w, h = viewport.h;
-  const horizonY = h*0.44;
-
-  const skyGrad = g.createLinearGradient(0,0,0,horizonY);
-  skyGrad.addColorStop(0,'#3a8ee8');
-  skyGrad.addColorStop(0.6,'#5cb2ff');
-  skyGrad.addColorStop(1,'#8fd4ff');
-  g.fillStyle = skyGrad;
-  g.fillRect(0,0,w,horizonY);
-
-  CLOUDS.forEach(c=>{
-    const cx = ((c.x + gameTime*c.speed)%1.3 - 0.15)*w;
-    g.fillStyle = 'rgba(255,255,255,0.6)';
-    roundRectPath(g, cx, c.y*horizonY, c.w, c.h, c.h/2);
-    g.fill();
-  });
-
-  g.fillStyle = '#2ba840';
-  HILLS.forEach(hi=>{
-    const hx = hi.x*w;
-    g.beginPath();
-    g.moveTo(hx-hi.w*w, horizonY);
-    g.quadraticCurveTo(hx, horizonY-hi.h, hx+hi.w*w, horizonY);
-    g.fill();
-  });
-
-  const grassGrad = g.createLinearGradient(0,horizonY,0,h);
-  grassGrad.addColorStop(0,'#3ec14f');
-  grassGrad.addColorStop(1,'#2c9a3c');
-  g.fillStyle = grassGrad; g.fillRect(0,horizonY,w,h-horizonY);
+  if(!backdrop) buildBackdrop();
+  const horizonY = backdrop.horizonY;
 
   const baseIdx = clamp(Math.floor(player.idx), 0, PATH_LEN-1);
   const frac = player.idx - baseIdx;
   const camX = player.lateral*0.85;
+
+  // A touch of arcade shake under boost and on landing. Kept to a couple of
+  // pixels so it reads as punch rather than making anyone seasick.
+  let shakeAmt = 0;
+  if(player.boostTier > 0) shakeAmt += 0.5*player.boostTier;
+  if(player.hopT > 0) shakeAmt += 1.1;
+  const shakeX = shakeAmt ? (Math.random()-0.5)*shakeAmt : 0;
+  const shakeY = shakeAmt ? (Math.random()-0.5)*shakeAmt : 0;
+  g.save();
+  g.translate(shakeX, shakeY);
+
+  g.drawImage(backdrop.sky, 0, 0, w, horizonY);
+
+  // Everything behind the road slides opposite the accumulated heading, at
+  // layer-dependent rates, so corners feel like corners.
+  const drift = -HEADING[baseIdx]*w*0.85;
+
+  CLOUDS.forEach(c=>{
+    const cx = ((c.x + gameTime*c.speed + drift/(w*26))%1.3 - 0.15)*w;
+    g.fillStyle = 'rgba(255,255,255,0.62)';
+    roundRectPath(g, cx, c.y*horizonY, c.w, c.h, c.h/2);
+    g.fill();
+  });
+
+  drawParallaxStrip(g, backdrop.ridge, drift*0.30, horizonY+1, w);
+  drawParallaxStrip(g, backdrop.trees, drift*0.55, horizonY+2, w);
+
+  grassBands(g, horizonY, w, h);
 
   const buckets = {};
   function addBucket(rel, entry){ if(!buckets[rel]) buckets[rel]=[]; buckets[rel].push(entry); }
@@ -989,6 +1448,14 @@ function renderChaseCam(g){
     const rel = padIt.idx - baseIdx;
     if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'pad', obj:padIt});
   });
+  TREES.forEach(tr=>{
+    const rel = tr.idx - baseIdx;
+    if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'tree', obj:tr});
+  });
+  ARCHES.forEach(ar=>{
+    const rel = ar.idx - baseIdx;
+    if(rel>=0 && rel<DRAW_DIST) addBucket(rel, {type:'arch', obj:ar});
+  });
   const venueRel = (PATH_LEN-1) - baseIdx;
   if(venueRel>=0 && venueRel<DRAW_DIST) addBucket(venueRel, {type:'venue'});
 
@@ -1007,16 +1474,20 @@ function renderChaseCam(g){
     const p1 = posts[n-1], p2 = posts[n];
     if(p2.y < horizonY-2) continue;
     const idx = p1.idx;
-    const roadCol = ALT(idx) ? '#5a5a62' : '#4e4e56';
-    const rumbleCol = ALT(idx) ? '#d4506b' : '#ffffff';
-    const grassCol = ALT(idx) ? '#3ec14f' : '#35a843';
+    const alt = ALT(idx);
+    const roadCol   = alt ? FOG.roadA[n]   : FOG.roadB[n];
+    const rumbleCol = alt ? FOG.rumbleA[n] : FOG.rumbleB[n];
+    const grassCol  = alt ? FOG.grassA[n]  : FOG.grassB[n];
+    const vergeCol  = alt ? FOG.vergeA[n]  : FOG.vergeB[n];
+    const lineCol   = FOG.lineA[n];
 
     quad(g, p1.x,p1.y,p1.w*3.5, p2.x,p2.y,p2.w*3.5, grassCol);
+    quad(g, p1.x,p1.y,p1.w*1.75, p2.x,p2.y,p2.w*1.75, vergeCol);
     quad(g, p1.x,p1.y,p1.w*1.25, p2.x,p2.y,p2.w*1.25, rumbleCol);
     quad(g, p1.x,p1.y,p1.w, p2.x,p2.y,p2.w, roadCol);
-    quad(g, p1.x-p1.w*0.96,p1.y,p1.w*0.035, p2.x-p2.w*0.96,p2.y,p2.w*0.035, '#ffffff99');
-    quad(g, p1.x+p1.w*0.96,p1.y,p1.w*0.035, p2.x+p2.w*0.96,p2.y,p2.w*0.035, '#ffffff99');
-    if(DASH(idx)){ quad(g, p1.x,p1.y,p1.w*0.025, p2.x,p2.y,p2.w*0.025, '#ffffff'); }
+    quad(g, p1.x-p1.w*0.96,p1.y,p1.w*0.035, p2.x-p2.w*0.96,p2.y,p2.w*0.035, lineCol);
+    quad(g, p1.x+p1.w*0.96,p1.y,p1.w*0.035, p2.x+p2.w*0.96,p2.y,p2.w*0.035, lineCol);
+    if(DASH(idx)){ quad(g, p1.x,p1.y,p1.w*0.025, p2.x,p2.y,p2.w*0.025, lineCol); }
     if(idx===0 || idx===1){
       quad(g, p1.x,p1.y,p1.w*0.9, p2.x,p2.y,p2.w*0.9, '#ffffffcc');
     }
@@ -1067,6 +1538,49 @@ function renderChaseCam(g){
           pr(g,-5,-7,10,6,'#e87090');
           pr(g,-3,-10,6,4,'#f0a0b0');
           g.restore();
+        } else if(entry.type==='tree'){
+          const lat = p1.roadX + entry.obj.side*entry.obj.lat;
+          const sp = projectPoint(lat, p1.z, camX, w, h);
+          const size = Math.max(4, sp.scale*700*entry.obj.hgt);
+          const leaf = entry.obj.dark ? '#1f7a33' : '#2b9440';
+          const leafHi = entry.obj.dark ? '#2f9245' : '#3fb055';
+          g.save();
+          g.translate(sp.x, sp.y);
+          g.scale(size/20, size/20);
+          pr(g,-1.3,-6,2.6,6,'#6b4a2a');
+          pr(g,-1.3,-6,0.9,6,'#845c36');
+          pr(g,-7,-12,14,7,leaf);
+          pr(g,-5.5,-16,11,5,leaf);
+          pr(g,-3.5,-19,7,4,leaf);
+          pr(g,-6.5,-12,13,1.4,leafHi);
+          pr(g,-5,-15.6,10,1.2,leafHi);
+          g.restore();
+        } else if(entry.type==='arch'){
+          const sp = projectPoint(p1.roadX, p1.z, camX, w, h);
+          const span = p1.w*1.5;
+          const postW = Math.max(1.5, p1.w*0.10);
+          const hgt = p1.w*1.5;
+          if(span > 2){
+            g.fillStyle = '#6b4a2a';
+            g.fillRect(sp.x-span, sp.y-hgt, postW, hgt);
+            g.fillRect(sp.x+span-postW, sp.y-hgt, postW, hgt);
+            g.fillStyle = '#fff8ec';
+            g.fillRect(sp.x-span, sp.y-hgt, span*2, Math.max(1.5, hgt*0.09));
+            // Pennants hanging off the cross-beam, alternating wedding colours.
+            const flagH = Math.max(2, hgt*0.15);
+            const flags = 9;
+            for(let f=0; f<flags; f++){
+              const fx = sp.x - span + (span*2)*(f/flags);
+              const fw = (span*2)/flags;
+              g.fillStyle = ['#d4506b','#e8b830','#ffffff'][f%3];
+              g.beginPath();
+              g.moveTo(fx, sp.y-hgt+hgt*0.09);
+              g.lineTo(fx+fw, sp.y-hgt+hgt*0.09);
+              g.lineTo(fx+fw*0.5, sp.y-hgt+hgt*0.09+flagH);
+              g.closePath();
+              g.fill();
+            }
+          }
         } else if(entry.type==='venue'){
           const sp = projectPoint(p1.roadX, p1.z, camX, w, h);
           const size = Math.max(6, sp.scale*15000);
@@ -1081,13 +1595,32 @@ function renderChaseCam(g){
   // otherwise leaving a flash of bare shoulder colour under it every frame.
   {
     const p0 = posts[0];
-    const idx0 = p0.idx;
-    const roadCol0 = ALT(idx0) ? '#5a5a62' : '#4e4e56';
-    const rumbleCol0 = ALT(idx0) ? '#d4506b' : '#ffffff';
-    const grassCol0 = ALT(idx0) ? '#3ec14f' : '#35a843';
-    quad(g, p0.x, h, p0.w*3.5, p0.x, p0.y, p0.w*3.5, grassCol0);
-    quad(g, p0.x, h, p0.w*1.25, p0.x, p0.y, p0.w*1.25, rumbleCol0);
-    quad(g, p0.x, h, p0.w, p0.x, p0.y, p0.w, roadCol0);
+    const alt0 = ALT(p0.idx);
+    quad(g, p0.x, h, p0.w*3.5,  p0.x, p0.y, p0.w*3.5,  alt0?FOG.grassA[0]:FOG.grassB[0]);
+    quad(g, p0.x, h, p0.w*1.75, p0.x, p0.y, p0.w*1.75, alt0?FOG.vergeA[0]:FOG.vergeB[0]);
+    quad(g, p0.x, h, p0.w*1.25, p0.x, p0.y, p0.w*1.25, alt0?FOG.rumbleA[0]:FOG.rumbleB[0]);
+    quad(g, p0.x, h, p0.w,      p0.x, p0.y, p0.w,      alt0?FOG.roadA[0]:FOG.roadB[0]);
+  }
+
+  // Boost streaks fanning out of the vanishing point -- the classic arcade
+  // "you are going fast now" cue.
+  if(player.boostTier > 0){
+    const rays = 12 + player.boostTier*6;
+    const vx = w/2, vy = horizonY;
+    g.save();
+    g.globalAlpha = 0.10 + player.boostTier*0.05;
+    g.strokeStyle = '#ffffff';
+    g.lineWidth = Math.max(2, Math.round(w*0.004));
+    for(let i=0;i<rays;i++){
+      const a = (i/rays)*Math.PI*2 + gameTime*1.4;
+      const near = 0.30 + ((i*37)%50)/100*0.35;
+      const far = near + 0.14;
+      g.beginPath();
+      g.moveTo(vx + Math.cos(a)*w*near, vy + Math.sin(a)*h*near);
+      g.lineTo(vx + Math.cos(a)*w*far,  vy + Math.sin(a)*h*far);
+      g.stroke();
+    }
+    g.restore();
   }
 
   // player car, in front of the road but behind the HUD
@@ -1099,6 +1632,8 @@ function renderChaseCam(g){
   g.scale(unit, unit);
   drawCoupleCar(g, player.paul, player.mairead, player.boostTier, gameTime);
   g.restore();
+
+  g.restore(); // screen shake
 }
 
 /* ============================= MAIN LOOP ============================= */
@@ -1143,18 +1678,21 @@ function frame(now){
   if(state==='race' || state==='countdown'){
     renderChaseCam(ctx);
   } else {
-    const horizonY = viewport.h*0.46;
-    const skyGrad = ctx.createLinearGradient(0,0,0,horizonY);
-    skyGrad.addColorStop(0,'#3a8ee8');
-    skyGrad.addColorStop(1,'#5cb2ff');
-    ctx.fillStyle = skyGrad; ctx.fillRect(0,0,viewport.w,horizonY);
-    ctx.fillStyle = '#3ec14f'; ctx.fillRect(0,horizonY,viewport.w,viewport.h-horizonY);
+    // Menu and finish screens get the same pixel backdrop as the race, so the
+    // whole game looks like one piece rather than a flat holding screen.
+    if(!backdrop) buildBackdrop();
+    const horizonY = backdrop.horizonY;
+    ctx.drawImage(backdrop.sky, 0, 0, viewport.w, horizonY);
     CLOUDS.forEach(c=>{
       const cx = ((c.x + gameTime*c.speed)%1.3 - 0.15)*viewport.w;
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
       roundRectPath(ctx, cx, c.y*horizonY, c.w, c.h, c.h/2);
       ctx.fill();
     });
+    const drift = gameTime*6;
+    drawParallaxStrip(ctx, backdrop.ridge, -drift*0.3, horizonY+1, viewport.w);
+    drawParallaxStrip(ctx, backdrop.trees, -drift*0.55, horizonY+2, viewport.w);
+    grassBands(ctx, horizonY, viewport.w, viewport.h);
     drawConfetti(ctx);
   }
 
